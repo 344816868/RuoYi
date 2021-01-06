@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('过期合同列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>合同名称：</label>
+                                <input type="text" name="contractName"/>
+                            </li>
+                            <li>
+                                <label>甲方公司名称：</label>
+                                <input type="text" name="aCompanyName"/>
+                            </li>
+                            <li>
+                                <label>甲方授权代表：</label>
+                                <input type="text" name="aCompanyDelegate"/>
+                            </li>
+                            <li>
+                                <label>乙方授权代表：</label>
+                                <input type="text" name="bCompanyDelegate"/>
+                            </li>
+                            <li class="select-time">
+                                <label>签署日期：</label>
+                                <input type="text" class="time-input" id="beginSignTime" placeholder="开始时间" name="params[beginSignTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endSignTime" placeholder="结束时间" name="params[endSignTime]"/>
+                            </li>
+                            <li class="select-time">
+                                <label>合同终止日期：</label>
+                                <input type="text" class="time-input" id="beginEndTime" placeholder="开始时间" name="params[beginEndTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endEndTime" placeholder="结束时间" name="params[endEndTime]"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:contract:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:contract:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:contract:remove')}]];
+        var prefix = ctx + "business/contract";
+
+        $(function() {
+            //设置查询的默认时间 提前一个月
+            var startTime=new Date();
+            var startTime1=date (startTime);
+            //提前1个月的时间
+            var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
+            var endTime1=date (endTime);
+            $("#beginEndTime").val(startTime1);
+            $("#endEndTime").val(endTime1);
+            var options = {
+                url: prefix + "/expireList",
+                exportUrl: prefix + "/export",
+                modalName: "到期合同管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'contractId',
+                    title: '合同ID',
+                    visible: false
+                },
+                {
+                    field: 'contractName',
+                    title: '合同名称'
+                },
+                {
+                    field: 'aCompanyName',
+                    title: '甲方公司名称'
+                },
+                {
+                    field: 'aCompanyDelegate',
+                    title: '甲方授权代表'
+                },
+                {
+                    field: 'bCompanyDelegate',
+                    title: '乙方授权代表'
+                },
+                {
+                    field: 'signTime',
+                    title: '签署日期'
+                },
+                {
+                    field: 'endTime',
+                    title: '合同终止日期'
+                },
+                {
+                    field: 'status',
+                    title: '合同状态',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '正常';
+                        }else{
+                            return '过期';
+                        }
+
+                    }
+                },
+                {
+                    field: 'remark',
+                    title: '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getContractPDF(\'' + row.contractId + '\')"><i class="fa fa-file-pdf-o"></i>预览</a> ');
+                        actions.push('<a class="btn btn-info btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="downloadFile(\'' + row.contractId + '\')"><i class="fa fa-download"></i>下载</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        /* 合同下载 */
+        function downloadFile(value){
+            console.log(value);
+            window.location.href = ctx + "business/contract/download/contract?contractId=" + value;
+        }
+        /* 合同PDF预览 */
+        function getContractPDF(value) {
+            var contractId=value;
+            var url = prefix + '/contractPDF/' + contractId;
+            $.modal.open("合同PDF预览", url);
+        }
+    </script>
+</body>
+</html>

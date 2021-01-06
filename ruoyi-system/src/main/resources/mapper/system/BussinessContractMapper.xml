@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BussinessContractMapper">
+    
+    <resultMap type="BussinessContract" id="BussinessContractResult">
+        <result property="contractId"    column="contract_id"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="aCompanyName"    column="a_company_name"    />
+        <result property="aCompanyDelegate"    column="a_company_delegate"    />
+        <result property="bCompanyDelegate"    column="b_company_delegate"    />
+        <result property="signTime"    column="sign_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="filePath"    column="file_path"    />
+    </resultMap>
+
+    <sql id="selectBussinessContractVo">
+        select contract_id, contract_name, a_company_name, a_company_delegate, b_company_delegate, sign_time, end_time, status, remark, file_path from bussiness_contract
+    </sql>
+
+    <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
+        <include refid="selectBussinessContractVo"/>
+        <where>  
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat('%', #{contractName}, '%')</if>
+            <if test="aCompanyName != null  and aCompanyName != ''"> and a_company_name like concat('%', #{aCompanyName}, '%')</if>
+            <if test="aCompanyDelegate != null  and aCompanyDelegate != ''"> and a_company_delegate like concat('%', #{aCompanyDelegate}, '%')</if>
+            <if test="bCompanyDelegate != null  and bCompanyDelegate != ''"> and b_company_delegate like concat('%', #{bCompanyDelegate}, '%')</if>
+            <if test="params.beginSignTime != null and params.beginSignTime != ''">
+                AND date_format(sign_time,'%y%m%d') &gt;= date_format(#{params.beginSignTime},'%y%m%d')
+            </if>
+            <if test="params.endSignTime != null and params.endSignTime != ''">
+                AND date_format(sign_time,'%y%m%d') &lt;= date_format(#{params.endSignTime},'%y%m%d')
+            </if>
+            <if test="params.beginEndTime != null and params.beginEndTime != ''">
+                AND date_format(end_time,'%y%m%d') &gt;= date_format(#{params.beginEndTime},'%y%m%d')
+            </if>
+            <if test="params.endEndTime != null and params.endEndTime != ''">
+                AND date_format(end_time,'%y%m%d') &lt;= date_format(#{params.endEndTime},'%y%m%d')
+            </if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by end_time desc
+    </select>
+    
+    <select id="selectBussinessContractById" parameterType="Long" resultMap="BussinessContractResult">
+        <include refid="selectBussinessContractVo"/>
+        where contract_id = #{contractId}
+    </select>
+        
+    <insert id="insertBussinessContract" parameterType="BussinessContract" useGeneratedKeys="true" keyProperty="contractId">
+        insert into bussiness_contract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractName != null and contractName != ''">contract_name,</if>
+            <if test="aCompanyName != null">a_company_name,</if>
+            <if test="aCompanyDelegate != null">a_company_delegate,</if>
+            <if test="bCompanyDelegate != null">b_company_delegate,</if>
+            <if test="signTime != null">sign_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="filePath != null">file_path,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractName != null and contractName != ''">#{contractName},</if>
+            <if test="aCompanyName != null">#{aCompanyName},</if>
+            <if test="aCompanyDelegate != null">#{aCompanyDelegate},</if>
+            <if test="bCompanyDelegate != null">#{bCompanyDelegate},</if>
+            <if test="signTime != null">#{signTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="filePath != null">#{filePath},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBussinessContract" parameterType="BussinessContract">
+        update bussiness_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractName != null and contractName != ''">contract_name = #{contractName},</if>
+            <if test="aCompanyName != null">a_company_name = #{aCompanyName},</if>
+            <if test="aCompanyDelegate != null">a_company_delegate = #{aCompanyDelegate},</if>
+            <if test="bCompanyDelegate != null">b_company_delegate = #{bCompanyDelegate},</if>
+            <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+        </trim>
+        where contract_id = #{contractId}
+    </update>
+
+    <delete id="deleteBussinessContractById" parameterType="Long">
+        delete from bussiness_contract where contract_id = #{contractId}
+    </delete>
+
+    <delete id="deleteBussinessContractByIds" parameterType="String">
+        delete from bussiness_contract where contract_id in 
+        <foreach item="contractId" collection="array" open="(" separator="," close=")">
+            #{contractId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <title>若依介绍</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+	<style>
+		.pop{position: fixed;right:10px;bottom:10px;box-shadow: 0 5px 15px rgba(0,0,0,.5);}
+		.popHead{background:#fff;width:260px;border:1px solid #e0e0e0;font-size:14px;padding: 10px;}
+		.popClose{float: right;color: #f25656;}
+		.popHead span{font-size: 15px;}
+		.popContext{height: 80px;padding: 15px;}
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <img src="/img/bank.jpg" style="width: 100%;height: 455px;">
+		<div id="pop" class="panel panel-default pop" hidden>
+			<div id="popHead" class="popHead">
+				<a class="popClose" title="关闭" onclick="closePop()">关闭</a>
+				<span></span>
+			</div>
+			<div id="popTxt" class="popContext"></div>
+		</div>
+    </div>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script type="text/javascript">
+	    $('#pay-qrcode').click(function(){
+	        var html=$(this).html();
+	        parent.layer.open({
+	            title: false,
+	            type: 1,
+	            closeBtn:false,
+	            shadeClose:true,
+	            area: ['600px', '360px'],
+	            content: html
+	        });
+	    });
+        //获取当前的ip和端口号
+        var curWWWPath = window.document.location.href;
+        var pathname = window.document.location.pathname;
+        var pos = curWWWPath.indexOf(pathname);
+        var localhostPath = curWWWPath.substring( 0, pos );
+		function pop(title,text,time){
+			if(title==undefined)
+				title = "消息提示";
+			if(text==undefined)
+				text = "修改成功";
+			if(time==undefined)
+				time = 2000;
+			$("#popHead span").html(title);
+			$("#popTxt").html(text);
+
+			$("#pop").show(100,"linear",function(){
+				setTimeout("closePop()",time);
+			});
+		}
+
+		function closePop(){
+			$("#pop").hide();
+		}
+		$(document).ready(function () {
+			checkNotice();
+		});
+		function checkNotice() {
+			var formdata = new FormData();
+			var startTime=new Date();
+			var startTime1=date (startTime);
+			//提前1个月的时间
+			var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
+			var endTime1=date (endTime);
+			formdata.append("params[beginEndTime]", startTime1);
+			formdata.append("params[endEndTime]", endTime1);
+			$.ajax({
+                //war包访问路径
+			//	url:localhostPath+"/ruoyi-admin/business/contract/expireList",
+				url:localhostPath+"/business/contract/expireList",
+				data: formdata,
+				type: "post",
+				processData: false,
+				contentType: false,
+				success: function(result) {
+					var content="<span style='color: #2f2f2f;font-size: 15px;'>近期有<span style='color: #b94a48'><!--3-->"+result.total+"</span>份合同即将到期</span><br> "+
+                        "<a style='font-size: 17px;' onclick='detailsInfo()' href='javascript:void(0)'>查看详情</a>"
+					pop("消息提示",content,10000);
+				}
+			})
+		}
+        function detailsInfo(roleId) {
+        //    var url = ctx+'/business/contract/expireContract';
+         //   $.modal.openTab("到期合同", url);
+            window.location.href=localhostPath+"/business/contract/expireContract";
+        }
+        /** 换算时间格式 DATE -> YYYY/MM/DD*/
+        function date (date) {
+            var nowdate = new Date(date).toLocaleDateString().replace(/\//g, '-')
+            return nowdate
+        }
+    </script>
+</body>
+</html>
