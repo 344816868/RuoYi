@@ -1,8 +1,7 @@
 package com.ruoyi.web.controller.business;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import com.ruoyi.common.config.Global;
 import com.ruoyi.common.config.ServerConfig;
@@ -10,6 +9,8 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.service.ISysDictDataService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 合同管理Controller
- * 
+ *
  * @author ruoyi
  * @date 2020-10-22
  */
@@ -51,6 +52,9 @@ public class BussinessContractController extends BaseController
 
     @Autowired
     private ServerConfig serverConfig;
+
+    @Autowired
+    private ISysDictDataService sysDictDataService;
 
     @RequiresPermissions("business:contract:view")
     @GetMapping()
@@ -92,6 +96,18 @@ public class BussinessContractController extends BaseController
     public TableDataInfo expireList(BussinessContract bussinessContract)
     {
         startPage();
+        List<SysDictData> dicList=sysDictDataService.selectDictDataByType("sys_bussiness_notice");
+        String limitTime=dicList.get(0).getDictValue();//合同到期提醒的天数
+        Long days=Long.valueOf(limitTime);
+        Date nowTime=new Date();
+        Long l=24*60*60*1000*days;
+        //合同提醒的起始时间
+        Date endTime=new Date(nowTime.getTime() + l);
+        Map<String, Object> params=new HashMap();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        params.put("beginEndTime",sdf.format(nowTime));
+        params.put("endEndTime",sdf.format(endTime));
+        bussinessContract.setParams(params);
         bussinessContract.setStatus("0");
         List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
         return getDataTable(list);
@@ -235,7 +251,5 @@ public class BussinessContractController extends BaseController
         mmap.put("contract", bussinessContractService.selectBussinessContractById(contractId));
         return prefix + "/contractPDF";
     }
-    /**
-     * 批量导入
-     */
+
 }

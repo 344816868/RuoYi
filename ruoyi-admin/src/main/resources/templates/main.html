@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--360浏览器优先以webkit内核解析-->
-    <title>若依介绍</title>
+    <title>光大银行合同管理系统介绍</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
@@ -73,13 +73,13 @@
 		});
 		function checkNotice() {
 			var formdata = new FormData();
-			var startTime=new Date();
-			var startTime1=date (startTime);
-			//提前1个月的时间
-			var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
-			var endTime1=date (endTime);
-			formdata.append("params[beginEndTime]", startTime1);
-			formdata.append("params[endEndTime]", endTime1);
+			// var startTime=new Date();
+			// var startTime1=date (startTime);
+			// //提前1个月的时间
+			// var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
+			// var endTime1=date (endTime);
+			// formdata.append("params[beginEndTime]", startTime1);
+			// formdata.append("params[endEndTime]", endTime1);
 			$.ajax({
                 //war包访问路径
 			//	url:localhostPath+"/ruoyi-admin/business/contract/expireList",
@@ -89,6 +89,7 @@
 				processData: false,
 				contentType: false,
 				success: function(result) {
+				    console.log(result);
 					var content="<span style='color: #2f2f2f;font-size: 15px;'>近期有<span style='color: #b94a48'><!--3-->"+result.total+"</span>份合同即将到期</span><br> "+
                         "<a style='font-size: 17px;' onclick='detailsInfo()' href='javascript:void(0)'>查看详情</a>"
 					pop("消息提示",content,10000);
