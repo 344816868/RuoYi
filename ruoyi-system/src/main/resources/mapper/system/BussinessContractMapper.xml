@@ -23,22 +23,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
         <include refid="selectBussinessContractVo"/>
-        <where>  
-            <if test="contractName != null  and contractName != ''"> and contract_name like concat('%', #{contractName}, '%')</if>
-            <if test="aCompanyName != null  and aCompanyName != ''"> and a_company_name like concat('%', #{aCompanyName}, '%')</if>
-            <if test="aCompanyDelegate != null  and aCompanyDelegate != ''"> and a_company_delegate like concat('%', #{aCompanyDelegate}, '%')</if>
-            <if test="bCompanyDelegate != null  and bCompanyDelegate != ''"> and b_company_delegate like concat('%', #{bCompanyDelegate}, '%')</if>
+        <where>
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%',#{contractName}),'%')</if>
+            <if test="aCompanyName != null  and aCompanyName != ''"> and a_company_name like concat(concat('%',#{aCompanyName}),'%')</if>
+            <if test="aCompanyDelegate != null  and aCompanyDelegate != ''"> and a_company_delegate concat(concat('%',#{aCompanyDelegate}),'%')</if>
+            <if test="bCompanyDelegate != null  and bCompanyDelegate != ''"> and b_company_delegate like concat(concat('%',#{bCompanyDelegate}),'%')</if>
             <if test="params.beginSignTime != null and params.beginSignTime != ''">
-                AND date_format(sign_time,'%y%m%d') &gt;= date_format(#{params.beginSignTime},'%y%m%d')
+                /*AND date_format(sign_time,'%y%m%d') &gt;= date_format(#{params.beginSignTime},'%y%m%d')*/
+                AND sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endSignTime != null and params.endSignTime != ''">
-                AND date_format(sign_time,'%y%m%d') &lt;= date_format(#{params.endSignTime},'%y%m%d')
+                /*AND date_format(sign_time,'%y%m%d') &lt;= date_format(#{params.endSignTime},'%y%m%d')*/
+                AND sign_time &gt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.beginEndTime != null and params.beginEndTime != ''">
-                AND date_format(end_time,'%y%m%d') &gt;= date_format(#{params.beginEndTime},'%y%m%d')
+                /*AND date_format(end_time,'%y%m%d') &gt;= date_format(#{params.beginEndTime},'%y%m%d')*/
+                AND end_time &gt;= to_date(#{params.beginEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endEndTime != null and params.endEndTime != ''">
-                AND date_format(end_time,'%y%m%d') &lt;= date_format(#{params.endEndTime},'%y%m%d')
+                /*AND date_format(end_time,'%y%m%d') &lt;= date_format(#{params.endEndTime},'%y%m%d')*/
+                AND end_time &gt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
