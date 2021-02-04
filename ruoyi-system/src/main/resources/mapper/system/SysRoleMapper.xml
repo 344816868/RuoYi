@@ -115,6 +115,7 @@
 		<if test="roleSort != null and roleSort != ''">role_sort,</if>
 		<if test="dataScope != null and dataScope != ''">data_scope,</if>
 		<if test="status != null and status != ''">status,</if>
+		<if test="delFlag != null and status != ''">del_flag,</if>
 		<if test="remark != null and remark != ''">remark,</if>
 		<if test="createBy != null and createBy != ''">create_by,</if>
 		create_time
@@ -125,6 +126,7 @@
 		<if test="roleSort != null and roleSort != ''">#{roleSort},</if>
 		<if test="dataScope != null and dataScope != ''">#{dataScope},</if>
 		<if test="status != null and status != ''">#{status},</if>
+		<if test="delFlag != null and delFlag != ''">#{delFlag},</if>
 		<if test="remark != null and remark != ''">#{remark},</if>
 		<if test="createBy != null and createBy != ''">#{createBy},</if>
 		sysdate
