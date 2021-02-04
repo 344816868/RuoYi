@@ -15,6 +15,20 @@
                 </div>
             </div>
             <div class="form-group">    
+                <label class="col-sm-3 control-label">项目名称：</label>
+                <div class="col-sm-8">
+                    <input name="contractName" th:field="*{contractName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否有发票：</label>
+                <div class="col-sm-8">
+                    <select name="isbill" class="form-control m-b" th:with="type=${@dict.getType('sys_isbill')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isbill}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
                 <label class="col-sm-3 control-label">手续费收取时间：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
@@ -23,10 +37,10 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label">手续费收取备注：</label>
                 <div class="col-sm-8">
-                    <input name="commissionRemark" th:field="*{commissionRemark}" class="form-control" type="text">
+                    <textarea name="commissionRemark" class="form-control">[[*{commissionRemark}]]</textarea>
                 </div>
             </div>
             <div class="form-group">    
@@ -38,10 +52,10 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label">手续费发票备注：</label>
                 <div class="col-sm-8">
-                    <input name="billRemark" th:field="*{billRemark}" class="form-control" type="text">
+                    <textarea name="billRemark" class="form-control">[[*{billRemark}]]</textarea>
                 </div>
             </div>
         </form>

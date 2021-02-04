@@ -19,9 +19,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark from commission
     </sql>
 
+
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         <include refid="selectCommissionVo"/>
-        <where>  
+        <where>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="isbill != null  and isbill != ''"> and isbill like concat(concat('%', #{isbill}), '%')</if>
             <if test="commissionTime != null "> and commission_time like concat(concat('%', #{commissionTime}), '%')</if>
@@ -35,19 +37,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCommissionVo"/>
         where commission_id = #{commissionId}
     </select>
-        
-    <insert id="insertCommission" parameterType="Commission" useGeneratedKeys="true" keyProperty="commissionId">
+
+    <insert id="insertCommission" parameterType="Commission">
         insert into commission
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="contractCode != null">contract_code,</if>
-            <if test="contractName != null">contract_name,</if>
+            <if test="commissionId != null">COMMISSION_ID,</if>
+            <if test="contractCode != null">CONTRACT_CODE,</if>
+            <if test="contractName != null">CONTRACT_NAME,</if>
             <if test="isbill != null">isbill,</if>
-            <if test="commissionTime != null">commission_time,</if>
-            <if test="commissionRemark != null">commission_remark,</if>
-            <if test="billTime != null">bill_time,</if>
-            <if test="billRemark != null">bill_remark,</if>
-         </trim>
+            <if test="commissionTime != null">COMMISSION_TIME,</if>
+            <if test="commissionRemark != null">COMMISSION_REMARK,</if>
+            <if test="billTime != null">BILL_TIME,</if>
+            <if test="billRemark != null">BILL_REMARK,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commissionId != null">#{commissionId},</if>
             <if test="contractCode != null">#{contractCode},</if>
             <if test="contractName != null">#{contractName},</if>
             <if test="isbill != null">#{isbill},</if>
@@ -55,29 +59,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commissionRemark != null">#{commissionRemark},</if>
             <if test="billTime != null">#{billTime},</if>
             <if test="billRemark != null">#{billRemark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateCommission" parameterType="Commission">
         update commission
         <trim prefix="SET" suffixOverrides=",">
-            <if test="contractCode != null">contract_code = #{contractCode},</if>
-            <if test="contractName != null">contract_name = #{contractName},</if>
-            <if test="isbill != null">isbill = #{isbill},</if>
-            <if test="commissionTime != null">commission_time = #{commissionTime},</if>
-            <if test="commissionRemark != null">commission_remark = #{commissionRemark},</if>
-            <if test="billTime != null">bill_time = #{billTime},</if>
-            <if test="billRemark != null">bill_remark = #{billRemark},</if>
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
+            <if test="isbill != null">ISBILL = #{isbill},</if>
+            <if test="commissionTime != null">COMMISSION_TIME = #{commissionTime},</if>
+            <if test="commissionRemark != null">COMMISSION_REMARK = #{commissionRemark},</if>
+            <if test="billTime != null">BILL_TIME = #{billTime},</if>
+            <if test="billRemark != null">BILL_REMARK = #{billRemark},</if>
         </trim>
-        where commission_id = #{commissionId}
+        where COMMISSION_ID = #{commissionId}
     </update>
 
     <delete id="deleteCommissionById" parameterType="Long">
-        delete from commission where commission_id = #{commissionId}
+        delete from commission where COMMISSION_ID = #{commissionId}
     </delete>
 
     <delete id="deleteCommissionByIds" parameterType="String">
-        delete from commission where commission_id in 
+        delete from commission where COMMISSION_ID in
         <foreach item="commissionId" collection="array" open="(" separator="," close=")">
             #{commissionId}
         </foreach>

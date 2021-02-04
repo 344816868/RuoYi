@@ -1,6 +1,7 @@
 package com.ruoyi.system.domain;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -32,6 +33,7 @@ public class Commission extends BaseEntity
     private String isbill;
 
     /** 手续费收取时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "手续费收取时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date commissionTime;
 
@@ -40,6 +42,7 @@ public class Commission extends BaseEntity
     private String commissionRemark;
 
     /** 手续费发票时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "手续费发票时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date billTime;
 
@@ -65,12 +68,12 @@ public class Commission extends BaseEntity
     {
         return contractCode;
     }
-    public void setContractName(String contractName)
+    public void setContractName(String contractName) 
     {
         this.contractName = contractName;
     }
 
-    public String getContractName()
+    public String getContractName() 
     {
         return contractName;
     }

@@ -14,25 +14,17 @@
                                 <label>项目编号：</label>
                                 <input type="text" name="contractCode"/>
                             </li>
-                            <li class="select-time">
-                                <label>手续费收取时间：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginCommissionTime]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endCommissionTime]"/>
+                            <li>
+                                <label>项目名称：</label>
+                                <input type="text" name="contractName"/>
                             </li>
                             <li>
-                                <label>手续费收取备注：</label>
-                                <input type="text" name="commissionRemark"/>
-                            </li>
-                            <li class="select-time">
-                                <label>手续费发票时间：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginBillTime]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endBillTime]"/>
+                                <label style="width: 120px;">手续费收取时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择手续费收取时间" name="commissionTime"/>
                             </li>
                             <li>
-                                <label>手续费发票备注：</label>
-                                <input type="text" name="billRemark"/>
+                                <label style="width: 120px;">手续费发票时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择手续费发票时间" name="billTime"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -66,14 +58,7 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('system:commission:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:commission:remove')}]];
-        var commissionIdDatas = [[${@dict.getType('${column.dictType}')}]];
-        var contractCodeDatas = [[${@dict.getType('${column.dictType}')}]];
-        var contractNameDatas = [[${@dict.getType('${column.dictType}')}]];
-        var isbillDatas = [[${@dict.getType('${column.dictType}')}]];
-        var commissionTimeDatas = [[${@dict.getType('${column.dictType}')}]];
-        var commissionRemarkDatas = [[${@dict.getType('${column.dictType}')}]];
-        var billTimeDatas = [[${@dict.getType('${column.dictType}')}]];
-        var billRemarkDatas = [[${@dict.getType('${column.dictType}')}]];
+        var ISBILL = [[${@dict.getType('sys_isbill')}]];
         var prefix = ctx + "system/commission";
 
         $(function() {
@@ -94,52 +79,34 @@
                 },
                 {
                     field: 'contractCode',
-                    title: '项目编号',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(contractCodeDatas, value);
-                    }
+                    title: '项目编号'
                 },
                 {
                     field: 'contractName',
-                    title: '项目名称',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(contractNameDatas, value);
-                    }
+                    title: '项目名称'
                 },
                 {
                     field: 'isbill',
                     title: '是否有发票',
                     formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(isbillDatas, value);
+                        return $.table.selectDictLabel(ISBILL, value);
                     }
                 },
                 {
                     field: 'commissionTime',
-                    title: '手续费收取时间',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(commissionTimeDatas, value);
-                    }
+                    title: '手续费收取时间'
                 },
                 {
                     field: 'commissionRemark',
-                    title: '手续费收取备注',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(commissionRemarkDatas, value);
-                    }
+                    title: '手续费收取备注'
                 },
                 {
                     field: 'billTime',
-                    title: '手续费发票时间',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(billTimeDatas, value);
-                    }
+                    title: '手续费发票时间'
                 },
                 {
                     field: 'billRemark',
-                    title: '手续费发票备注',
-                    formatter: function(value, row, index) {
-                       return $.table.selectDictLabel(billRemarkDatas, value);
-                    }
+                    title: '手续费发票备注'
                 },
                 {
                     title: '操作',
