@@ -9,7 +9,9 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.ISysDictDataService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +99,10 @@ public class BussinessContractController extends BaseController
     {
         startPage();
         List<SysDictData> dicList=sysDictDataService.selectDictDataByType("sys_bussiness_notice");
-        String limitTime=dicList.get(0).getDictValue();//合同到期提醒的天数
+        String limitTime="0";
+        if(dicList.size()>0){
+            limitTime= dicList.get(0).getDictValue();//合同到期提醒的天数
+        }
         Long days=Long.valueOf(limitTime);
         Date nowTime=new Date();
         Long l=24*60*60*1000*days;
@@ -252,4 +257,28 @@ public class BussinessContractController extends BaseController
         return prefix + "/contractPDF";
     }
 
+    /**
+     * 导出excel模板
+     * @return
+     */
+    @RequiresPermissions("business:contract:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
+        return util.importTemplateExcel("合同数据");
+    }
+
+    @Log(title = "合同管理", businessType = BusinessType.IMPORT)
+    @RequiresPermissions("business:contract:import")
+    @PostMapping("/importData")
+    @ResponseBody
+    public AjaxResult importData(MultipartFile file) throws Exception
+    {
+        ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
+        List<BussinessContract> List = util.importExcel(file.getInputStream());
+        String message = bussinessContractService.importContract(List);
+        return AjaxResult.success(message);
+    }
 }

@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.BussinessContract;
+import com.ruoyi.system.domain.SysUser;
 
 /**
  * 合同管理Service接口
@@ -58,4 +59,12 @@ public interface IBussinessContractService
      * @return 结果
      */
     public int deleteBussinessContractById(Long contractId);
+    /**
+     * 功能描述:导入
+     * @author:
+     * @param:  * @param null
+     * @Date: 16:00 2021/2/3
+     * @return:
+     */
+    public String importContract(List<BussinessContract> List);
 }

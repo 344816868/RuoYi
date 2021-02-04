@@ -47,6 +47,10 @@ public class BussinessContract extends BaseEntity
     @Excel(name = "合同状态", readConverterExp = "0=未过期,1=过期")
     private String status;
 
+    /** 备注 */
+    @Excel(name = "备注")
+    private String  remark1;
+
     private String filePath;
 
     public void setContractId(Long contractId) 
@@ -131,6 +135,14 @@ public class BussinessContract extends BaseEntity
         this.filePath = filePath;
     }
 
+    public String getRemark1() {
+        return remark1;
+    }
+
+    public void setRemark1(String remark1) {
+        this.remark1 = remark1;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -142,7 +154,7 @@ public class BussinessContract extends BaseEntity
             .append("signTime", getSignTime())
             .append("endTime", getEndTime())
             .append("status", getStatus())
-            .append("remark", getRemark())
+            .append("remark1", getRemark1())
             .toString();
     }
 }
