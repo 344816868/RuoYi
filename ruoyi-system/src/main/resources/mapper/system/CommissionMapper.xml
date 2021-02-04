@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CommissionMapper">
+    
+    <resultMap type="Commission" id="CommissionResult">
+        <result property="commissionId"    column="commission_id"    />
+        <result property="contractCode"    column="contract_code"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="isbill"    column="isbill"    />
+        <result property="commissionTime"    column="commission_time"    />
+        <result property="commissionRemark"    column="commission_remark"    />
+        <result property="billTime"    column="bill_time"    />
+        <result property="billRemark"    column="bill_remark"    />
+    </resultMap>
+
+    <sql id="selectCommissionVo">
+        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark from commission
+    </sql>
+
+    <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
+        <include refid="selectCommissionVo"/>
+        <where>  
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
+            <if test="isbill != null  and isbill != ''"> and isbill like concat(concat('%', #{isbill}), '%')</if>
+            <if test="commissionTime != null "> and commission_time like concat(concat('%', #{commissionTime}), '%')</if>
+            <if test="commissionRemark != null  and commissionRemark != ''"> and commission_remark like concat(concat('%', #{commissionRemark}), '%')</if>
+            <if test="billTime != null "> and bill_time like concat(concat('%', #{billTime}), '%')</if>
+            <if test="billRemark != null  and billRemark != ''"> and bill_remark like concat(concat('%', #{billRemark}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCommissionById" parameterType="Long" resultMap="CommissionResult">
+        <include refid="selectCommissionVo"/>
+        where commission_id = #{commissionId}
+    </select>
+        
+    <insert id="insertCommission" parameterType="Commission" useGeneratedKeys="true" keyProperty="commissionId">
+        insert into commission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractCode != null">contract_code,</if>
+            <if test="contractName != null">contract_name,</if>
+            <if test="isbill != null">isbill,</if>
+            <if test="commissionTime != null">commission_time,</if>
+            <if test="commissionRemark != null">commission_remark,</if>
+            <if test="billTime != null">bill_time,</if>
+            <if test="billRemark != null">bill_remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractCode != null">#{contractCode},</if>
+            <if test="contractName != null">#{contractName},</if>
+            <if test="isbill != null">#{isbill},</if>
+            <if test="commissionTime != null">#{commissionTime},</if>
+            <if test="commissionRemark != null">#{commissionRemark},</if>
+            <if test="billTime != null">#{billTime},</if>
+            <if test="billRemark != null">#{billRemark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommission" parameterType="Commission">
+        update commission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">contract_code = #{contractCode},</if>
+            <if test="contractName != null">contract_name = #{contractName},</if>
+            <if test="isbill != null">isbill = #{isbill},</if>
+            <if test="commissionTime != null">commission_time = #{commissionTime},</if>
+            <if test="commissionRemark != null">commission_remark = #{commissionRemark},</if>
+            <if test="billTime != null">bill_time = #{billTime},</if>
+            <if test="billRemark != null">bill_remark = #{billRemark},</if>
+        </trim>
+        where commission_id = #{commissionId}
+    </update>
+
+    <delete id="deleteCommissionById" parameterType="Long">
+        delete from commission where commission_id = #{commissionId}
+    </delete>
+
+    <delete id="deleteCommissionByIds" parameterType="String">
+        delete from commission where commission_id in 
+        <foreach item="commissionId" collection="array" open="(" separator="," close=")">
+            #{commissionId}
+        </foreach>
+    </delete>
+
+</mapper>
