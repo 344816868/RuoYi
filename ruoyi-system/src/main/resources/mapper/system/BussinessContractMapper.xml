@@ -32,13 +32,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endSignTime != null and params.endSignTime != ''">
-                AND sign_time &lt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
+                AND sign_time &gt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.beginEndTime != null and params.beginEndTime != ''">
                 AND end_time &gt;= to_date(#{params.beginEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endEndTime != null and params.endEndTime != ''">
-                AND end_time &lt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
+                AND end_time &gt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
