@@ -166,12 +166,14 @@
 		// 生成代码
 		function genCode(tableName, genType) {
 		    $.modal.confirm("确定要生成" + tableName + "表代码吗？", function() {
-		    	if(genType === "0") {
+				location.href = prefix + "/download/" + tableName;
+				layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
+/*		    	if(genType === "") {
 			    	location.href = prefix + "/download/" + tableName;
 			        layer.msg('执行成功,正在生成代码请稍后…', { icon: 1 });
 				} else if(genType === "1") {
 					$.operate.get(prefix + "/genCode/" + tableName);
-				}
+				}*/
 		    })
 		}
 		
