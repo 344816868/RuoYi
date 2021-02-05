@@ -39,9 +39,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <insert id="insertCommission" parameterType="Commission">
+        <selectKey keyProperty="commissionId" order="BEFORE" resultType="Long">
+            select seq_commission.nextval as commissionId from DUAL
+        </selectKey>
         insert into commission
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="commissionId != null">COMMISSION_ID,</if>
+            <if test="commissionId != null and commissionId != 0">COMMISSION_ID,</if>
             <if test="contractCode != null">CONTRACT_CODE,</if>
             <if test="contractName != null">CONTRACT_NAME,</if>
             <if test="isbill != null">isbill,</if>

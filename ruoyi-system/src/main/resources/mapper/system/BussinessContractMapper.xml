@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.BussinessContractMapper">
-    
+
     <resultMap type="BussinessContract" id="BussinessContractResult">
         <result property="contractId"    column="contract_id"    />
         <result property="contractName"    column="contract_name"    />
@@ -15,45 +15,67 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
         <result property="filePath"    column="file_path"    />
+        <result property="contractCode"    column="contract_code"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="contractStatus"    column="contract_status"    />
+        <result property="agentCode"    column="agent_code"    />
+        <result property="depositBankCode"    column="deposit_bank_code"    />
+        <result property="depositBankName"    column="deposit_bank_name"    />
+        <result property="marketBankCode"    column="market_bank_code"    />
+        <result property="marketBankName"    column="market_bank_name"    />
+        <result property="isopen"    column="isopen"    />
+        <result property="clientCode"    column="client_code"    />
+        <result property="checkingAccout"    column="checking_accout"    />
+        <result property="commissionWay"    column="commission_way"    />
+        <result property="commissionScale"    column="commission_scale"    />
+        <result property="commissionNorm"    column="commission_norm"    />
+        <result property="fundWay"    column="fund_way"    />
+        <result property="contractNameChild"    column="contract_name_child"    />
+        <result property="contractTime"    column="contract_time"    />
+        <result property="contractCount"    column="contract_count"    />
+        <result property="empowerTime"    column="empower_time"    />
     </resultMap>
 
     <sql id="selectBussinessContractVo">
-        select contract_id, contract_name, a_company_name, a_company_delegate, b_company_delegate, sign_time, end_time, status, remark, file_path from bussiness_contract
+        select contract_id, contract_name, a_company_name, a_company_delegate, b_company_delegate, sign_time, end_time, status, remark, file_path, contract_code, contract_type, contract_status, agent_code, deposit_bank_code, deposit_bank_name, market_bank_code, market_bank_name, isopen, client_code, checking_accout, commission_way, commission_scale, commission_norm, fund_way, contract_name_child, contract_time, contract_count, empower_time from bussiness_contract
     </sql>
 
     <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
         <include refid="selectBussinessContractVo"/>
         <where>
-            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%',#{contractName}),'%')</if>
-            <if test="aCompanyName != null  and aCompanyName != ''"> and a_company_name like concat(concat('%',#{aCompanyName}),'%')</if>
-            <if test="aCompanyDelegate != null  and aCompanyDelegate != ''"> and a_company_delegate concat(concat('%',#{aCompanyDelegate}),'%')</if>
-            <if test="bCompanyDelegate != null  and bCompanyDelegate != ''"> and b_company_delegate like concat(concat('%',#{bCompanyDelegate}),'%')</if>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractStatus != null "> and contract_status = #{contractStatus}</if>
+            <if test="contractName!= null  and contractName != ''"> and contract_name = #{contractName}</if>
             <if test="params.beginSignTime != null and params.beginSignTime != ''">
                 AND sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endSignTime != null and params.endSignTime != ''">
-                AND sign_time &gt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
+                AND sign_time &lt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.beginEndTime != null and params.beginEndTime != ''">
                 AND end_time &gt;= to_date(#{params.beginEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endEndTime != null and params.endEndTime != ''">
-                AND end_time &gt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
+                AND end_time &lt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
         order by end_time desc
     </select>
-    
+
     <select id="selectBussinessContractById" parameterType="Long" resultMap="BussinessContractResult">
         <include refid="selectBussinessContractVo"/>
         where contract_id = #{contractId}
     </select>
-        
+
     <insert id="insertBussinessContract" parameterType="BussinessContract" useGeneratedKeys="true" keyProperty="contractId">
+        <selectKey keyProperty="contractId" order="BEFORE" resultType="Long">
+            select seq_bussiness_contract.nextval as contractId from DUAL
+        </selectKey>
         insert into bussiness_contract
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="contractName != null and contractName != ''">contract_name,</if>
+            <if test="contractId != null and contractId != 0">contract_id,</if>
+            <if test="contractName != null">contract_name,</if>
             <if test="aCompanyName != null">a_company_name,</if>
             <if test="aCompanyDelegate != null">a_company_delegate,</if>
             <if test="bCompanyDelegate != null">b_company_delegate,</if>
@@ -62,9 +84,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status,</if>
             <if test="remark != null">remark,</if>
             <if test="filePath != null">file_path,</if>
-         </trim>
+            <if test="contractCode != null">contract_code,</if>
+            <if test="contractType != null">contract_type,</if>
+            <if test="contractStatus != null">contract_status,</if>
+            <if test="agentCode != null">agent_code,</if>
+            <if test="depositBankCode != null">deposit_bank_code,</if>
+            <if test="depositBankName != null">deposit_bank_name,</if>
+            <if test="marketBankCode != null">market_bank_code,</if>
+            <if test="marketBankName != null">market_bank_name,</if>
+            <if test="isopen != null">isopen,</if>
+            <if test="clientCode != null">client_code,</if>
+            <if test="checkingAccout != null">checking_accout,</if>
+            <if test="commissionWay != null">commission_way,</if>
+            <if test="commissionScale != null">commission_scale,</if>
+            <if test="commissionNorm != null">commission_norm,</if>
+            <if test="fundWay != null">fund_way,</if>
+            <if test="contractNameChild != null">contract_name_child,</if>
+            <if test="contractTime != null">contract_time,</if>
+            <if test="contractCount != null">contract_count,</if>
+            <if test="empowerTime != null">empower_time,</if>
+            create_time
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="contractName != null and contractName != ''">#{contractName},</if>
+            <if test="contractId != null">#{contract_id},</if>
+            <if test="contractName != null">#{contractName},</if>
             <if test="aCompanyName != null">#{aCompanyName},</if>
             <if test="aCompanyDelegate != null">#{aCompanyDelegate},</if>
             <if test="bCompanyDelegate != null">#{bCompanyDelegate},</if>
@@ -73,13 +116,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">#{status},</if>
             <if test="remark != null">#{remark},</if>
             <if test="filePath != null">#{filePath},</if>
-         </trim>
+            <if test="contractCode != null">#{contractCode},</if>
+            <if test="contractType != null">#{contractType},</if>
+            <if test="contractStatus != null">#{contractStatus},</if>
+            <if test="agentCode != null">#{agentCode},</if>
+            <if test="depositBankCode != null">#{depositBankCode},</if>
+            <if test="depositBankName != null">#{depositBankName},</if>
+            <if test="marketBankCode != null">#{marketBankCode},</if>
+            <if test="marketBankName != null">#{marketBankName},</if>
+            <if test="isopen != null">#{isopen},</if>
+            <if test="clientCode != null">#{clientCode},</if>
+            <if test="checkingAccout != null">#{checkingAccout},</if>
+            <if test="commissionWay != null">#{commissionWay},</if>
+            <if test="commissionScale != null">#{commissionScale},</if>
+            <if test="commissionNorm != null">#{commissionNorm},</if>
+            <if test="fundWay != null">#{fundWay},</if>
+            <if test="contractNameChild != null">#{contractNameChild},</if>
+            <if test="contractTime != null">#{contractTime},</if>
+            <if test="contractCount != null">#{contractCount},</if>
+            <if test="empowerTime != null">#{empowerTime},</if>
+            sysdate
+        </trim>
     </insert>
 
     <update id="updateBussinessContract" parameterType="BussinessContract">
         update bussiness_contract
         <trim prefix="SET" suffixOverrides=",">
-            <if test="contractName != null and contractName != ''">contract_name = #{contractName},</if>
+            <if test="contractName != null">contract_name = #{contractName},</if>
             <if test="aCompanyName != null">a_company_name = #{aCompanyName},</if>
             <if test="aCompanyDelegate != null">a_company_delegate = #{aCompanyDelegate},</if>
             <if test="bCompanyDelegate != null">b_company_delegate = #{bCompanyDelegate},</if>
@@ -88,6 +151,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="contractCode != null">contract_code = #{contractCode},</if>
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="contractStatus != null">contract_status = #{contractStatus},</if>
+            <if test="agentCode != null">agent_code = #{agentCode},</if>
+            <if test="depositBankCode != null">deposit_bank_code = #{depositBankCode},</if>
+            <if test="depositBankName != null">deposit_bank_name = #{depositBankName},</if>
+            <if test="marketBankCode != null">market_bank_code = #{marketBankCode},</if>
+            <if test="marketBankName != null">market_bank_name = #{marketBankName},</if>
+            <if test="isopen != null">isopen = #{isopen},</if>
+            <if test="clientCode != null">client_code = #{clientCode},</if>
+            <if test="checkingAccout != null">checking_accout = #{checkingAccout},</if>
+            <if test="commissionWay != null">commission_way = #{commissionWay},</if>
+            <if test="commissionScale != null">commission_scale = #{commissionScale},</if>
+            <if test="commissionNorm != null">commission_norm = #{commissionNorm},</if>
+            <if test="fundWay != null">fund_way = #{fundWay},</if>
+            <if test="contractNameChild != null">contract_name_child = #{contractNameChild},</if>
+            <if test="contractTime != null">contract_time = #{contractTime},</if>
+            <if test="contractCount != null">contract_count = #{contractCount},</if>
+            <if test="empowerTime != null">empower_time = #{empowerTime},</if>
         </trim>
         where contract_id = #{contractId}
     </update>
@@ -97,7 +179,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteBussinessContractByIds" parameterType="String">
-        delete from bussiness_contract where contract_id in 
+        delete from bussiness_contract where contract_id in
         <foreach item="contractId" collection="array" open="(" separator="," close=")">
             #{contractId}
         </foreach>

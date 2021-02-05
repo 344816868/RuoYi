@@ -9,32 +9,163 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-contract-edit" th:object="${bussinessContract}">
             <input name="contractId" th:field="*{contractId}" type="hidden">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">合同名称：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">项目编号：</label>
+                <div class="col-sm-8">
+                    <input name="contractCode" th:field="*{contractCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">项目名称：</label>
                 <div class="col-sm-8">
                     <input name="contractName" th:field="*{contractName}" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">甲方公司名称：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目类别：</label>
+                <div class="col-sm-8">
+                    <select name="contractType" class="form-control m-b" th:with="type=${@dict.getType('contract_type')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{contractType}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">系统商名称：</label>
                 <div class="col-sm-8">
                     <input name="aCompanyName" th:field="*{aCompanyName}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">甲方授权代表：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">收费单位：</label>
                 <div class="col-sm-8">
                     <input name="aCompanyDelegate" th:field="*{aCompanyDelegate}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">乙方授权代表：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目状态：</label>
+                <div class="col-sm-8">
+                    <select name="contractStatus" class="form-control m-b" th:with="type=${@dict.getType('contract_status')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{contractStatus}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">代理行前置码：</label>
+                <div class="col-sm-8">
+                    <input name="agentCode" th:field="*{agentCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">代理行名称：</label>
                 <div class="col-sm-8">
                     <input name="bCompanyDelegate" th:field="*{bCompanyDelegate}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">签署日期：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">存款落地行编号：</label>
+                <div class="col-sm-8">
+                    <input name="depositBankCode" th:field="*{depositBankCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">存款落地行名称：</label>
+                <div class="col-sm-8">
+                    <input name="depositBankName" th:field="*{depositBankName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">营销支行编号：</label>
+                <div class="col-sm-8">
+                    <input name="marketBankCode" th:field="*{marketBankCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">营销支行名称：</label>
+                <div class="col-sm-8">
+                    <input name="marketBankName" th:field="*{marketBankName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否开户：</label>
+                <div class="radio-box">
+                    <label class="radio-box">
+                        <input type="radio" th:checked="${bussinessContract.isopen == '0' ? true : false}" value="0" name="isopen">正常</label>
+                    <label class="radio-box">
+                        <input type="radio" th:checked="${bussinessContract.isopen == '1' ? true : false}" value="1" name="isopen">过期</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">对公客户号：</label>
+                <div class="col-sm-8">
+                    <input name="clientCode" th:field="*{clientCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">对公存款账户：</label>
+                <div class="col-sm-8">
+                    <input name="checkingAccout" th:field="*{checkingAccout}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">手续费收取方式：</label>
+                <div class="col-sm-8">
+                    <select name="commissionWay" class="form-control m-b" th:with="type=${@dict.getType('commission_way')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{commissionWay}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">手续费收取比例：</label>
+                <div class="col-sm-8">
+                    <input name="commissionScale" th:field="*{commissionScale}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">单笔手续费限额：</label>
+                <div class="col-sm-8">
+                    <input name="commissionNorm" th:field="*{commissionNorm}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">缴费资金划款方式：</label>
+                <div class="col-sm-8">
+                    <select name="fundWay" class="form-control m-b" th:with="type=${@dict.getType('fund_way')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{fundWay}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">子项目名称：</label>
+                <div class="col-sm-8">
+                    <input name="contractNameChild" th:field="*{contractNameChild}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目上线时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="contractTime" th:value="${#dates.format(bussinessContract.contractTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目数：</label>
+                <div class="col-sm-8">
+                    <input name="contractCount" th:field="*{contractCount}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">对公缴费授权时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="empowerTime" th:value="${#dates.format(bussinessContract.empowerTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目签署日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="signTime" th:value="${#dates.format(bussinessContract.signTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
@@ -42,8 +173,8 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">合同终止日期：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目终止日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <input name="endTime" th:value="${#dates.format(bussinessContract.endTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
@@ -51,7 +182,13 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">合同状态：</label>
                 <div class="col-sm-8">
                     <div class="radio-box">
@@ -60,12 +197,6 @@
                         <label class="radio-box">
                             <input type="radio" th:checked="${bussinessContract.status == '1' ? true : false}" value="1" name="status">过期</label>
                     </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">备注：</label>
-                <div class="col-sm-8">
-                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
                 </div>
             </div>
             <div class="form-group" hidden>

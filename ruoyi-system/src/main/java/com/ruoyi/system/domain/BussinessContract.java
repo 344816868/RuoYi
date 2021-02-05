@@ -7,10 +7,10 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 合同管理对象 bussiness_contract
- * 
+ * 合同对象 bussiness_contract
+ *
  * @author ruoyi
- * @date 2020-10-22
+ * @date 2021-02-04
  */
 public class BussinessContract extends BaseEntity
 {
@@ -19,113 +19,192 @@ public class BussinessContract extends BaseEntity
     /** 合同ID */
     private Long contractId;
 
-    /** 合同名称 */
-    @Excel(name = "合同名称")
+    /** 项目名称 */
+    @Excel(name = "项目名称")
     private String contractName;
 
-    /** 甲方公司名称 */
-    @Excel(name = "甲方公司名称")
+    /** 系统商名称 */
+    @Excel(name = "系统商名称")
     private String aCompanyName;
 
-    /** 甲方授权代表 */
-    @Excel(name = "甲方授权代表")
+    /** 收费单位 */
+    @Excel(name = "收费单位")
     private String aCompanyDelegate;
 
-    /** 乙方授权代表 */
-    @Excel(name = "乙方授权代表")
+    /** 代理行名称 */
+    @Excel(name = "代理行名称")
     private String bCompanyDelegate;
 
-    /** 签署日期 */
-    @Excel(name = "签署日期", width = 30, dateFormat = "yyyy-MM-dd")
+    /** 项目签署日期 */
+    @Excel(name = "项目签署日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date signTime;
 
-    /** 合同终止日期 */
-    @Excel(name = "合同终止日期", width = 30, dateFormat = "yyyy-MM-dd")
+    /** 项目终止日期 */
+    @Excel(name = "项目终止日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date endTime;
 
     /** 合同状态（0未过期 1过期） */
     @Excel(name = "合同状态", readConverterExp = "0=未过期,1=过期")
     private String status;
 
-    /** 备注 */
-    @Excel(name = "备注")
-    private String  remark1;
-
+    /** 文件路径 */
+//    @Excel(name = "文件路径")
     private String filePath;
 
-    public void setContractId(Long contractId) 
+    /** 项目编号 */
+    @Excel(name = "项目编号")
+    private String contractCode;
+
+    /** 项目类别 */
+    @Excel(name = "项目类别")
+    private String contractType;
+
+    /** 项目状态（0上线 1下线 2暂停 3其他） */
+    @Excel(name = "项目状态", readConverterExp = "0=上线,1=下线,2=暂停,3=其他")
+    private String contractStatus;
+
+    /** 代理行前置码 */
+    @Excel(name = "代理行前置码")
+    private String agentCode;
+
+    /** 存款落地行编号 */
+    @Excel(name = "存款落地行编号")
+    private String depositBankCode;
+
+    /** 存款落地行名称 */
+    @Excel(name = "存款落地行名称")
+    private String depositBankName;
+
+    /** 营销支行编号 */
+    @Excel(name = "营销支行编号")
+    private String marketBankCode;
+
+    /** 营销支行名称 */
+    @Excel(name = "营销支行名称")
+    private String marketBankName;
+
+    /** 是否开户（0是 1否） */
+    @Excel(name = "是否开户", readConverterExp = "0=是,1=否")
+    private String isopen;
+
+    /** 对公客户号 */
+    @Excel(name = "对公客户号")
+    private String clientCode;
+
+    /** 对公存款账户 */
+    @Excel(name = "对公存款账户")
+    private String checkingAccout;
+
+    /** 手续费收取方式（0按笔数、1按金额、2不收取） */
+ //   @Excel(name = "手续费收取方式", readConverterExp = "0=按笔数、1按金额、2不收取")
+    private String commissionWay;
+
+    /** 手续费收取比例 */
+  //  @Excel(name = "手续费收取比例")
+    private String commissionScale;
+
+    /** 单笔手续费限额 */
+  //  @Excel(name = "单笔手续费限额")
+    private String commissionNorm;
+
+    /** 缴费资金划款方式（0轧差、1收支分离、2全额清算） */
+    @Excel(name = "缴费资金划款方式", readConverterExp = "0=轧差、1收支分离、2全额清算")
+    private String fundWay;
+
+    /** 子项目名称 */
+    @Excel(name = "子项目名称")
+    private String contractNameChild;
+
+    /** 项目上线时间 */
+    @Excel(name = "项目上线时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date contractTime;
+
+    /** 项目数 */
+    @Excel(name = "项目数")
+    private String contractCount;
+
+    /** 对公缴费授权时间 */
+    @Excel(name = "对公缴费授权时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date empowerTime;
+
+    @Excel(name = "手续费收取方式")
+    /** 收取方式 */
+    private String commissionWay1;
+
+
+    public String getCommissionWay1() {
+        return commissionWay1;
+    }
+
+    public void setCommissionWay1(String commissionWay1) {
+        this.commissionWay1 = commissionWay1;
+    }
+
+    public void setContractId(Long contractId)
     {
         this.contractId = contractId;
     }
 
-    public Long getContractId() 
-    {
+
+    public Long getContractId() {
         return contractId;
     }
-    public void setContractName(String contractName) 
-    {
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
         this.contractName = contractName;
     }
 
-    public String getContractName() 
-    {
-        return contractName;
+    public String getaCompanyName() {
+        return aCompanyName;
     }
-    public void setaCompanyName(String aCompanyName) 
-    {
+
+    public void setaCompanyName(String aCompanyName) {
         this.aCompanyName = aCompanyName;
     }
 
-    public String getaCompanyName() 
-    {
-        return aCompanyName;
+    public String getaCompanyDelegate() {
+        return aCompanyDelegate;
     }
-    public void setaCompanyDelegate(String aCompanyDelegate) 
-    {
+
+    public void setaCompanyDelegate(String aCompanyDelegate) {
         this.aCompanyDelegate = aCompanyDelegate;
     }
 
-    public String getaCompanyDelegate() 
-    {
-        return aCompanyDelegate;
+    public String getbCompanyDelegate() {
+        return bCompanyDelegate;
     }
-    public void setbCompanyDelegate(String bCompanyDelegate) 
-    {
+
+    public void setbCompanyDelegate(String bCompanyDelegate) {
         this.bCompanyDelegate = bCompanyDelegate;
     }
 
-    public String getbCompanyDelegate() 
-    {
-        return bCompanyDelegate;
+    public Date getSignTime() {
+        return signTime;
     }
-    public void setSignTime(Date signTime) 
-    {
+
+    public void setSignTime(Date signTime) {
         this.signTime = signTime;
     }
 
-    public Date getSignTime() 
-    {
-        return signTime;
+    public Date getEndTime() {
+        return endTime;
     }
-    public void setEndTime(Date endTime) 
-    {
+
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public Date getEndTime() 
-    {
-        return endTime;
-    }
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getFilePath() {
         return filePath;
@@ -135,26 +214,190 @@ public class BussinessContract extends BaseEntity
         this.filePath = filePath;
     }
 
-    public String getRemark1() {
-        return remark1;
+    public String getContractCode() {
+        return contractCode;
     }
 
-    public void setRemark1(String remark1) {
-        this.remark1 = remark1;
+    public void setContractCode(String contractCode) {
+        this.contractCode = contractCode;
+    }
+
+    public String getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
+
+    public String getContractStatus() {
+        return contractStatus;
+    }
+
+    public void setContractStatus(String contractStatus) {
+        this.contractStatus = contractStatus;
+    }
+
+    public String getAgentCode() {
+        return agentCode;
+    }
+
+    public void setAgentCode(String agentCode) {
+        this.agentCode = agentCode;
+    }
+
+    public String getDepositBankCode() {
+        return depositBankCode;
+    }
+
+    public void setDepositBankCode(String depositBankCode) {
+        this.depositBankCode = depositBankCode;
+    }
+
+    public String getDepositBankName() {
+        return depositBankName;
+    }
+
+    public void setDepositBankName(String depositBankName) {
+        this.depositBankName = depositBankName;
+    }
+
+    public String getMarketBankCode() {
+        return marketBankCode;
+    }
+
+    public void setMarketBankCode(String marketBankCode) {
+        this.marketBankCode = marketBankCode;
+    }
+
+    public String getMarketBankName() {
+        return marketBankName;
+    }
+
+    public void setMarketBankName(String marketBankName) {
+        this.marketBankName = marketBankName;
+    }
+
+    public String getIsopen() {
+        return isopen;
+    }
+
+    public void setIsopen(String isopen) {
+        this.isopen = isopen;
+    }
+
+    public String getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
+    }
+
+    public String getCheckingAccout() {
+        return checkingAccout;
+    }
+
+    public void setCheckingAccout(String checkingAccout) {
+        this.checkingAccout = checkingAccout;
+    }
+
+    public String getCommissionWay() {
+        return commissionWay;
+    }
+
+    public void setCommissionWay(String commissionWay) {
+        this.commissionWay = commissionWay;
+    }
+
+    public String getCommissionScale() {
+        return commissionScale;
+    }
+
+    public void setCommissionScale(String commissionScale) {
+        this.commissionScale = commissionScale;
+    }
+
+    public String getCommissionNorm() {
+        return commissionNorm;
+    }
+
+    public void setCommissionNorm(String commissionNorm) {
+        this.commissionNorm = commissionNorm;
+    }
+
+    public String getFundWay() {
+        return fundWay;
+    }
+
+    public void setFundWay(String fundWay) {
+        this.fundWay = fundWay;
+    }
+
+    public String getContractNameChild() {
+        return contractNameChild;
+    }
+
+    public void setContractNameChild(String contractNameChild) {
+        this.contractNameChild = contractNameChild;
+    }
+
+    public Date getContractTime() {
+        return contractTime;
+    }
+
+    public void setContractTime(Date contractTime) {
+        this.contractTime = contractTime;
+    }
+
+    public String getContractCount() {
+        return contractCount;
+    }
+
+    public void setContractCount(String contractCount) {
+        this.contractCount = contractCount;
+    }
+
+    public Date getEmpowerTime() {
+        return empowerTime;
+    }
+
+    public void setEmpowerTime(Date empowerTime) {
+        this.empowerTime = empowerTime;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("contractId", getContractId())
-            .append("contractName", getContractName())
-            .append("aCompanyName", getaCompanyName())
-            .append("aCompanyDelegate", getaCompanyDelegate())
-            .append("bCompanyDelegate", getbCompanyDelegate())
-            .append("signTime", getSignTime())
-            .append("endTime", getEndTime())
-            .append("status", getStatus())
-            .append("remark1", getRemark1())
-            .toString();
+                .append("contractId", getContractId())
+                .append("contractName", getContractName())
+                .append("aCompanyName", getaCompanyName())
+                .append("aCompanyDelegate", getaCompanyDelegate())
+                .append("bCompanyDelegate", getbCompanyDelegate())
+                .append("signTime", getSignTime())
+                .append("endTime", getEndTime())
+                .append("status", getStatus())
+                .append("remark", getRemark())
+                .append("filePath", getFilePath())
+                .append("contractCode", getContractCode())
+                .append("contractType", getContractType())
+                .append("contractStatus", getContractStatus())
+                .append("agentCode", getAgentCode())
+                .append("depositBankCode", getDepositBankCode())
+                .append("depositBankName", getDepositBankName())
+                .append("marketBankCode", getMarketBankCode())
+                .append("marketBankName", getMarketBankName())
+                .append("isopen", getIsopen())
+                .append("clientCode", getClientCode())
+                .append("checkingAccout", getCheckingAccout())
+                .append("commissionWay", getCommissionWay())
+                .append("commissionScale", getCommissionScale())
+                .append("commissionNorm", getCommissionNorm())
+                .append("fundWay", getFundWay())
+                .append("contractNameChild", getContractNameChild())
+                .append("contractTime", getContractTime())
+                .append("contractCount", getContractCount())
+                .append("empowerTime", getEmpowerTime())
+                .toString();
     }
 }
