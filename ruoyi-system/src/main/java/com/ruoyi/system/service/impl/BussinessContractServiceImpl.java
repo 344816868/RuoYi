@@ -6,6 +6,7 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.Md5Utils;
 import com.ruoyi.system.domain.SysUser;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
      * @return 结果
      */
     @Override
-    public int insertBussinessContract(BussinessContract bussinessContract)
+    public int insertBussinessContract( BussinessContract bussinessContract)
     {
         return bussinessContractMapper.insertBussinessContract(bussinessContract);
     }

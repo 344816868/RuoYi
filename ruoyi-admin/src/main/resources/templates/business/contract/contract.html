@@ -18,12 +18,12 @@
                                 <label>项目名称：</label>
                                 <input type="text" name="contractName"/>
                             </li>
-                            <li class="select-time">
+<!--                            <li class="select-time">
                                 <label>签署日期：</label>
                                 <input type="text" class="time-input" id="beginSignTime" placeholder="开始时间" name="params[beginSignTime]"/>
                                 <span>-</span>
                                 <input type="text" class="time-input" id="endSignTime" placeholder="结束时间" name="params[endSignTime]"/>
-                            </li>
+                            </li>-->
                             <li class="select-time">
                                 <label>终止日期：</label>
                                 <input type="text" class="time-input" id="beginEndTime" placeholder="开始时间" name="params[beginEndTime]"/>
@@ -49,7 +49,7 @@
 
             <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:contract:add">
-                    <i class="fa fa-plus"></i> 添加
+                    <i class="fa fa-plus"></i> 新增
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:contract:edit">
                     <i class="fa fa-edit"></i> 修改
@@ -74,6 +74,11 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('business:contract:edit')}]];
         var removeFlag = [[${@permission.hasPermi('business:contract:remove')}]];
+        var contracttype = [[${@dict.getType('contract_type')}]];
+        var contractstatus = [[${@dict.getType('contract_status')}]];
+        var isopen = [[${@dict.getType('sys_notice_type')}]];
+        var status = [[${@dict.getType('sys_notice_type')}]];
+        var fundway = [[${@dict.getType('fund_way')}]];
         var prefix = ctx + "business/contract";
 
         $(function() {
@@ -104,7 +109,11 @@
                 },
                 {
                     field: 'contractType',
-                    title: '项目类别'
+                    title: '项目类别',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(contracttype, value);
+                    }
                 },
                 {
                     field: 'aCompanyName',
@@ -116,47 +125,68 @@
                 },
                 {
                     field: 'contractStatus',
-                    title: '项目状态'
+                    title: '项目状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(contractstatus, value);
+                    }
+
                 },
                 {
                     field: 'agentCode',
-                    title: '代理行前置码'
+                    title: '代理行前置码',
+                    visible: false
                 },
                 {
                     field: 'bCompanyDelegate',
-                    title: '代理行名称'
+                    title: '代理行名称',
+                    visible: false
                 },
                 {
                     field: 'depositBankCode',
-                    title: '存款落地行编号'
+                    title: '存款落地行编号',
+                    visible: false
                 },
                 {
                     field: 'depositBankName',
-                    title: '存款落地行名称'
+                    title: '存款落地行名称',
+                    visible: false
                 },
                 {
                     field: 'marketBankCode',
-                    title: '营销支行编号'
+                    title: '营销支行编号',
+                    visible: false
                 },
                 {
                     field: 'marketBankName',
-                    title: '营销支行名称'
+                    title: '营销支行名称',
+                    visible: false
                 },
                 {
                     field: 'isopen',
-                    title: '是否开户'
+                    title: '是否开户',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '是';
+                        }else{
+                            return '否';
+                        }
+                    }
                 },
                 {
                     field: 'clientCode',
-                    title: '对公客户号'
+                    title: '对公客户号',
+                    visible: false
                 },
                 {
                     field: 'checkingAccout',
-                    title: '对公存款账户'
+                    title: '对公存款账户',
+                    visible: false
                 },
                 {
                     field: 'commissionWay1',
-                    title: '手续费收取方式(收取方式|收取比例|单笔手续费限额)',
+                    title: '手续费收取方式',
                     formatter: function(value, row, index) {
                         var type=row.commissionWay;
                         var way="";
@@ -172,7 +202,12 @@
                 },
                 {
                     field: 'fundWay',
-                    title: '缴费资金划款方式'
+                    title: '缴费资金划款方式',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(fundway, value);
+                    },
+                    visible: false
                 },
                 {
                     field: 'contractNameChild',
@@ -180,11 +215,13 @@
                 },
                 {
                     field: 'contractTime',
-                    title: '项目上线时间'
+                    title: '项目上线时间',
+                    visible: false
                 },
                 {
                     field: 'contractCount',
-                    title: '项目数'
+                    title: '项目数',
+                    visible: false
                 },
                 {
                     field: 'empowerTime',
@@ -192,7 +229,8 @@
                 },
                 {
                     field: 'signTime',
-                    title: '项目签署日期'
+                    title: '项目签署日期',
+                    visible: false
                 },
                 {
                     field: 'endTime',
@@ -201,6 +239,7 @@
                 {
                     field: 'status',
                     title: '合同状态',
+                    align: 'center',
                     formatter: function(value, row, index) {
                         if(value==0){
                             return '正常';
@@ -210,7 +249,7 @@
                     }
                 },
                 {
-                    field: 'remark1',
+                    field: 'remark',
                     title: '备注'
                 },
                 {
