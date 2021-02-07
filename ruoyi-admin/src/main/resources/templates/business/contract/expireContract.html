@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('过期合同列表')" />
+    <th:block th:include="include :: header('过期项目列表')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -11,29 +11,21 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>合同名称：</label>
+                                <label>项目编号：</label>
+                                <input type="text" name="contractCode"/>
+                            </li>
+                            <li>
+                                <label>项目名称：</label>
                                 <input type="text" name="contractName"/>
                             </li>
-                            <li>
-                                <label>甲方公司名称：</label>
-                                <input type="text" name="aCompanyName"/>
-                            </li>
-                            <li>
-                                <label>甲方授权代表：</label>
-                                <input type="text" name="aCompanyDelegate"/>
-                            </li>
-                            <li>
-                                <label>乙方授权代表：</label>
-                                <input type="text" name="bCompanyDelegate"/>
-                            </li>
-                            <li class="select-time">
+                    <!--    <li class="select-time">
                                 <label>签署日期：</label>
                                 <input type="text" class="time-input" id="beginSignTime" placeholder="开始时间" name="params[beginSignTime]"/>
                                 <span>-</span>
                                 <input type="text" class="time-input" id="endSignTime" placeholder="结束时间" name="params[endSignTime]"/>
-                            </li>
+                            </li>-->
                             <li class="select-time">
-                                <label>合同终止日期：</label>
+                                <label>终止日期：</label>
                                 <input type="text" class="time-input" id="beginEndTime" placeholder="开始时间" name="params[beginEndTime]"/>
                                 <span>-</span>
                                 <input type="text" class="time-input" id="endEndTime" placeholder="结束时间" name="params[endEndTime]"/>
@@ -62,63 +54,183 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('business:contract:edit')}]];
         var removeFlag = [[${@permission.hasPermi('business:contract:remove')}]];
+        var contracttype = [[${@dict.getType('contract_type')}]];
+        var contractstatus = [[${@dict.getType('contract_status')}]];
+        var isopen = [[${@dict.getType('sys_notice_type')}]];
+        var status = [[${@dict.getType('sys_notice_type')}]];
+        var fundway = [[${@dict.getType('fund_way')}]];
         var prefix = ctx + "business/contract";
 
         $(function() {
             //设置查询的默认时间 提前一个月
-            var startTime=new Date();
-            var startTime1=date (startTime);
-            //提前1个月的时间
-            var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
-            var endTime1=date (endTime);
-            $("#beginEndTime").val(startTime1);
-            $("#endEndTime").val(endTime1);
+            // var startTime=new Date();
+            // var startTime1=date (startTime);
+            // //提前1个月的时间
+            // var endTime = new Date(startTime.getTime() + 24*60*60*1000*30);
+            // var endTime1=date (endTime);
+            // $("#beginEndTime").val(startTime1);
+            // $("#endEndTime").val(endTime1);
             var options = {
                 url: prefix + "/expireList",
-                exportUrl: prefix + "/export",
-                modalName: "到期合同管理",
+                exportUrl: prefix + "/export?status=0",
+                modalName: "到期项目列表",
                 columns: [{
                     checkbox: true
                 },
                 {
                     field: 'contractId',
-                    title: '合同ID',
+                    title: '项目ID',
                     visible: false
                 },
                 {
+                    field: 'contractCode',
+                    title: '项目编号'
+                },
+                {
                     field: 'contractName',
-                    title: '合同名称'
+                    title: '项目名称'
                 },
                 {
-                    field: 'aCompanyName',
-                    title: '甲方公司名称'
+                    field: 'contractType',
+                    title: '项目类别',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(contracttype, value);
+                    }
                 },
                 {
-                    field: 'aCompanyDelegate',
-                    title: '甲方授权代表'
+                    field: 'sysCompanyName',
+                    title: '系统商名称'
                 },
                 {
-                    field: 'bCompanyDelegate',
-                    title: '乙方授权代表'
+                    field: 'chargeUnit',
+                    title: '收费单位'
+                },
+                {
+                    field: 'contractStatus',
+                    title: '项目状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(contractstatus, value);
+                    }
+
+                },
+                {
+                    field: 'agentCode',
+                    title: '代理行前置码',
+                    visible: false
+                },
+                {
+                    field: 'agentBankName',
+                    title: '代理行名称',
+                    visible: false
+                },
+                {
+                    field: 'depositBankCode',
+                    title: '存款落地行编号',
+                    visible: false
+                },
+                {
+                    field: 'depositBankName',
+                    title: '存款落地行名称',
+                    visible: false
+                },
+                {
+                    field: 'marketBankCode',
+                    title: '营销支行编号',
+                    visible: false
+                },
+                {
+                    field: 'marketBankName',
+                    title: '营销支行名称',
+                    visible: false
+                },
+                {
+                    field: 'isopen',
+                    title: '是否开户',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '是';
+                        }else{
+                            return '否';
+                        }
+                    }
+                },
+                {
+                    field: 'clientCode',
+                    title: '对公客户号',
+                    visible: false
+                },
+                {
+                    field: 'checkingAccout',
+                    title: '对公存款账户',
+                    visible: false
+                },
+                {
+                    field: 'commissionWay1',
+                    align: 'center',
+                    title: '手续费收取方式（收取方式|收取比例|单笔手续费限额）',
+                    formatter: function(value, row, index) {
+                        var type=row.commissionWay;
+                        var way="";
+                        if(type==0){
+                            way="按笔数";
+                        }else if(type==1){
+                            way="按金额";
+                        }else if(type==2){
+                            way="不收取";
+                        }
+                        var str=way+"|"+row.commissionScale+"|"+row.commissionNorm;
+                        return str;
+                    }
+                },
+                {
+                    field: 'fundWay',
+                    title: '缴费资金划款方式',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(fundway, value);
+                    },
+                    visible: false
+                },
+                {
+                    field: 'contractNameChild',
+                    title: '子项目名称'
+                },
+                {
+                    field: 'contractTime',
+                    title: '项目上线时间',
+                    visible: false
+                },
+                {
+                    field: 'contractCount',
+                    title: '项目数',
+                    visible: false
+                },
+                {
+                    field: 'empowerTime',
+                    title: '对公缴费授权时间'
                 },
                 {
                     field: 'signTime',
-                    title: '签署日期'
+                    title: '项目签署日期',
+                    visible: false
                 },
                 {
                     field: 'endTime',
-                    title: '合同终止日期'
+                    title: '项目终止日期'
                 },
                 {
                     field: 'status',
                     title: '合同状态',
+                    align: 'center',
                     formatter: function(value, row, index) {
                         if(value==0){
                             return '正常';
                         }else{
                             return '过期';
                         }
-
                     }
                 },
                 {

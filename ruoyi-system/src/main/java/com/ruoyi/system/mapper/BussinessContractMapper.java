@@ -18,6 +18,13 @@ public interface BussinessContractMapper
      * @return 合同管理
      */
     public BussinessContract selectBussinessContractById(Long contractId);
+    /**
+     * 查询合同管理
+     *
+     * @param contractCode 项目编号
+     * @return 合同管理
+     */
+    public BussinessContract selectBussinessContractByCode(String contractCode);
 
     /**
      * 查询合同管理列表

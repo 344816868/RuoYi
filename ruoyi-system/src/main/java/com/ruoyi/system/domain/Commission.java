@@ -50,7 +50,17 @@ public class Commission extends BaseEntity
     @Excel(name = "手续费发票备注")
     private String billRemark;
 
-    public void setCommissionId(Long commissionId) 
+    private String filePath ; //发票存储路径
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setCommissionId(Long commissionId)
     {
         this.commissionId = commissionId;
     }

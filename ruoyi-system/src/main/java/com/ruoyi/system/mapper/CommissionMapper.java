@@ -20,6 +20,14 @@ public interface CommissionMapper
     public Commission selectCommissionById(Long commissionId);
 
     /**
+     * 查询手续费管理
+     *
+     * @param contractCode 项目编号
+     * @return 手续费管理
+     */
+    public Commission selectCommissionByCode(String contractCode);
+
+    /**
      * 查询手续费管理列表
      * 
      * @param commission 手续费管理

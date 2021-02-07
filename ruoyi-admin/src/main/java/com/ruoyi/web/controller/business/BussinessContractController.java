@@ -128,8 +128,13 @@ public class BussinessContractController extends BaseController
     public AjaxResult export(BussinessContract bussinessContract)
     {
         List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
+        for (BussinessContract bussinessContract1: list) {
+            String dictLabel=sysDictDataService.selectDictLabel("commission_way",bussinessContract1.getCommissionWay());
+            String zh=dictLabel+"|"+bussinessContract1.getCommissionScale()+"|"+bussinessContract1.getCommissionNorm();
+            bussinessContract1.setCommissionWay1(zh);
+        }
         ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
-        return util.exportExcel(list, "合同信息列表");
+        return util.exportExcel(list, "项目基本信息列表");
     }
 
     /**
@@ -267,18 +272,33 @@ public class BussinessContractController extends BaseController
     public AjaxResult importTemplate()
     {
         ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
-        return util.importTemplateExcel("合同数据");
+        return util.importTemplateExcel("项目基本信息");
     }
 
-    @Log(title = "合同管理", businessType = BusinessType.IMPORT)
+    @Log(title = "项目信息管理", businessType = BusinessType.IMPORT)
     @RequiresPermissions("business:contract:import")
     @PostMapping("/importData")
     @ResponseBody
     public AjaxResult importData(MultipartFile file) throws Exception
     {
         ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
-        List<BussinessContract> List = util.importExcel(file.getInputStream());
-        String message = bussinessContractService.importContract(List);
+        List<BussinessContract> list = util.importExcel(file.getInputStream());
+        for(BussinessContract bussinessContract:list){
+            //拆分手续费收取方式
+            if(StringUtils.isNotEmpty(bussinessContract.getCommissionWay1())){
+                String [] strs=bussinessContract.getCommissionWay1().split("\\|");
+                String dictValue=sysDictDataService.selectDictValue("commission_way",strs[0]);
+                bussinessContract.setCommissionWay(dictValue);
+                bussinessContract.setCommissionScale(strs[1]);
+                bussinessContract.setCommissionNorm(strs[2]);
+            }
+            //转换项目类别
+            if(StringUtils.isNotEmpty(bussinessContract.getContractType())){
+                String dictValue=sysDictDataService.selectDictValue("contract_type",bussinessContract.getContractType());
+                bussinessContract.setContractType(dictValue);
+            }
+        }
+        String message = bussinessContractService.importContract(list);
         return AjaxResult.success(message);
     }
 }

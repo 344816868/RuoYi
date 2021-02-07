@@ -7,9 +7,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="BussinessContract" id="BussinessContractResult">
         <result property="contractId"    column="contract_id"    />
         <result property="contractName"    column="contract_name"    />
-        <result property="aCompanyName"    column="a_company_name"    />
-        <result property="aCompanyDelegate"    column="a_company_delegate"    />
-        <result property="bCompanyDelegate"    column="b_company_delegate"    />
+        <result property="sysCompanyName"    column="sys_company_name"    />
+        <result property="chargeUnit"    column="charge_unit"    />
+        <result property="agentBankName"    column="agent_bank_name"    />
         <result property="signTime"    column="sign_time"    />
         <result property="endTime"    column="end_time"    />
         <result property="status"    column="status"    />
@@ -37,7 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectBussinessContractVo">
-        select contract_id, contract_name, a_company_name, a_company_delegate, b_company_delegate, sign_time, end_time, status, remark, file_path, contract_code, contract_type, contract_status, agent_code, deposit_bank_code, deposit_bank_name, market_bank_code, market_bank_name, isopen, client_code, checking_accout, commission_way, commission_scale, commission_norm, fund_way, contract_name_child, contract_time, contract_count, empower_time from bussiness_contract
+        SELECT contract_id,contract_code,contract_name,contract_type,sys_company_name,charge_unit,contract_status,agent_code,agent_bank_name,deposit_bank_code,deposit_bank_name,market_bank_code,market_bank_name,isopen,client_code,checking_accout,commission_way,commission_scale,commission_norm,fund_way,contract_name_child,contract_time,contract_count,empower_time,sign_time,end_time,status,remark,
+	file_path from bussiness_contract
     </sql>
 
     <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
@@ -68,6 +69,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where contract_id = #{contractId}
     </select>
 
+    <select id="selectBussinessContractByCode" parameterType="String" resultMap="BussinessContractResult">
+        <include refid="selectBussinessContractVo"/>
+        where contract_code = #{contractCode}
+    </select>
+
     <insert id="insertBussinessContract" parameterType="BussinessContract" useGeneratedKeys="true" keyProperty="contractId">
         <selectKey keyProperty="contractId" order="BEFORE" resultType="Long">
             select seq_bussiness_contract.nextval as contractId from DUAL
@@ -76,9 +82,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="contractId != null and contractId != 0">contract_id,</if>
             <if test="contractName != null">contract_name,</if>
-            <if test="aCompanyName != null">a_company_name,</if>
-            <if test="aCompanyDelegate != null">a_company_delegate,</if>
-            <if test="bCompanyDelegate != null">b_company_delegate,</if>
+            <if test="sysCompanyName != null">sys_company_name,</if>
+            <if test="chargeUnit != null">charge_unit,</if>
+            <if test="agentBankName != null">agent_bank_name,</if>
             <if test="signTime != null">sign_time,</if>
             <if test="endTime != null">end_time,</if>
             <if test="status != null">status,</if>
@@ -106,11 +112,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="contractId != null">#{contract_id},</if>
+            <if test="contractId != null">#{contractId},</if>
             <if test="contractName != null">#{contractName},</if>
-            <if test="aCompanyName != null">#{aCompanyName},</if>
-            <if test="aCompanyDelegate != null">#{aCompanyDelegate},</if>
-            <if test="bCompanyDelegate != null">#{bCompanyDelegate},</if>
+            <if test="sysCompanyName != null">#{sysCompanyName},</if>
+            <if test="chargeUnit != null">#{chargeUnit},</if>
+            <if test="agentBankName != null">#{agentBankName},</if>
             <if test="signTime != null">#{signTime},</if>
             <if test="endTime != null">#{endTime},</if>
             <if test="status != null">#{status},</if>
@@ -143,9 +149,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update bussiness_contract
         <trim prefix="SET" suffixOverrides=",">
             <if test="contractName != null">contract_name = #{contractName},</if>
-            <if test="aCompanyName != null">a_company_name = #{aCompanyName},</if>
-            <if test="aCompanyDelegate != null">a_company_delegate = #{aCompanyDelegate},</if>
-            <if test="bCompanyDelegate != null">b_company_delegate = #{bCompanyDelegate},</if>
+            <if test="sysCompanyName != null">sys_company_name = #{sysCompanyName},</if>
+            <if test="chargeUnit != null">charge_unit = #{chargeUnit},</if>
+            <if test="agentBankName != null">agent_bank_name = #{agentBankName},</if>
             <if test="signTime != null">sign_time = #{signTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
             <if test="status != null">status = #{status},</if>

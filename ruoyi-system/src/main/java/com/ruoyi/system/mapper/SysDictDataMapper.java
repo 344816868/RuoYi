@@ -92,4 +92,14 @@ public interface SysDictDataMapper
      * @return 结果
      */
     public int updateDictDataType(@Param("oldDictType") String oldDictType, @Param("newDictType") String newDictType);
+
+    /**
+     * 根据字典类型和字典数据信息查询字典键值
+     *
+     * @param dictType 字典类型
+     * @param dictLabel 字典键值
+     * @return 字典标签
+     */
+    public String selectDictValue(@Param("dictType") String dictType, @Param("dictLabel") String dictLabel);
+
 }

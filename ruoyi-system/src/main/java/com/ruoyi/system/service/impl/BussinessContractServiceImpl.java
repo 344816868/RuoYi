@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.Md5Utils;
+import com.ruoyi.system.domain.Commission;
 import com.ruoyi.system.domain.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class BussinessContractServiceImpl implements IBussinessContractService
 {
     @Autowired
     private BussinessContractMapper bussinessContractMapper;
+    @Autowired
+    private CommissionServiceImpl commissionService;
+
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     /**
@@ -39,6 +43,11 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     public BussinessContract selectBussinessContractById(Long contractId)
     {
         return bussinessContractMapper.selectBussinessContractById(contractId);
+    }
+
+    @Override
+    public BussinessContract selectBussinessContractByCode(String contractCode) {
+        return bussinessContractMapper.selectBussinessContractByCode(contractCode);
     }
 
     /**
@@ -62,6 +71,13 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public int insertBussinessContract( BussinessContract bussinessContract)
     {
+        Commission commission1=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
+        Commission commission = new Commission();
+        commission.setContractCode(bussinessContract.getContractCode());
+        commission.setContractName(bussinessContract.getContractName());
+        if(StringUtils.isNull(commission1)){
+            commissionService.insertCommission(commission);
+        }
         return bussinessContractMapper.insertBussinessContract(bussinessContract);
     }
 
@@ -122,7 +138,13 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         {
             try
             {
-                this.insertBussinessContract(bussinessContract);
+                BussinessContract bussinessContract1=this.selectBussinessContractByCode(bussinessContract.getContractCode());
+                if (StringUtils.isNull(bussinessContract1)){
+                    this.insertBussinessContract(bussinessContract);
+                }else{
+                    this.updateBussinessContract(bussinessContract);
+                }
+
                 successNum++;
             //    successMsg.append("<br/>" + successNum + "、合同名称 " + bussinessContract.getContractName() + " 导入成功");
             }

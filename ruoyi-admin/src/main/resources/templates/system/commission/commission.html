@@ -18,13 +18,17 @@
                                 <label>项目名称：</label>
                                 <input type="text" name="contractName"/>
                             </li>
-                            <li>
-                                <label style="width: 120px;">手续费收取时间：</label>
-                                <input type="text" class="time-input" placeholder="请选择手续费收取时间" name="commissionTime"/>
+                            <li class="select-time">
+                                <label>手续费收取时间：</label>
+                                <input type="text" class="time-input" id="beginCommissionTime" placeholder="开始时间" name="params[beginCommissionTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endCommissionTime" placeholder="结束时间" name="params[endCommissionTime]"/>
                             </li>
-                            <li>
-                                <label style="width: 120px;">手续费发票时间：</label>
-                                <input type="text" class="time-input" placeholder="请选择手续费发票时间" name="billTime"/>
+                            <li class="select-time">
+                                <label>手续费发票时间：</label>
+                                <input type="text" class="time-input" id="beginBillTime" placeholder="开始时间" name="params[beginBillTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endBillTime" placeholder="结束时间" name="params[endBillTime]"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -36,9 +40,9 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">
-                    <i class="fa fa-plus"></i> 添加
-                </a>
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">-->
+<!--                    <i class="fa fa-plus"></i> 添加-->
+<!--                </a>-->
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:commission:edit">
                     <i class="fa fa-edit"></i> 修改
                 </a>
@@ -52,6 +56,7 @@
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
             </div>
+            <div id="handout_wrap_inner"></div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
@@ -64,7 +69,7 @@
         $(function() {
             var options = {
                 url: prefix + "/list",
-                createUrl: prefix + "/add",
+            //    createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
@@ -88,13 +93,15 @@
                 {
                     field: 'isbill',
                     title: '是否有发票',
+                    align: 'center',
                     formatter: function(value, row, index) {
                         return $.table.selectDictLabel(ISBILL, value);
                     }
                 },
                 {
                     field: 'commissionTime',
-                    title: '手续费收取时间'
+                    title: '手续费收取时间',
+                    align: 'center'
                 },
                 {
                     field: 'commissionRemark',
@@ -102,7 +109,8 @@
                 },
                 {
                     field: 'billTime',
-                    title: '手续费发票时间'
+                    title: '手续费发票时间',
+                    align: 'center'
                 },
                 {
                     field: 'billRemark',
@@ -115,12 +123,27 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.commissionId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.commissionId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        var more = [];
+                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionPDF(" + row.commissionId + ")' ><i class='fa fa-file-pdf-o'></i>预览</a> ");
+                        more.push("<a class='btn btn-default btn-xs ' href='javascript:void(0)' onclick='downloadFile(" + row.commissionId + ")'><i class='fa fa-download'></i>下载</a>");
+                        actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>更多操作</a>');
                         return actions.join('');
                     }
                 }]
             };
             $.table.init(options);
         });
+
+        /* 发票下载 */
+        function downloadFile(value){
+            window.location.href = ctx + "system/commission/download/commission?commissionId=" + value;
+        }
+        /* 发票PDF预览 */
+        function getCommissionPDF(value) {
+            var commissionId=value;
+            var url = prefix + '/commissionPDF/' + commissionId;
+            $.modal.open("发票PDF预览", url);
+        }
     </script>
 </body>
 </html>

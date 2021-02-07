@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysDictData;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 字典 业务层
@@ -65,4 +66,13 @@ public interface ISysDictDataService
      * @return 结果
      */
     public int updateDictData(SysDictData dictData);
+
+    /**
+     * 根据字典类型和字典数据信息查询字典键值
+     *
+     * @param dictType 字典类型
+     * @param dictLabel 字典键值
+     * @return 字典标签
+     */
+    public String selectDictValue(String dictType, String dictLabel);
 }

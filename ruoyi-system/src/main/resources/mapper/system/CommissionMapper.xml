@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="commissionRemark"    column="commission_remark"    />
         <result property="billTime"    column="bill_time"    />
         <result property="billRemark"    column="bill_remark"    />
+        <result property="filePath"    column="file_path"    />
     </resultMap>
 
     <sql id="selectCommissionVo">
-        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark from commission
+        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path from commission
     </sql>
 
 
@@ -27,15 +28,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="isbill != null  and isbill != ''"> and isbill like concat(concat('%', #{isbill}), '%')</if>
             <if test="commissionTime != null "> and commission_time like concat(concat('%', #{commissionTime}), '%')</if>
-            <if test="commissionRemark != null  and commissionRemark != ''"> and commission_remark like concat(concat('%', #{commissionRemark}), '%')</if>
             <if test="billTime != null "> and bill_time like concat(concat('%', #{billTime}), '%')</if>
-            <if test="billRemark != null  and billRemark != ''"> and bill_remark like concat(concat('%', #{billRemark}), '%')</if>
+            <if test="params.beginCommissionTime != null and params.beginCommissionTime != ''">
+                AND commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endCommissionTime != null and params.endCommissionTime != ''">
+                AND commission_time &lt;= to_date(#{params.endCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.beginBillTime != null and params.beginBillTime != ''">
+                AND bill_time &gt;= to_date(#{params.beginBillTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endBillTime != null and params.endBillTime != ''">
+                AND bill_time &lt;= to_date(#{params.endBillTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
         </where>
     </select>
     
     <select id="selectCommissionById" parameterType="Long" resultMap="CommissionResult">
         <include refid="selectCommissionVo"/>
         where commission_id = #{commissionId}
+    </select>
+
+    <select id="selectCommissionByCode" parameterType="String" resultMap="CommissionResult">
+        <include refid="selectCommissionVo"/>
+        where CONTRACT_CODE = #{contractCode}
     </select>
 
     <insert id="insertCommission" parameterType="Commission">
@@ -52,6 +68,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commissionRemark != null">COMMISSION_REMARK,</if>
             <if test="billTime != null">BILL_TIME,</if>
             <if test="billRemark != null">BILL_REMARK,</if>
+            <if test="filePath != null">FILE_PATH,</if>
+            create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="commissionId != null">#{commissionId},</if>
@@ -62,6 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commissionRemark != null">#{commissionRemark},</if>
             <if test="billTime != null">#{billTime},</if>
             <if test="billRemark != null">#{billRemark},</if>
+            <if test="filePath != null">#{filePath},</if>
+            sysdate
         </trim>
     </insert>
 
@@ -75,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commissionRemark != null">COMMISSION_REMARK = #{commissionRemark},</if>
             <if test="billTime != null">BILL_TIME = #{billTime},</if>
             <if test="billRemark != null">BILL_REMARK = #{billRemark},</if>
+            <if test="filePath != null">FILE_PATH = #{filePath},</if>
         </trim>
         where COMMISSION_ID = #{commissionId}
     </update>

@@ -91,4 +91,15 @@ public class CommissionServiceImpl implements ICommissionService
     {
         return commissionMapper.deleteCommissionById(commissionId);
     }
+
+    /**
+     * 查询手续费信息
+     * @param contractCode 项目编号
+     * @return
+     */
+    @Override
+    public Commission selectCommissionByCode(String contractCode) {
+        return commissionMapper.selectCommissionByCode(contractCode);
+    }
+
 }

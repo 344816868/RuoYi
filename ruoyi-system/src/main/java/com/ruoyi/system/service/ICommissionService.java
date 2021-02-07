@@ -58,4 +58,12 @@ public interface ICommissionService
      * @return 结果
      */
     public int deleteCommissionById(Long commissionId);
+
+    /**
+     * 查询手续费管理
+     *
+     * @param contractCode 项目编号
+     * @return 手续费管理
+     */
+    public Commission selectCommissionByCode(String contractCode);
 }

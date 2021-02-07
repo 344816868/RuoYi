@@ -14,7 +14,7 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:oracle:thin:@127.0.0.1:1521/orcl.168.1.105
+                url: jdbc:oracle:thin:@127.0.0.1:1521/ORCL
                 username: ry
                 password: ry
             # 从库数据源
