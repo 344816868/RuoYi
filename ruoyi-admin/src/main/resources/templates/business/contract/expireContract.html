@@ -88,7 +88,8 @@
                 },
                 {
                     field: 'contractName',
-                    title: '项目名称'
+                    title: '项目名称',
+                    align: 'center'
                 },
                 {
                     field: 'contractType',
@@ -100,11 +101,13 @@
                 },
                 {
                     field: 'sysCompanyName',
-                    title: '系统商名称'
+                    title: '系统商名称',
+                    align: 'center'
                 },
                 {
                     field: 'chargeUnit',
-                    title: '收费单位'
+                    title: '收费单位',
+                    align: 'center'
                 },
                 {
                     field: 'contractStatus',
@@ -123,7 +126,8 @@
                 {
                     field: 'agentBankName',
                     title: '代理行名称',
-                    visible: false
+                    visible: false,
+                    align: 'center'
                 },
                 {
                     field: 'depositBankCode',
@@ -133,7 +137,8 @@
                 {
                     field: 'depositBankName',
                     title: '存款落地行名称',
-                    visible: false
+                    visible: false,
+                    align: 'center'
                 },
                 {
                     field: 'marketBankCode',
@@ -143,7 +148,8 @@
                 {
                     field: 'marketBankName',
                     title: '营销支行名称',
-                    visible: false
+                    visible: false,
+                    align: 'center'
                 },
                 {
                     field: 'isopen',
@@ -170,7 +176,7 @@
                 {
                     field: 'commissionWay1',
                     align: 'center',
-                    title: '手续费收取方式（收取方式|收取比例|单笔手续费限额）',
+                    title: '手续费收取方式',
                     formatter: function(value, row, index) {
                         var type=row.commissionWay;
                         var way="";
@@ -196,7 +202,9 @@
                 },
                 {
                     field: 'contractNameChild',
-                    title: '子项目名称'
+                    title: '子项目名称',
+                    visible: false,
+                    align: 'center'
                 },
                 {
                     field: 'contractTime',
@@ -235,11 +243,14 @@
                 },
                 {
                     field: 'remark',
-                    title: '备注'
+                    title: '备注',
+                    visible: false,
+                    align: 'center'
                 },
                 {
                     title: '操作',
                     align: 'center',
+                    width:185,
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getContractPDF(\'' + row.contractId + '\')"><i class="fa fa-file-pdf-o"></i>预览</a> ');

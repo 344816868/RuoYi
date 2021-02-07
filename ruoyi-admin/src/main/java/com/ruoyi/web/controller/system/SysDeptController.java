@@ -77,6 +77,7 @@ public class SysDeptController extends BaseController
             return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         dept.setCreateBy(ShiroUtils.getLoginName());
+        dept.setDelFlag("0");
         return toAjax(deptService.insertDept(dept));
     }
 
