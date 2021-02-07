@@ -129,12 +129,18 @@ public class BussinessContractController extends BaseController
     {
         List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
         for (BussinessContract bussinessContract1: list) {
+            //合并手续费收取方式
             String dictLabel=sysDictDataService.selectDictLabel("commission_way",bussinessContract1.getCommissionWay());
             String zh=dictLabel+"|"+bussinessContract1.getCommissionScale()+"|"+bussinessContract1.getCommissionNorm();
             bussinessContract1.setCommissionWay1(zh);
+            //转换项目类别
+            if(StringUtils.isNotEmpty(bussinessContract1.getContractType())){
+                String Label=sysDictDataService.selectDictLabel("contract_type",bussinessContract1.getContractType());
+                bussinessContract1.setContractType(Label);
+            }
         }
         ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
-        return util.exportExcel(list, "项目基本信息列表");
+        return util.exportExcel(list, "项目基本信息");
     }
 
     /**

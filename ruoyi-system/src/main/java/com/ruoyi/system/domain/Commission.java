@@ -29,7 +29,7 @@ public class Commission extends BaseEntity
     private String contractName;
 
     /** 是否有发票(0是 1否) */
-    @Excel(name = "是否有发票(0是 1否)")
+    @Excel(name = "是否有发票",readConverterExp = "0=是,1=否" )
     private String isbill;
 
     /** 手续费收取时间 */

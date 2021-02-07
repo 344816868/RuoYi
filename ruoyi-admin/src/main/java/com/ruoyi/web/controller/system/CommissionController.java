@@ -60,6 +60,15 @@ public class CommissionController extends BaseController
         return prefix + "/commission";
     }
 
+    @RequiresPermissions("system:commission:view")
+    @GetMapping("/info/{contractCode}")
+    public String commissionInfo(@PathVariable("contractCode") String contractCode, ModelMap mmap)
+    {
+        mmap.put("contractCode", contractCode);
+        return prefix + "/commissionInfo";
+    }
+
+
     /**
      * 查询手续费管理列表
      */
@@ -74,6 +83,18 @@ public class CommissionController extends BaseController
     }
 
     /**
+     * 查询发票详情
+     */
+    @RequiresPermissions("system:commission:list")
+    @PostMapping("/infoList/{contractCode}")
+    @ResponseBody
+    public TableDataInfo infoList(Commission commission)
+    {
+        startPage();
+        List<Commission> list = commissionService.selectCommissionList(commission);
+        return getDataTable(list);
+    }
+    /**
      * 导出手续费管理列表
      */
     @RequiresPermissions("system:commission:export")
@@ -84,7 +105,7 @@ public class CommissionController extends BaseController
     {
         List<Commission> list = commissionService.selectCommissionList(commission);
         ExcelUtil<Commission> util = new ExcelUtil<Commission>(Commission.class);
-        return util.exportExcel(list, "commission");
+        return util.exportExcel(list, "手续费发票信息");
     }
 
     /**
@@ -156,7 +177,7 @@ public class CommissionController extends BaseController
 
 
     /**
-     * 合同上传
+     * 发票上传
      */
     @RequestMapping("/filesUpload")
     @ResponseBody
@@ -192,7 +213,7 @@ public class CommissionController extends BaseController
     }
 
     /**
-     * 合同下载
+     * 发票下载
      */
     @GetMapping("/download/commission")
     public void contractDownload(Long commissionId, HttpServletRequest request, HttpServletResponse response)
@@ -214,7 +235,7 @@ public class CommissionController extends BaseController
     }
 
     /**
-     * 合同预览
+     * 发票预览
      */
     @GetMapping("/commissionPDF/{commissionId}")
     public String contractPDF(@PathVariable("commissionId") Long commissionId, ModelMap mmap)

@@ -60,6 +60,7 @@
         var status = [[${@dict.getType('sys_notice_type')}]];
         var fundway = [[${@dict.getType('fund_way')}]];
         var prefix = ctx + "business/contract";
+        var prefixfp = ctx + "system/commission";
 
         $(function() {
             //设置查询的默认时间 提前一个月
@@ -187,7 +188,15 @@
                         }else if(type==2){
                             way="不收取";
                         }
-                        var str=way+"|"+row.commissionScale+"|"+row.commissionNorm;
+                        var scale=row.commissionScale;
+                        if(scale==null||scale==''){
+                            scale=0;
+                        }
+                        var norm=row.commissionNorm;
+                        if(norm==null||norm==''){
+                            norm=0;
+                        }
+                        var str=way+"|"+scale+"|"+norm;
                         return str;
                     }
                 },
@@ -255,6 +264,7 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getContractPDF(\'' + row.contractId + '\')"><i class="fa fa-file-pdf-o"></i>预览</a> ');
                         actions.push('<a class="btn btn-info btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="downloadFile(\'' + row.contractId + '\')"><i class="fa fa-download"></i>下载</a>');
+                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getCommissionInfo(\'' + row.contractCode + '\')"><i class="fa fa-book"></i>下载</a>');
                         return actions.join('');
                     }
                 }]
@@ -271,6 +281,13 @@
             var contractId=value;
             var url = prefix + '/contractPDF/' + contractId;
             $.modal.open("合同PDF预览", url);
+        }
+        /* 查看发票信息 */
+        function getCommissionInfo(value) {
+            var contractCode=value;
+            var url = prefixfp + '/info/' + contractCode;
+            //   $.modal.open("发票详情", url);
+            $.modal.openTab("发票详情", url);
         }
     </script>
 </body>
