@@ -98,23 +98,7 @@ public class BussinessContractController extends BaseController
     public TableDataInfo expireList(BussinessContract bussinessContract)
     {
         startPage();
-        List<SysDictData> dicList=sysDictDataService.selectDictDataByType("sys_bussiness_notice");
-        String limitTime="0";
-        if(dicList.size()>0){
-            limitTime= dicList.get(0).getDictValue();//合同到期提醒的天数
-        }
-        Long days=Long.valueOf(limitTime);
-        Date nowTime=new Date();
-        Long l=24*60*60*1000*days;
-        //合同提醒的起始时间
-        Date endTime=new Date(nowTime.getTime() + l);
-        Map<String, Object> params=new HashMap();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        params.put("beginEndTime",sdf.format(nowTime));
-        params.put("endEndTime",sdf.format(endTime));
-        bussinessContract.setParams(params);
-        bussinessContract.setStatus("0");
-        List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
+        List<BussinessContract> list = bussinessContractService.selectExportBussinessContract(bussinessContract);
         return getDataTable(list);
     }
 

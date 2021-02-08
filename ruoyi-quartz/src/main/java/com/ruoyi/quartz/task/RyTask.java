@@ -55,4 +55,18 @@ public class RyTask
             }
         }
     }
+
+    /**
+     * 定时发送合同到期短信提醒
+     */
+    public void postMessage()
+    {
+        System.out.println("发送短信提醒");
+        BussinessContract bussinessContract = new BussinessContract();
+        List<BussinessContract> list=bussinessContractService.selectExportBussinessContract(bussinessContract);
+        int total=list.size();//即将过期的项目数量
+        //todo 调用发送短信的接口
+
+    }
+
 }

@@ -1,13 +1,16 @@
 package com.ruoyi.system.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.security.Md5Utils;
 import com.ruoyi.system.domain.Commission;
-import com.ruoyi.system.domain.SysUser;
-import org.apache.ibatis.annotations.Param;
+import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.service.ISysDictDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,8 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     private BussinessContractMapper bussinessContractMapper;
     @Autowired
     private CommissionServiceImpl commissionService;
+    @Autowired
+    private ISysDictDataService sysDictDataService;
 
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
@@ -166,5 +171,28 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条");
         }
         return successMsg.toString();
+    }
+
+    @Override
+    public List<BussinessContract> selectExportBussinessContract(BussinessContract bussinessContract) {
+        //查询合同到期提醒的天数
+        List<SysDictData> dicList=sysDictDataService.selectDictDataByType("sys_bussiness_notice");
+        String limitTime="0";
+        if(dicList.size()>0){
+            limitTime= dicList.get(0).getDictValue();
+        }
+        Long days=Long.valueOf(limitTime);
+        Date nowTime=new Date();
+        Long l=24*60*60*1000*days;
+        //合同提醒的起始时间
+        Date endTime=new Date(nowTime.getTime() + l);
+        Map<String, Object> params=new HashMap();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        params.put("beginEndTime",sdf.format(nowTime));
+        params.put("endEndTime",sdf.format(endTime));
+        bussinessContract.setParams(params);
+        bussinessContract.setStatus("0");
+        List<BussinessContract> list = this.selectBussinessContractList(bussinessContract);
+        return list;
     }
 }

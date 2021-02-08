@@ -75,4 +75,13 @@ public interface IBussinessContractService
      * @return:
      */
     public String importContract(List<BussinessContract> List);
+
+    /**
+     * 功能描述:查询即将过期的项目
+     * @author:
+     * @param:  * @param null
+     * @Date: 16:00 2021/2/3
+     * @return:
+     */
+    public List<BussinessContract> selectExportBussinessContract(BussinessContract bussinessContract);
 }
