@@ -102,4 +102,9 @@ public class CommissionServiceImpl implements ICommissionService
         return commissionMapper.selectCommissionByCode(contractCode);
     }
 
+    @Override
+    public int deleteCommissionByCode(String contractCode) {
+        return commissionMapper.deleteCommissionByCode(contractCode);
+    }
+
 }

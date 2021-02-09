@@ -66,4 +66,6 @@ public interface CommissionMapper
      * @return 结果
      */
     public int deleteCommissionByIds(String[] commissionIds);
+
+    public int deleteCommissionByCode(String contractCode);
 }

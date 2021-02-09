@@ -66,4 +66,6 @@ public interface ICommissionService
      * @return 手续费管理
      */
     public Commission selectCommissionByCode(String contractCode);
+
+    public int deleteCommissionByCode(String contractCode);
 }

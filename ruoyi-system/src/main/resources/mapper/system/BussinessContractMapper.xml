@@ -61,7 +61,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
-        order by end_time desc
+        order by create_time desc
+    </select>
+    <select id="selectBussinessContractListByIds" parameterType="String" resultMap="BussinessContractResult">
+        <include refid="selectBussinessContractVo"/>
+        <where>
+            contract_id in
+            <foreach item="contractId" collection="array" open="(" separator="," close=")">
+                #{contractId}
+            </foreach>
+        </where>
+        order by create_time desc
     </select>
 
     <select id="selectBussinessContractById" parameterType="Long" resultMap="BussinessContractResult">

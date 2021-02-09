@@ -42,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND bill_time &lt;= to_date(#{params.endBillTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectCommissionById" parameterType="Long" resultMap="CommissionResult">
@@ -102,6 +103,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <delete id="deleteCommissionById" parameterType="Long">
         delete from commission where COMMISSION_ID = #{commissionId}
+    </delete>
+
+    <delete id="deleteCommissionByCode" parameterType="String">
+        delete from commission where CONTRACT_CODE = #{contractCode}
     </delete>
 
     <delete id="deleteCommissionByIds" parameterType="String">

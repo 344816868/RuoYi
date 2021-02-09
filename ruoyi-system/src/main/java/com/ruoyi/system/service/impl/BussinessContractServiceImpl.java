@@ -83,6 +83,18 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         if(StringUtils.isNull(commission1)){
             commissionService.insertCommission(commission);
         }
+        bussinessContract.setStatus("0");//默认合同状态是正常的未过期的
+        //当前时间和合同截止时间比较
+        Long now=new Date().getTime();
+        Long endDateLong;
+        if(StringUtils.isNotNull(bussinessContract.getEndTime())){
+            endDateLong=bussinessContract.getEndTime().getTime();
+            //修改合同过期状态
+            if(now>endDateLong){
+                bussinessContract.setStatus("1");
+            }
+        }
+
         return bussinessContractMapper.insertBussinessContract(bussinessContract);
     }
 
@@ -95,6 +107,22 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public int updateBussinessContract(BussinessContract bussinessContract)
     {
+        //查询数据库中的旧数据
+        BussinessContract bussinessContract1=bussinessContractMapper.selectBussinessContractById(bussinessContract.getContractId());
+        if(!bussinessContract.getContractCode().equals(bussinessContract1.getContractCode()) || !bussinessContract.getContractName().equals(bussinessContract1.getContractName())){
+            //根据旧的项目编号查询发票信息
+            Commission commission=commissionService.selectCommissionByCode(bussinessContract1.getContractCode());
+            commission.setContractCode(bussinessContract.getContractCode());
+            commission.setContractName(bussinessContract.getContractName());
+            commissionService.updateCommission(commission);
+        }
+        //当前时间和合同截止时间比较
+        Long now=new Date().getTime();
+        Long endDateLong=bussinessContract.getEndTime().getTime();
+        //修改合同过期状态
+        if(now>endDateLong){
+            bussinessContract.setStatus("1");
+        }
         return bussinessContractMapper.updateBussinessContract(bussinessContract);
     }
 
@@ -107,6 +135,10 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public int deleteBussinessContractByIds(String ids)
     {
+        List<BussinessContract> list=bussinessContractMapper.selectBussinessContractListByIds(Convert.toStrArray(ids));
+        for(BussinessContract bussinessContract:list){
+            commissionService.deleteCommissionByCode(bussinessContract.getContractCode());
+        }
         return bussinessContractMapper.deleteBussinessContractByIds(Convert.toStrArray(ids));
     }
 
@@ -119,6 +151,10 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public int deleteBussinessContractById(Long contractId)
     {
+        //删除发票信息
+        BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractById(contractId);
+        Commission commission=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
+        commissionService.deleteCommissionById(commission.getCommissionId());
         return bussinessContractMapper.deleteBussinessContractById(contractId);
     }
 
