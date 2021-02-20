@@ -13,12 +13,6 @@ ruoyi:
   # 获取ip地址开关
   addressEnabled: false
 
-# 短信发送
-msgSend:
-  sendUrl :www.baidu.com
-  msgType: DX001
-
-
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为80

@@ -1,8 +1,12 @@
 package com.ruoyi.quartz.task;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.system.domain.BussinessContract;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.IBussinessContractService;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.utils.StringUtils;
@@ -20,6 +24,8 @@ public class RyTask
 {
     @Autowired
     private IBussinessContractService bussinessContractService;
+    @Autowired
+    private ISysUserService sysUserService;
 
     public void ryMultipleParams(String s, Boolean b, Long l, Double d, Integer i)
     {
@@ -65,7 +71,32 @@ public class RyTask
         BussinessContract bussinessContract = new BussinessContract();
         List<BussinessContract> list=bussinessContractService.selectExportBussinessContract(bussinessContract);
         int total=list.size();//即将过期的项目数量
-        //todo 调用发送短信的接口
+        if(total>0){
+            //需要发送短信的用户
+            List<SysUser> sysUsers=sysUserService.selectSendUserList("0");
+            if(sysUsers.size()>0){
+                JSONObject sendJson=new JSONObject();
+                int totalNum=sysUsers.size();
+                String [] userPhones=new String[totalNum];
+                for(int i=0;i<sysUsers.size();i++){
+                    JSONObject phoneJson=new JSONObject();
+                    phoneJson.put("reqSN",sysUsers.get(i).getPhonenumber());
+                    userPhones[i]=phoneJson.toJSONString();
+                }
+                String msgBody="有"+totalNum+"份项目合同即将到期";
+                sendJson.put("msgType","DX001");
+                sendJson.put("MsgBody",msgBody);
+                sendJson.put("transDate",DateUtils.dateTimeNow());
+                sendJson.put("totalNum",totalNum);
+                sendJson.put("dealList",userPhones);
+                String param=sendJson.toString();
+                System.out.println(param);
+                //调用发送短信的接口
+                String url="http://10.222.37.6:9001";
+                String result=HttpUtils.sendPost(url,param);
+                System.out.println(result);
+            }
+        }
 
     }
 

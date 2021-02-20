@@ -16,9 +16,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.sun.deploy.net.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
+import org.springframework.http.HttpEntity;
+import sun.net.www.http.HttpClient;
 
 /**
  * 通用http发送方法
@@ -176,6 +180,64 @@ public class HttpUtils
         }
         return result.toString();
     }
+
+//    /**
+//     * 通过post方式调用http接口
+//     * @param url     url路径
+//     * @param jsonParam    json格式的参数
+//     * @param reSend     重发次数
+//     * @return
+//     * @throws Exception
+//     */
+//    public static String sendPostByJson(String url, String jsonParam,int reSend) {
+//        //声明返回结果
+//        String result = "";
+//        //开始请求API接口时间
+//        long startTime=System.currentTimeMillis();
+//        //请求API接口的响应时间
+//        long endTime= 0L;
+//        HttpEntity httpEntity = null;
+//        HttpResponse httpResponse = null;
+//        HttpClient httpClient = null;
+//        try {
+//            // 创建连接
+//            httpClient = HttpClientFactory.getInstance().getHttpClient();
+//            // 设置请求头和报文
+//            HttpPost httpPost = HttpClientFactory.getInstance().httpPost(url);
+//            Header header=new BasicHeader("Accept-Encoding",null);
+//            httpPost.setHeader(header);
+//            // 设置报文和通讯格式
+//            StringEntity stringEntity = new StringEntity(jsonParam,HttpConstant.UTF8_ENCODE);
+//            stringEntity.setContentEncoding(HttpConstant.UTF8_ENCODE);
+//            stringEntity.setContentType(HttpConstant.APPLICATION_JSON);
+//            httpPost.setEntity(stringEntity);
+//            logger.info("请求{}接口的参数为{}",url,jsonParam);
+//            //执行发送，获取相应结果
+//            httpResponse = httpClient.execute(httpPost);
+//            httpEntity= httpResponse.getEntity();
+//            result = EntityUtils.toString(httpEntity);
+//        } catch (Exception e) {
+//            logger.error("请求{}接口出现异常",url,e);
+//            if (reSend > 0) {
+//                logger.info("请求{}出现异常:{}，进行重发。进行第{}次重发",url,e.getMessage(),(HttpConstant.REQ_TIMES-reSend +1));
+//                result = sendPostByJson(url, jsonParam, reSend - 1);
+//                if (result != null && !"".equals(result)) {
+//                    return result;
+//                }
+//            }
+//        }finally {
+//            try {
+//                EntityUtils.consume(httpEntity);
+//            } catch (IOException e) {
+//                logger.error("http请求释放资源异常",e);
+//            }
+//        }
+//        //请求接口的响应时间
+//        endTime=System.currentTimeMillis();
+//        logger.info("请求{}接口的响应报文内容为{},本次请求API接口的响应时间为:{}毫秒",url,result,(endTime-startTime));
+//        return result;
+//
+//    }
 
     public static String sendSSLPost(String url, String param)
     {
