@@ -85,6 +85,10 @@ public class SysUser extends BaseEntity
     /** 密码最后更新时间 */
     private Date pwdUpdateDate;
 
+    /** 最后登录IP */
+    @Excel(name = "短信提醒", readConverterExp = "0=开启,1=不开启")
+    private String send;
+
     /** 部门对象 */
     @Excels({
         @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
@@ -351,6 +355,14 @@ public class SysUser extends BaseEntity
         this.postIds = postIds;
     }
 
+    public String getSend() {
+        return send;
+    }
+
+    public void setSend(String send) {
+        this.send = send;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -374,6 +386,7 @@ public class SysUser extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("send", getSend())
             .append("dept", getDept())
 			.append("roles", getRoles())
             .toString();
