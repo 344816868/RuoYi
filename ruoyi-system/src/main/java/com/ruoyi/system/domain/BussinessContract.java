@@ -38,8 +38,8 @@ public class BussinessContract extends BaseEntity
     @Excel(name = "收费单位")
     private String chargeUnit;
 
-    /** 项目状态（0上线 1下线 2暂停 3其他） */
-    @Excel(name = "项目状态", readConverterExp = "0=上线,1=下线,2=暂停,3=其他")
+    /** 项目状态（0上线 1下线 2暂停 3其他，4长期暂停） */
+    @Excel(name = "项目状态", readConverterExp = "0=上线,1=未下线,2=暂停,3=其他,4=长期暂停")
     private String contractStatus;
 
     /** 代理行前置码 */
@@ -129,6 +129,67 @@ public class BussinessContract extends BaseEntity
     /** 文件路径 */
 //    @Excel(name = "文件路径")
     private String filePath;
+
+    /** 手续费应收金额 */
+    @Excel(name = "应收金额")
+    private String receivable;
+
+    /** 手续费实收金额 */
+    @Excel(name = "实收金额")
+    private String fundsReceived;
+
+    /** 手续费待收金额 */
+    @Excel(name = "待收金额")
+    private String fundsSurplus;
+
+    /** 联系人 */
+    @Excel(name = "联系人")
+    private String linkman;
+
+    /** 联系方式 */
+    @Excel(name = "联系方式")
+    private String phone;
+
+
+    public String getReceivable() {
+        return receivable;
+    }
+
+    public void setReceivable(String receivable) {
+        this.receivable = receivable;
+    }
+
+    public String getFundsReceived() {
+        return fundsReceived;
+    }
+
+    public void setFundsReceived(String fundsReceived) {
+        this.fundsReceived = fundsReceived;
+    }
+
+    public String getFundsSurplus() {
+        return fundsSurplus;
+    }
+
+    public void setFundsSurplus(String fundsSurplus) {
+        this.fundsSurplus = fundsSurplus;
+    }
+
+    public String getLinkman() {
+        return linkman;
+    }
+
+    public void setLinkman(String linkman) {
+        this.linkman = linkman;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public Long getContractId() {
         return contractId;

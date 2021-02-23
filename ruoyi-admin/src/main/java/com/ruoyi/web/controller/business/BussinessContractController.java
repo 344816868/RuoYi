@@ -98,7 +98,7 @@ public class BussinessContractController extends BaseController
     public TableDataInfo expireList(BussinessContract bussinessContract)
     {
         startPage();
-        List<BussinessContract> list = bussinessContractService.selectExportBussinessContract(bussinessContract);
+        List<BussinessContract> list = bussinessContractService.selectExpireBussinessContract(bussinessContract);
         return getDataTable(list);
     }
 
@@ -111,7 +111,32 @@ public class BussinessContractController extends BaseController
     @ResponseBody
     public AjaxResult export(BussinessContract bussinessContract)
     {
-        List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
+        List<BussinessContract> list = bussinessContractService.selectExportBussinessContractList(bussinessContract);
+        for (BussinessContract bussinessContract1: list) {
+            //合并手续费收取方式
+            String dictLabel=sysDictDataService.selectDictLabel("commission_way",bussinessContract1.getCommissionWay());
+            String zh=dictLabel+"|"+bussinessContract1.getCommissionScale()+"|"+bussinessContract1.getCommissionNorm();
+            bussinessContract1.setCommissionWay1(zh);
+            //转换项目类别
+            if(StringUtils.isNotEmpty(bussinessContract1.getContractType())){
+                String Label=sysDictDataService.selectDictLabel("contract_type",bussinessContract1.getContractType());
+                bussinessContract1.setContractType(Label);
+            }
+        }
+        ExcelUtil<BussinessContract> util = new ExcelUtil<BussinessContract>(BussinessContract.class);
+        return util.exportExcel(list, "项目基本信息");
+    }
+
+    /**
+     * 导出合同管理列表
+     */
+   @RequiresPermissions("business:contract:export")
+    @Log(title = "合同管理", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportExpire")
+    @ResponseBody
+    public AjaxResult exportExpire(BussinessContract bussinessContract)
+    {
+        List<BussinessContract> list = bussinessContractService.selectExpireBussinessContract(bussinessContract);
         for (BussinessContract bussinessContract1: list) {
             //合并手续费收取方式
             String dictLabel=sysDictDataService.selectDictLabel("commission_way",bussinessContract1.getCommissionWay());

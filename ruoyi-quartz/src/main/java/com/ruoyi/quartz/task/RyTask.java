@@ -69,7 +69,7 @@ public class RyTask
     {
         System.out.println("发送短信提醒");
         BussinessContract bussinessContract = new BussinessContract();
-        List<BussinessContract> list=bussinessContractService.selectExportBussinessContract(bussinessContract);
+        List<BussinessContract> list=bussinessContractService.selectExpireBussinessContract(bussinessContract);
         int total=list.size();//即将过期的项目数量
         if(total>0){
             //需要发送短信的用户

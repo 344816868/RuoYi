@@ -67,6 +67,11 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         return bussinessContractMapper.selectBussinessContractList(bussinessContract);
     }
 
+    @Override
+    public List<BussinessContract> selectExportBussinessContractList(BussinessContract bussinessContract) {
+        return bussinessContractMapper.selectExportBussinessContractList(bussinessContract);
+    }
+
     /**
      * 新增合同管理
      * 
@@ -76,13 +81,18 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public int insertBussinessContract( BussinessContract bussinessContract)
     {
-        Commission commission1=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
+    //    Commission commission1=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
         Commission commission = new Commission();
         commission.setContractCode(bussinessContract.getContractCode());
         commission.setContractName(bussinessContract.getContractName());
-        if(StringUtils.isNull(commission1)){
-            commissionService.insertCommission(commission);
-        }
+        commission.setReceivable(bussinessContract.getReceivable());//应收
+        commission.setFundsReceived(bussinessContract.getFundsReceived());//实收
+        commission.setFundsSurplus(bussinessContract.getFundsSurplus());//待收
+     //   if(StringUtils.isNull(commission1)){
+//            commissionService.insertCommission(commission);
+//        }
+        //添加手续费信息
+        commissionService.insertCommission(commission);
         bussinessContract.setStatus("0");//默认合同状态是正常的未过期的
         //当前时间和合同截止时间比较
         Long now=new Date().getTime();
@@ -116,12 +126,25 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             commission.setContractName(bussinessContract.getContractName());
             commissionService.updateCommission(commission);
         }
+
         //当前时间和合同截止时间比较
         Long now=new Date().getTime();
-        Long endDateLong=bussinessContract.getEndTime().getTime();
-        //修改合同过期状态
-        if(now>endDateLong){
-            bussinessContract.setStatus("1");
+        Long endDateLong =bussinessContract.getEndTime().getTime();;
+        if(StringUtils.isNotNull(bussinessContract.getEndTime())){
+            //修改合同过期状态
+            if(now>endDateLong){
+                bussinessContract.setStatus("1");
+            }
+        }
+        //判断是否续约，续约就会增加一条手续费信息
+        if(StringUtils.isNotNull(bussinessContract1.getEndTime())){
+            Long oldEndDateLong=bussinessContract1.getEndTime().getTime();
+            if(endDateLong>oldEndDateLong){
+                Commission commission1=new Commission();
+                commission1.setContractCode(bussinessContract.getContractCode());
+                commission1.setContractName(bussinessContract.getContractName());
+                commissionService.insertCommission(commission1);
+            }
         }
         return bussinessContractMapper.updateBussinessContract(bussinessContract);
     }
@@ -210,7 +233,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     }
 
     @Override
-    public List<BussinessContract> selectExportBussinessContract(BussinessContract bussinessContract) {
+    public List<BussinessContract> selectExpireBussinessContract(BussinessContract bussinessContract) {
         //查询合同到期提醒的天数
         List<SysDictData> dicList=sysDictDataService.selectDictDataByType("sys_bussiness_notice");
         String limitTime="0";
@@ -228,7 +251,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         params.put("endEndTime",sdf.format(endTime));
         bussinessContract.setParams(params);
         bussinessContract.setStatus("0");
-        List<BussinessContract> list = this.selectBussinessContractList(bussinessContract);
+        List<BussinessContract> list = this.selectExportBussinessContractList(bussinessContract);
         return list;
     }
 }

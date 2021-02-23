@@ -40,9 +40,9 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">-->
-<!--                    <i class="fa fa-plus"></i> 添加-->
-<!--                </a>-->
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:commission:edit">
                     <i class="fa fa-edit"></i> 修改
                 </a>
@@ -69,7 +69,7 @@
         $(function() {
             var options = {
                 url: prefix + "/list",
-            //    createUrl: prefix + "/add",
+                createUrl: prefix + "/add",
                 updateUrl: prefix + "/edit/{id}",
             //    removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
@@ -89,6 +89,21 @@
                 {
                     field: 'contractName',
                     title: '项目名称',
+                    align: 'center'
+                },
+                 {
+                    field: 'receivable',
+                    title: '应收金额',
+                    align: 'center'
+                },
+                 {
+                    field: 'fundsReceived',
+                    title: '实收金额',
+                    align: 'center'
+                },
+                 {
+                    field: 'fundsSurplus',
+                    title: '待收金额',
                     align: 'center'
                 },
                 {
@@ -127,6 +142,7 @@
                         var more = [];
                         more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionPDF(" + row.commissionId + ")' ><i class='fa fa-file-pdf-o'></i>预览</a> ");
                         more.push("<a class='btn btn-default btn-xs ' href='javascript:void(0)' onclick='downloadFile(" + row.commissionId + ")'><i class='fa fa-download'></i>下载</a>");
+                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionInfo(" + row.contractCode + ")'><i class='fa fa-book'></i>发票详情</a>");
                         actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>更多操作</a>');
                         return actions.join('');
                     }
@@ -144,6 +160,13 @@
             var commissionId=value;
             var url = prefix + '/commissionPDF/' + commissionId;
             $.modal.open("发票PDF预览", url);
+        }
+        /* 查看发票信息 */
+        function getCommissionInfo(value) {
+            var contractCode=value;
+            var url = prefix + '/info/' + contractCode;
+            //   $.modal.open("发票详情", url);
+            $.modal.openTab("发票详情", url);
         }
     </script>
 </body>

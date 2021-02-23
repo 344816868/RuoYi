@@ -37,6 +37,14 @@ public interface IBussinessContractService
     public List<BussinessContract> selectBussinessContractList(BussinessContract bussinessContract);
 
     /**
+     * 导出项目信息列表
+     *
+     * @param bussinessContract 合同管理
+     * @return 合同管理集合
+     */
+    public List<BussinessContract> selectExportBussinessContractList(BussinessContract bussinessContract);
+
+    /**
      * 新增合同管理
      * 
      * @param bussinessContract 合同管理
@@ -83,5 +91,5 @@ public interface IBussinessContractService
      * @Date: 16:00 2021/2/3
      * @return:
      */
-    public List<BussinessContract> selectExportBussinessContract(BussinessContract bussinessContract);
+    public List<BussinessContract> selectExpireBussinessContract(BussinessContract bussinessContract);
 }

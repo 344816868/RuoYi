@@ -34,11 +34,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractTime"    column="contract_time"    />
         <result property="contractCount"    column="contract_count"    />
         <result property="empowerTime"    column="empower_time"    />
+        <result property="linkman"    column="linkman"    />
+        <result property="phone"    column="phone"    />
+        <result property="receivable"    column="receivable"    />
+        <result property="fundsReceived"    column="funds_received"    />
+        <result property="fundsSurplus"    column="funds_surplus"    />
     </resultMap>
 
     <sql id="selectBussinessContractVo">
         SELECT contract_id,contract_code,contract_name,contract_type,sys_company_name,charge_unit,contract_status,agent_code,agent_bank_name,deposit_bank_code,deposit_bank_name,market_bank_code,market_bank_name,isopen,client_code,checking_accout,commission_way,commission_scale,commission_norm,fund_way,contract_name_child,contract_time,contract_count,empower_time,sign_time,end_time,status,remark,
-	file_path from bussiness_contract
+	file_path,linkman,phone from bussiness_contract
     </sql>
 
     <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
@@ -63,6 +68,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by create_time desc
     </select>
+
+    <select id="selectExportBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
+        SELECT a.contract_id,a.contract_code,a.contract_name,a.contract_type,a.sys_company_name,a.charge_unit,a.contract_status,a.agent_code,a.agent_bank_name,a.deposit_bank_code,a.deposit_bank_name,a.market_bank_code,a.market_bank_name,a.isopen,a.client_code,a.checking_accout,a.commission_way,a.commission_scale,a.commission_norm,a.fund_way,a.contract_name_child,a.contract_time,a.contract_count,a.empower_time,a.sign_time,a.end_time,a.status,a.remark,
+        a.file_path,a.linkman,a.phone,
+        b.receivable,b.funds_received,b.receivable - b.funds_received FUNDS_SURPLUS
+        FROM
+        BUSSINESS_CONTRACT a
+        JOIN ( SELECT CONTRACT_CODE, SUM( RECEIVABLE ) RECEIVABLE, sum( FUNDS_RECEIVED ) FUNDS_RECEIVED  FROM COMMISSION GROUP BY CONTRACT_CODE ) b ON a.CONTRACT_CODE = b.CONTRACT_CODE
+        <where>
+            <if test="contractCode != null  and contractCode != ''"> and a.contract_code = #{contractCode}</if>
+            <if test="contractStatus != null "> and a.contract_status = #{contractStatus}</if>
+            <if test="contractName!= null  and contractName != ''"> and a.contract_name = #{contractName}</if>
+            <if test="params.beginSignTime != null and params.beginSignTime != ''">
+                AND a.sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endSignTime != null and params.endSignTime != ''">
+                AND a.sign_time &lt;= to_date(#{params.endSignTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.beginEndTime != null and params.beginEndTime != ''">
+                AND a.end_time &gt;= to_date(#{params.beginEndTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endEndTime != null and params.endEndTime != ''">
+                AND a.end_time &lt;= to_date(#{params.endEndTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="status != null  and status != ''"> and a.status = #{status}</if>
+        </where>
+        order by a.create_time desc
+    </select>
+
     <select id="selectBussinessContractListByIds" parameterType="String" resultMap="BussinessContractResult">
         <include refid="selectBussinessContractVo"/>
         <where>
@@ -119,6 +153,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractTime != null">contract_time,</if>
             <if test="contractCount != null">contract_count,</if>
             <if test="empowerTime != null">empower_time,</if>
+            <if test="linkman != null">linkman,</if>
+            <if test="phone != null">phone,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -151,6 +187,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractTime != null">#{contractTime},</if>
             <if test="contractCount != null">#{contractCount},</if>
             <if test="empowerTime != null">#{empowerTime},</if>
+            <if test="linkman != null">#{linkman},</if>
+            <if test="phone != null">#{phone},</if>
             sysdate
         </trim>
     </insert>
@@ -186,6 +224,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractTime != null">contract_time = #{contractTime},</if>
             <if test="contractCount != null">contract_count = #{contractCount},</if>
             <if test="empowerTime != null">empower_time = #{empowerTime},</if>
+            <if test="linkman != null">linkman = #{linkman},</if>
+            <if test="phone != null">phone = #{phone},</if>
         </trim>
         where contract_id = #{contractId}
     </update>

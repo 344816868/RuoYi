@@ -91,7 +91,7 @@ public class CommissionController extends BaseController
     public TableDataInfo infoList(Commission commission)
     {
         startPage();
-        List<Commission> list = commissionService.selectCommissionList(commission);
+        List<Commission> list = commissionService.selectCommissionInfoList(commission);
         return getDataTable(list);
     }
     /**
@@ -103,7 +103,7 @@ public class CommissionController extends BaseController
     @ResponseBody
     public AjaxResult export(Commission commission)
     {
-        List<Commission> list = commissionService.selectCommissionList(commission);
+        List<Commission> list = commissionService.selectCommissionInfoList(commission);
         ExcelUtil<Commission> util = new ExcelUtil<Commission>(Commission.class);
         return util.exportExcel(list, "手续费发票信息");
     }

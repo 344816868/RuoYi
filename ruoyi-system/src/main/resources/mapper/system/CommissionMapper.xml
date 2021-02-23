@@ -14,14 +14,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="billTime"    column="bill_time"    />
         <result property="billRemark"    column="bill_remark"    />
         <result property="filePath"    column="file_path"    />
+        <result property="receivable"    column="receivable"    />
+        <result property="fundsReceived"    column="funds_received"    />
+        <result property="fundsSurplus"    column="funds_surplus"    />
     </resultMap>
 
     <sql id="selectCommissionVo">
-        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path from commission
+        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path, receivable, funds_received,receivable - funds_received funds_surplus from commission
     </sql>
 
 
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
+        SELECT
+        a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
+        a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus
+        FROM
+        commission a
+        JOIN ( SELECT contract_code, SUM( receivable ) receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission GROUP BY contract_code ) b ON a.contract_code = b.contract_code
+        AND a.create_time =b.create_time
+        <where>
+            <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
+            <if test="contractName != null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
+            <if test="isbill != null  and isbill != ''"> and a.isbill like concat(concat('%', #{isbill}), '%')</if>
+            <if test="commissionTime != null "> and a.commission_time like concat(concat('%', #{commissionTime}), '%')</if>
+            <if test="billTime != null "> and a.bill_time like concat(concat('%', #{billTime}), '%')</if>
+            <if test="params.beginCommissionTime != null and params.beginCommissionTime != ''">
+                AND a.commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endCommissionTime != null and params.endCommissionTime != ''">
+                AND a.commission_time &lt;= to_date(#{params.endCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.beginBillTime != null and params.beginBillTime != ''">
+                AND a.bill_time &gt;= to_date(#{params.beginBillTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endBillTime != null and params.endBillTime != ''">
+                AND a.bill_time &lt;= to_date(#{params.endBillTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectCommissionInfoList" parameterType="Commission" resultMap="CommissionResult">
         <include refid="selectCommissionVo"/>
         <where>
             <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
@@ -70,6 +103,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="billTime != null">BILL_TIME,</if>
             <if test="billRemark != null">BILL_REMARK,</if>
             <if test="filePath != null">FILE_PATH,</if>
+            <if test="receivable != null">RECEIVABLE,</if>
+            <if test="fundsReceived != null">FUNDS_RECEIVED,</if>
+            <if test="fundsSurplus != null">FUNDS_SURPLUS,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -82,6 +118,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="billTime != null">#{billTime},</if>
             <if test="billRemark != null">#{billRemark},</if>
             <if test="filePath != null">#{filePath},</if>
+            <if test="receivable != null">#{receivable},</if>
+            <if test="fundsReceived != null">#{fundsReceived},</if>
+            <if test="fundsSurplus != null">#{fundsSurplus},</if>
             sysdate
         </trim>
     </insert>
@@ -97,6 +136,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="billTime != null">BILL_TIME = #{billTime},</if>
             <if test="billRemark != null">BILL_REMARK = #{billRemark},</if>
             <if test="filePath != null">FILE_PATH = #{filePath},</if>
+            <if test="receivable != null">RECEIVABLE = #{receivable},</if>
+            <if test="fundsReceived != null">FUNDS_RECEIVED = #{fundsReceived},</if>
+            <if test="fundsSurplus != null">FUNDS_SURPLUS = #{fundsSurplus},</if>
         </trim>
         where COMMISSION_ID = #{commissionId}
     </update>

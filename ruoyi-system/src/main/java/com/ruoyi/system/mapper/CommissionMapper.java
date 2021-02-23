@@ -34,6 +34,13 @@ public interface CommissionMapper
      * @return 手续费管理集合
      */
     public List<Commission> selectCommissionList(Commission commission);
+    /**
+     * 查询手续费管理列表
+     *
+     * @param commission 手续费管理
+     * @return 手续费管理集合
+     */
+    public List<Commission> selectCommissionInfoList(Commission commission);
 
     /**
      * 新增手续费管理

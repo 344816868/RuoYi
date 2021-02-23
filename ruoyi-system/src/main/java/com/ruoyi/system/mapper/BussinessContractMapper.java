@@ -34,9 +34,16 @@ public interface BussinessContractMapper
      */
     public List<BussinessContract> selectBussinessContractList(BussinessContract bussinessContract);
     /**
+     * 导出项目信息列表
+     *
+     * @param bussinessContract 合同管理
+     * @return 合同管理集合
+     */
+    public List<BussinessContract> selectExportBussinessContractList(BussinessContract bussinessContract);
+    /**
      * 查询合同管理列表
      *
-     * @param ids 合同管理
+     * @param contractIds 合同管理
      * @return 合同管理集合
      */
     public List<BussinessContract> selectBussinessContractListByIds(String[] contractIds);

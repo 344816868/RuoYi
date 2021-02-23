@@ -44,6 +44,11 @@ public class CommissionServiceImpl implements ICommissionService
         return commissionMapper.selectCommissionList(commission);
     }
 
+    @Override
+    public List<Commission> selectCommissionInfoList(Commission commission) {
+        return commissionMapper.selectCommissionInfoList(commission);
+    }
+
     /**
      * 新增手续费管理
      * 

@@ -52,6 +52,42 @@ public class Commission extends BaseEntity
 
     private String filePath ; //发票存储路径
 
+    /** 手续费应收金额 */
+    @Excel(name = "应收金额")
+    private String receivable;
+
+    /** 手续费实收金额 */
+    @Excel(name = "实收金额")
+    private String fundsReceived;
+
+    /** 手续费待收金额 */
+    @Excel(name = "待收金额")
+    private String fundsSurplus;
+
+    public String getReceivable() {
+        return receivable;
+    }
+
+    public void setReceivable(String receivable) {
+        this.receivable = receivable;
+    }
+
+    public String getFundsReceived() {
+        return fundsReceived;
+    }
+
+    public void setFundsReceived(String fundsReceived) {
+        this.fundsReceived = fundsReceived;
+    }
+
+    public String getFundsSurplus() {
+        return fundsSurplus;
+    }
+
+    public void setFundsSurplus(String fundsSurplus) {
+        this.fundsSurplus = fundsSurplus;
+    }
+
     public String getFilePath() {
         return filePath;
     }
