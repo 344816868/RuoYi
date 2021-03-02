@@ -109,6 +109,18 @@ public class CommissionController extends BaseController
     }
 
     /**
+     * 导出excel模板
+     * @return
+     */
+    @RequiresPermissions("business:commission:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<Commission> util = new ExcelUtil<Commission>(Commission.class);
+        return util.importTemplateExcel("手续费信息");
+    }
+    /**
      * 新增手续费管理
      */
     @GetMapping("/add")
