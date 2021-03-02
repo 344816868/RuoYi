@@ -8,8 +8,10 @@ import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.BussinessFile;
 import com.ruoyi.system.domain.Commission;
 import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.service.IBussinessFileService;
 import com.ruoyi.system.service.ISysDictDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,8 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     private CommissionServiceImpl commissionService;
     @Autowired
     private ISysDictDataService sysDictDataService;
+    @Autowired
+    private IBussinessFileService bussinessFileService;
 
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
@@ -109,6 +113,34 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     }
 
     /**
+     * 导入添加项目信息
+     * @param bussinessContract 合同管理
+     * @return
+     */
+    public int importInsertBussinessContract( BussinessContract bussinessContract)
+    {
+        //添加合同文件基本信息
+        BussinessFile bussinessFile = new BussinessFile();
+        bussinessFile.setContractCode(bussinessContract.getContractCode());
+        bussinessFile.setContractName(bussinessContract.getContractName());
+        bussinessFileService.insertBussinessFile(bussinessFile);
+
+        bussinessContract.setStatus("0");//默认合同状态是正常的未过期的
+        //当前时间和合同截止时间比较
+        Long now=new Date().getTime();
+        Long endDateLong;
+        if(StringUtils.isNotNull(bussinessContract.getEndTime())){
+            endDateLong=bussinessContract.getEndTime().getTime();
+            //修改合同过期状态
+            if(now>endDateLong){
+                bussinessContract.setStatus("1");
+            }
+        }
+
+        return bussinessContractMapper.insertBussinessContract(bussinessContract);
+    }
+
+    /**
      * 修改合同管理
      * 
      * @param bussinessContract 合同管理
@@ -160,7 +192,8 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     {
         List<BussinessContract> list=bussinessContractMapper.selectBussinessContractListByIds(Convert.toStrArray(ids));
         for(BussinessContract bussinessContract:list){
-            commissionService.deleteCommissionByCode(bussinessContract.getContractCode());
+            commissionService.deleteCommissionByCode(bussinessContract.getContractCode());//删除发票
+            bussinessFileService.deleteBussinessFileByCode(bussinessContract.getContractCode());//删除合同
         }
         return bussinessContractMapper.deleteBussinessContractByIds(Convert.toStrArray(ids));
     }
@@ -176,8 +209,9 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     {
         //删除发票信息
         BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractById(contractId);
-        Commission commission=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
-        commissionService.deleteCommissionById(commission.getCommissionId());
+    //    Commission commission=commissionService.selectCommissionByCode(bussinessContract.getContractCode());
+        commissionService.deleteCommissionByCode(bussinessContract.getContractCode());//删除发票信息
+        bussinessFileService.deleteBussinessFileByCode(bussinessContract.getContractCode());//删除合同信息
         return bussinessContractMapper.deleteBussinessContractById(contractId);
     }
 
@@ -204,7 +238,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             {
                 BussinessContract bussinessContract1=this.selectBussinessContractByCode(bussinessContract.getContractCode());
                 if (StringUtils.isNull(bussinessContract1)){
-                    this.insertBussinessContract(bussinessContract);
+                    this.importInsertBussinessContract(bussinessContract);
                 }else{
                     this.updateBussinessContract(bussinessContract);
                 }

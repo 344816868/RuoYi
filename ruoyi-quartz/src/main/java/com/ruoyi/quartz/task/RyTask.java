@@ -1,12 +1,17 @@
 package com.ruoyi.quartz.task;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.IBussinessContractService;
 import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.impl.SysUserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.utils.StringUtils;
@@ -26,6 +31,7 @@ public class RyTask
     private IBussinessContractService bussinessContractService;
     @Autowired
     private ISysUserService sysUserService;
+    private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     public void ryMultipleParams(String s, Boolean b, Long l, Double d, Integer i)
     {
@@ -65,6 +71,7 @@ public class RyTask
     /**
      * 定时发送合同到期短信提醒
      */
+    @Log(title = "定时发送短信", businessType = BusinessType.OTHER)
     public void postMessage()
     {
         System.out.println("发送短信提醒");
@@ -94,6 +101,7 @@ public class RyTask
                 //调用发送短信的接口
                 String url="http://10.222.37.6:9001";
                 String result=HttpUtils.sendPost(url,param);
+                log.info("调用接口结果"+result);
                 System.out.println(result);
             }
         }

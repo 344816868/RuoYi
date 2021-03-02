@@ -17,10 +17,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="receivable"    column="receivable"    />
         <result property="fundsReceived"    column="funds_received"    />
         <result property="fundsSurplus"    column="funds_surplus"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="bankNum"    column="bank_num"    />
+        <result property="text1"    column="text1"    />
+        <result property="text2"    column="text2"    />
     </resultMap>
 
     <sql id="selectCommissionVo">
-        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path, receivable, funds_received,receivable - funds_received funds_surplus from commission
+        select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path, receivable, funds_received,receivable - funds_received funds_surplus,start_time,end_time,bank_num,text1,text2 from commission
     </sql>
 
 
@@ -106,6 +111,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="receivable != null">RECEIVABLE,</if>
             <if test="fundsReceived != null">FUNDS_RECEIVED,</if>
             <if test="fundsSurplus != null">FUNDS_SURPLUS,</if>
+            <if test="startTime != null">START_TIME,</if>
+            <if test="endTime != null">END_TIME,</if>
+            <if test="bankNum != null">BANK_NUM,</if>
+            <if test="text1 != null">TEXT1,</if>
+            <if test="text2 != null">TEXT2,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -121,6 +131,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="receivable != null">#{receivable},</if>
             <if test="fundsReceived != null">#{fundsReceived},</if>
             <if test="fundsSurplus != null">#{fundsSurplus},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="bankNum != null">#{bankNum},</if>
+            <if test="text1 != null">#{text1},</if>
+            <if test="text2 != null">#{text2},</if>
             sysdate
         </trim>
     </insert>
@@ -139,6 +154,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="receivable != null">RECEIVABLE = #{receivable},</if>
             <if test="fundsReceived != null">FUNDS_RECEIVED = #{fundsReceived},</if>
             <if test="fundsSurplus != null">FUNDS_SURPLUS = #{fundsSurplus},</if>
+            <if test="startTime != null">START_TIME = #{startTime},</if>
+            <if test="endTime != null">END_TIME = #{endTime},</if>
+            <if test="bankNum != null">BANK_NUM = #{bankNum},</if>
+            <if test="text1 != null">TEXT1 = #{text1},</if>
+            <if test="text2 != null">TEXT2 = #{text2},</if>
         </trim>
         where COMMISSION_ID = #{commissionId}
     </update>

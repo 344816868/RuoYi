@@ -17,12 +17,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.sun.deploy.net.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
-import org.springframework.http.HttpEntity;
-import sun.net.www.http.HttpClient;
 
 /**
  * 通用http发送方法

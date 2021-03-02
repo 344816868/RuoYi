@@ -4,8 +4,8 @@
     <th:block th:include="include :: header('合同PDF预览')" />
 </head>
 <body class="gray-bg">
-    <input id="roleId"  type="hidden" th:field="*{contract.contractId}"/>
-    <input id="filePath" type="hidden" th:field="*{contract.filePath}"/>
+    <input id="roleId"  type="hidden" th:field="*{bussinessFile.fileId}"/>
+    <input id="filePath" type="hidden" th:field="*{bussinessFile.filePath}"/>
     <div id="handout_wrap_inner"></div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">

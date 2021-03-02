@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BussinessFileMapper">
+    
+    <resultMap type="BussinessFile" id="BussinessFileResult">
+        <result property="fileId"    column="file_id"    />
+        <result property="contractCode"    column="contract_code"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileRemark"    column="file_remark"    />
+    </resultMap>
+
+    <sql id="selectBussinessFileVo">
+        select file_id, contract_code, contract_name, upload_time, create_time, file_path, file_remark from bussiness_file
+    </sql>
+
+    <select id="selectBussinessFileList" parameterType="BussinessFile" resultMap="BussinessFileResult">
+        <include refid="selectBussinessFileVo"/>
+        <where>  
+            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="fileRemark != null  and fileRemark != ''"> and file_remark = #{fileRemark}</if>
+        </where>
+    </select>
+    
+    <select id="selectBussinessFileById" parameterType="Long" resultMap="BussinessFileResult">
+        <include refid="selectBussinessFileVo"/>
+        where file_id = #{fileId}
+    </select>
+        
+    <insert id="insertBussinessFile" parameterType="BussinessFile" useGeneratedKeys="true" keyProperty="fileId">
+        <selectKey keyProperty="fileId" order="BEFORE" resultType="Long">
+            select seq_bussiness_file.nextval as fileId from DUAL
+        </selectKey>
+        insert into bussiness_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileId != null and fileId != 0">file_id,</if>
+            <if test="contractCode != null">contract_code,</if>
+            <if test="contractName != null">contract_name,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="fileRemark != null">file_remark,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileId != null">#{fileId},</if>
+            <if test="contractCode != null">#{contractCode},</if>
+            <if test="contractName != null">#{contractName},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="fileRemark != null">#{fileRemark},</if>
+            sysdate
+         </trim>
+    </insert>
+
+    <update id="updateBussinessFile" parameterType="BussinessFile">
+        update bussiness_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">contract_code = #{contractCode},</if>
+            <if test="contractName != null">contract_name = #{contractName},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileRemark != null">file_remark = #{fileRemark},</if>
+        </trim>
+        where file_id = #{fileId}
+    </update>
+
+    <delete id="deleteBussinessFileById" parameterType="Long">
+        delete from bussiness_file where file_id = #{fileId}
+    </delete>
+
+    <delete id="deleteBussinessFileByIds" parameterType="String">
+        delete from bussiness_file where file_id in 
+        <foreach item="fileId" collection="array" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBussinessFileByCode" parameterType="String">
+        delete from bussiness_file where CONTRACT_CODE = #{contractCode}
+    </delete>
+
+</mapper>

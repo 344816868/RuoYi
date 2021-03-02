@@ -64,6 +64,64 @@ public class Commission extends BaseEntity
     @Excel(name = "待收金额")
     private String fundsSurplus;
 
+    /** 手续费收取开始时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "收取开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date startTime;
+
+    /** 手续费收取结束时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "收取结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date endTime;
+
+    /** 收款银行账号 */
+    @Excel(name = "收款银行账号")
+    private String bankNum;
+
+    private String text1;
+
+    private String text2; //
+
+    public String getText1() {
+        return text1;
+    }
+
+    public void setText1(String text1) {
+        this.text1 = text1;
+    }
+
+    public String getText2() {
+        return text2;
+    }
+
+    public void setText2(String text2) {
+        this.text2 = text2;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getBankNum() {
+        return bankNum;
+    }
+
+    public void setBankNum(String bankNum) {
+        this.bankNum = bankNum;
+    }
+
     public String getReceivable() {
         return receivable;
     }
@@ -171,15 +229,24 @@ public class Commission extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("commissionId", getCommissionId())
-            .append("contractCode", getContractCode())
-            .append("contractName", getContractName())
-            .append("isbill", getIsbill())
-            .append("commissionTime", getCommissionTime())
-            .append("commissionRemark", getCommissionRemark())
-            .append("billTime", getBillTime())
-            .append("billRemark", getBillRemark())
-            .toString();
+        return "Commission{" +
+                "commissionId=" + commissionId +
+                ", contractCode='" + contractCode + '\'' +
+                ", contractName='" + contractName + '\'' +
+                ", isbill='" + isbill + '\'' +
+                ", commissionTime=" + commissionTime +
+                ", commissionRemark='" + commissionRemark + '\'' +
+                ", billTime=" + billTime +
+                ", billRemark='" + billRemark + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", receivable='" + receivable + '\'' +
+                ", fundsReceived='" + fundsReceived + '\'' +
+                ", fundsSurplus='" + fundsSurplus + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", bankNum='" + bankNum + '\'' +
+                ", text1='" + text1 + '\'' +
+                ", text2='" + text2 + '\'' +
+                '}';
     }
 }
