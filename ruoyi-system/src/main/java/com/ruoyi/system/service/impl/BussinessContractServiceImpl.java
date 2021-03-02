@@ -240,6 +240,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
                 if (StringUtils.isNull(bussinessContract1)){
                     this.importInsertBussinessContract(bussinessContract);
                 }else{
+                    bussinessContract.setContractId(bussinessContract1.getContractId());
                     this.updateBussinessContract(bussinessContract);
                 }
 

@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.domain.Commission;
 
 /**
@@ -76,4 +78,6 @@ public interface ICommissionService
     public Commission selectCommissionByCode(String contractCode);
 
     public int deleteCommissionByCode(String contractCode);
+
+    public String importContract(List<Commission> List);
 }

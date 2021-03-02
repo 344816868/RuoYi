@@ -112,7 +112,7 @@ public class CommissionController extends BaseController
      * 导出excel模板
      * @return
      */
-    @RequiresPermissions("business:commission:view")
+    @RequiresPermissions("system:commission:view")
     @GetMapping("/importTemplate")
     @ResponseBody
     public AjaxResult importTemplate()
@@ -255,5 +255,17 @@ public class CommissionController extends BaseController
 
         mmap.put("commission", commissionService.selectCommissionById(commissionId));
         return prefix + "/commissionPDF";
+    }
+
+    @Log(title = "手续费信息管理", businessType = BusinessType.IMPORT)
+    @RequiresPermissions("system:commission:import")
+    @PostMapping("/importData")
+    @ResponseBody
+    public AjaxResult importData(MultipartFile file) throws Exception
+    {
+        ExcelUtil<Commission> util = new ExcelUtil<Commission>(Commission.class);
+        List<Commission> list = util.importExcel(file.getInputStream());
+        String message = commissionService.importContract(list);
+        return AjaxResult.success(message);
     }
 }

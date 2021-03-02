@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.http.HttpClientUtil;
 import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.domain.SysUser;
@@ -100,7 +101,8 @@ public class RyTask
                 System.out.println(param);
                 //调用发送短信的接口
                 String url="http://10.222.37.6:9001";
-                String result=HttpUtils.sendPost(url,param);
+            //    String result=HttpUtils.sendPost(url,param);
+                String result= HttpClientUtil.sendPostByJson(url,param,0);
                 log.info("调用接口结果"+result);
                 System.out.println(result);
             }

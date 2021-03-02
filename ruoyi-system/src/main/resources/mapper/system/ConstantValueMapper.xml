@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ConstantValueMapper">
+    
+    <resultMap type="ConstantValue" id="ConstantValueResult">
+        <result property="valueId"    column="value_id"    />
+        <result property="contractCode"    column="contract_code"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="constantValue"    column="constant_value"    />
+        <result property="valueTime"    column="value_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectConstantValueVo">
+        select value_id, contract_code, contract_name, constant_value, value_time, remark from constant_value
+    </sql>
+
+    <select id="selectConstantValueList" parameterType="ConstantValue" resultMap="ConstantValueResult">
+        <include refid="selectConstantValueVo"/>
+        <where>  
+            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
+            <if test="valueTime != null "> and value_time = #{valueTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectConstantValueById" parameterType="Long" resultMap="ConstantValueResult">
+        <include refid="selectConstantValueVo"/>
+        where value_id = #{valueId}
+    </select>
+        
+    <insert id="insertConstantValue" parameterType="ConstantValue" useGeneratedKeys="true" keyProperty="valueId">
+        <selectKey keyProperty="valueId" order="BEFORE" resultType="Long">
+            select seq_constant_value.nextval as valueId from DUAL
+        </selectKey>
+        insert into constant_value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="valueId != null and valueId != 0">VALUE_ID,</if>
+            <if test="contractCode != null">contract_code,</if>
+            <if test="contractName != null">contract_name,</if>
+            <if test="constantValue != null">constant_value,</if>
+            <if test="valueTime != null">value_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="valueId != null">#{valueId},</if>
+            <if test="contractCode != null">#{contractCode},</if>
+            <if test="contractName != null">#{contractName},</if>
+            <if test="constantValue != null">#{constantValue},</if>
+            <if test="valueTime != null">#{valueTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConstantValue" parameterType="ConstantValue">
+        update constant_value
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">contract_code = #{contractCode},</if>
+            <if test="contractName != null">contract_name = #{contractName},</if>
+            <if test="constantValue != null">constant_value = #{constantValue},</if>
+            <if test="valueTime != null">value_time = #{valueTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where value_id = #{valueId}
+    </update>
+
+    <delete id="deleteConstantValueById" parameterType="Long">
+        delete from constant_value where value_id = #{valueId}
+    </delete>
+
+    <delete id="deleteConstantValueByIds" parameterType="String">
+        delete from constant_value where value_id in 
+        <foreach item="valueId" collection="array" open="(" separator="," close=")">
+            #{valueId}
+        </foreach>
+    </delete>
+
+</mapper>

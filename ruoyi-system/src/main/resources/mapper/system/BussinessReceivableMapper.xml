@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BussinessReceivableMapper">
+    
+    <resultMap type="BussinessReceivable" id="BussinessReceivableResult">
+        <result property="id"    column="id"    />
+        <result property="contractCode"    column="contract_code"    />
+        <result property="receivable"    column="receivable"    />
+    </resultMap>
+
+    <sql id="selectBussinessReceivableVo">
+        select id, contract_code, receivable from bussiness_receivable
+    </sql>
+
+    <select id="selectBussinessReceivableList" parameterType="BussinessReceivable" resultMap="BussinessReceivableResult">
+        <include refid="selectBussinessReceivableVo"/>
+        <where>  
+            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="receivable != null  and receivable != ''"> and receivable = #{receivable}</if>
+        </where>
+    </select>
+    
+    <select id="selectBussinessReceivableById" parameterType="Long" resultMap="BussinessReceivableResult">
+        <include refid="selectBussinessReceivableVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectBussinessReceivableByCode" parameterType="Long" resultMap="BussinessReceivableResult">
+        <include refid="selectBussinessReceivableVo"/>
+        where contract_code = #{contractCode}
+    </select>
+        
+    <insert id="insertBussinessReceivable" parameterType="BussinessReceivable" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            select seq_bussiness_receivable.nextval as id from DUAL
+        </selectKey>
+        insert into bussiness_receivable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="contractCode != null">contract_code,</if>
+            <if test="receivable != null">receivable,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="contractCode != null">#{contractCode},</if>
+            <if test="receivable != null">#{receivable},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBussinessReceivable" parameterType="BussinessReceivable">
+        update bussiness_receivable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">contract_code = #{contractCode},</if>
+            <if test="receivable != null">receivable = #{receivable},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBussinessReceivableById" parameterType="Long">
+        delete from bussiness_receivable where id = #{id}
+    </delete>
+
+    <delete id="deleteBussinessReceivableByIds" parameterType="String">
+        delete from bussiness_receivable where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         SELECT
         a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
-        a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus
+        a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus,start_time,end_time,bank_num,text1,text2
         FROM
         commission a
         JOIN ( SELECT contract_code, SUM( receivable ) receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission GROUP BY contract_code ) b ON a.contract_code = b.contract_code
