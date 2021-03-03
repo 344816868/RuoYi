@@ -1,10 +1,14 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.Commission;
+import com.ruoyi.system.service.IBussinessContractService;
+import com.ruoyi.system.service.ICommissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,11 @@ public class ConstantValueServiceImpl implements IConstantValueService
 {
     @Autowired
     private ConstantValueMapper constantValueMapper;
+    @Autowired
+    private ICommissionService commissionService;
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
+
+
     /**
      * 查询固化值管理
      * 
@@ -96,6 +104,25 @@ public class ConstantValueServiceImpl implements IConstantValueService
     public int deleteConstantValueById(Long valueId)
     {
         return constantValueMapper.deleteConstantValueById(valueId);
+    }
+
+    @Override
+    public int addDatas() {
+        Commission commission = new Commission();
+        List<Commission> list=commissionService.selectCommissionList(commission);
+        int successNum = 0;
+        for(Commission commission1:list){
+            ConstantValue constantValue = new ConstantValue();
+            constantValue.setContractCode(commission1.getContractCode());
+            constantValue.setContractName(commission1.getContractName());
+            constantValue.setConstantValue(commission1.getFundsSurplus());
+            Date valueTime=DateUtils.dateTime(DateUtils.YYYY_MM_DD,DateUtils.getDate());
+            constantValue.setValueTime(valueTime);
+            this.insertConstantValue(constantValue);
+            successNum++;
+        }
+
+        return successNum;
     }
 
     @Override

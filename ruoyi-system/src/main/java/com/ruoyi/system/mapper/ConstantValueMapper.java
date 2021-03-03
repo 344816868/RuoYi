@@ -19,6 +19,9 @@ public interface ConstantValueMapper
      */
     public ConstantValue selectConstantValueById(Long valueId);
 
+
+    public ConstantValue selectNewValueByCode(String contractCode);
+
     /**
      * 查询固化值管理列表
      * 

@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="valueTime != null "> and value_time = #{valueTime}</if>
         </where>
+        order by create_time
     </select>
     
     <select id="selectConstantValueById" parameterType="Long" resultMap="ConstantValueResult">
@@ -44,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="constantValue != null">constant_value,</if>
             <if test="valueTime != null">value_time,</if>
             <if test="remark != null">remark,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="valueId != null">#{valueId},</if>
@@ -52,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="constantValue != null">#{constantValue},</if>
             <if test="valueTime != null">#{valueTime},</if>
             <if test="remark != null">#{remark},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -77,5 +80,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{valueId}
         </foreach>
     </delete>
+
+    <select id="selectNewValueByCode" parameterType="String" resultMap="ConstantValueResult">
+        <include refid="selectConstantValueVo"/>
+        where to_char(VALUE_TIME ,'yyyy') = (select extract(year from sysdate)-1 from dual)
+        and CONTRACT_CODE = #{contractCode}
+    </select>
 
 </mapper>

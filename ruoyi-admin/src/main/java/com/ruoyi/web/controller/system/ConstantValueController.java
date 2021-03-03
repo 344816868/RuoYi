@@ -69,7 +69,7 @@ public class ConstantValueController extends BaseController
     {
         List<ConstantValue> list = constantValueService.selectConstantValueList(constantValue);
         ExcelUtil<ConstantValue> util = new ExcelUtil<ConstantValue>(ConstantValue.class);
-        return util.exportExcel(list, "constantValue");
+        return util.exportExcel(list, "固化值信息");
     }
 
     /**
@@ -151,6 +151,12 @@ public class ConstantValueController extends BaseController
         List<ConstantValue> list = util.importExcel(file.getInputStream());
         String message = constantValueService.importContract(list);
         return AjaxResult.success(message);
+    }
+
+    @PostMapping("/addDatas")
+    @ResponseBody
+    public AjaxResult addDatas(){
+        return toAjax(constantValueService.addDatas());
     }
 
 }

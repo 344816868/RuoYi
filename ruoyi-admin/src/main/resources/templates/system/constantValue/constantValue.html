@@ -49,6 +49,9 @@
                 <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="business:contract:import">
                     <i class="fa fa-upload"></i> 导入
                 </a>
+                <a class="btn btn-success" onclick="addDatas()">
+                    <i class="fa fa-plus"></i> 固化值
+                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -70,6 +73,7 @@
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
                 importTemplateUrl: prefix + "/importTemplate",
+                addDataUrl: prefix + "/addDatas",
                 modalName: "固化值管理",
                 columns: [{
                     checkbox: true
@@ -96,7 +100,7 @@
                 },
                 {
                     field: 'valueTime',
-                    title: '时间',
+                    title: '固化时间',
                     align: 'center'
                 },
                 {
@@ -117,6 +121,35 @@
             };
             $.table.init(options);
         });
+        function addDatas(){
+            $.modal.confirm("确认添加固化值吗?", function() {
+                table.set();
+                $.ajax({
+                    url: table.options.addDataUrl,
+                    data: {},
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.code == web_status.SUCCESS) {
+                            $.modal.closeAll();
+                            $.modal.alertSuccess(result.msg);
+                            $.table.refresh();
+                        } else if (result.code == web_status.WARNING) {
+                            layer.close(index);
+                            $.modal.enable();
+                            $.modal.alertWarning(result.msg)
+                        } else {
+                            layer.close(index);
+                            $.modal.enable();
+                            $.modal.alertError(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+
     </script>
 </body>
 <!-- 导入区域 -->

@@ -62,4 +62,8 @@ public interface IConstantValueService
     public int deleteConstantValueById(Long valueId);
 
     public String importContract(List<ConstantValue> List);
+
+    public int addDatas();
+
+
 }

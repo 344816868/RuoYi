@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="selectBussinessReceivableByCode" parameterType="Long" resultMap="BussinessReceivableResult">
+    <select id="selectBussinessReceivableByCode" parameterType="String" resultMap="BussinessReceivableResult">
         <include refid="selectBussinessReceivableVo"/>
         where contract_code = #{contractCode}
     </select>

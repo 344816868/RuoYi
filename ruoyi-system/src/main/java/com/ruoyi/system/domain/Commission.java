@@ -53,7 +53,7 @@ public class Commission extends BaseEntity
     private String filePath ; //发票存储路径
 
     /** 手续费应收金额 */
-    @Excel(name = "应收金额")
+    @Excel(name = "总金额")
     private String receivable;
 
     /** 手续费实收金额 */

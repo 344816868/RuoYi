@@ -35,7 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus,start_time,end_time,bank_num,text1,text2
         FROM
         commission a
-        JOIN ( SELECT contract_code, SUM( receivable ) receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission GROUP BY contract_code ) b ON a.contract_code = b.contract_code
+        LEFT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c,BUSSINESS_RECEIVABLE d
+        WHERE c.CONTRACT_CODE = d.CONTRACT_CODE
+        GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
         AND a.create_time =b.create_time
         <where>
             <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>

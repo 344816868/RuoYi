@@ -71,6 +71,7 @@
         var removeFlag = [[${@permission.hasPermi('system:commission:remove')}]];
         var ISBILL = [[${@dict.getType('sys_isbill')}]];
         var prefix = ctx + "system/commission";
+        var prefixImport = ctx + "system/receivable";
 
         $(function() {
             var options = {
@@ -81,7 +82,7 @@
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
                 importTemplateUrl: prefix + "/importTemplate",
-                importReceivable: prefix + "/importReceivable",
+                importReceivable: prefixImport + "/importReceivable",
                 modalName: "手续费管理",
                 columns: [{
                     checkbox: true
@@ -102,7 +103,7 @@
                 },
                  {
                     field: 'receivable',
-                    title: '应收金额',
+                    title: '总金额',
                     align: 'center'
                 },
                  {
@@ -196,7 +197,7 @@
 
         function importReceivable(){
             table.set();
-            var currentId = 'importTpl';
+            var currentId = 'importReceivable';
             var _width = "400" ;
             var _height = "230" ;
             layer.open({
@@ -219,7 +220,8 @@
                     }
                     var index = layer.load(2, {shade: false});
                     $.modal.disable();
-                    var formData = new FormData(layero.find('form')[1]);
+                    var formData = new FormData(layero.find('form')[0]);
+                    console.log(formData)
                     $.ajax({
                         url: table.options.importReceivable,
                         data: formData,

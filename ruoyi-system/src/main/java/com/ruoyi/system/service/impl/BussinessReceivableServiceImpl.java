@@ -5,6 +5,8 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.Commission;
+import com.ruoyi.system.domain.ConstantValue;
+import com.ruoyi.system.mapper.ConstantValueMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
 {
     @Autowired
     private BussinessReceivableMapper bussinessReceivableMapper;
+    @Autowired
+    private ConstantValueMapper constantValueMapper; //
+
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
     /**
      * 查询应收金额
@@ -112,10 +117,28 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
         {
             try
             {
+                ConstantValue constantValue=constantValueMapper.selectNewValueByCode(bussinessReceivable.getContractCode());
                 BussinessReceivable bussinessReceivable1=bussinessReceivableMapper.selectBussinessReceivableByCode(bussinessReceivable.getContractCode());
+                Double totalValue;
                 if(StringUtils.isNull(bussinessReceivable1)){
+                    if(StringUtils.isNotNull(constantValue)){
+                        if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(bussinessReceivable.getReceivable())){
+                            totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(bussinessReceivable.getReceivable());
+                            bussinessReceivable.setReceivable(""+totalValue);
+                        }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(bussinessReceivable.getReceivable())){
+                            bussinessReceivable.setReceivable(constantValue.getConstantValue());
+                        }
+                    }
                     this.insertBussinessReceivable(bussinessReceivable);
                 }else{
+                    if(StringUtils.isNotNull(constantValue)){
+                        if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(bussinessReceivable.getReceivable())){
+                            totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(bussinessReceivable.getReceivable());
+                            bussinessReceivable.setReceivable(""+totalValue);
+                        }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(bussinessReceivable.getReceivable())){
+                            bussinessReceivable.setReceivable(constantValue.getConstantValue());
+                        }
+                    }
                     bussinessReceivable.setId(bussinessReceivable1.getId());
                     this.updateBussinessReceivable(bussinessReceivable);
                 }

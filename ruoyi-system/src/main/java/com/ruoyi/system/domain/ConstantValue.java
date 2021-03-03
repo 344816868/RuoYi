@@ -32,7 +32,7 @@ public class ConstantValue extends BaseEntity
     private String constantValue;
 
     /** 时间 */
-    @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "固化时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date valueTime;
 
     public void setValueId(Long valueId) 
