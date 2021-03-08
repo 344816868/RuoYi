@@ -32,7 +32,7 @@ public class RyTask
     private IBussinessContractService bussinessContractService;
     @Autowired
     private ISysUserService sysUserService;
-    private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(RyTask.class);
 
     public void ryMultipleParams(String s, Boolean b, Long l, Double d, Integer i)
     {
@@ -60,11 +60,13 @@ public class RyTask
         List<BussinessContract> list=bussinessContractService.selectBussinessContractList(bussinessContract);
         for(BussinessContract bussinessContract1:list){
             //当前时间和合同截止时间比较
-            Long endDateLong=bussinessContract1.getEndTime().getTime();
-            //修改合同过期状态
-            if(now>endDateLong){
-                bussinessContract1.setStatus("1");
-                bussinessContractService.updateBussinessContract(bussinessContract1);
+            if(StringUtils.isNotNull(bussinessContract1.getEndTime())){
+                Long endDateLong=bussinessContract1.getEndTime().getTime();
+                //修改合同过期状态
+                if(now>endDateLong){
+                    bussinessContract1.setStatus("1");
+                    bussinessContractService.updateBussinessContract(bussinessContract1);
+                }
             }
         }
     }
@@ -91,7 +93,7 @@ public class RyTask
                     phoneJson.put("reqSN",sysUsers.get(i).getPhonenumber());
                     userPhones[i]=phoneJson.toJSONString();
                 }
-                String msgBody="有"+totalNum+"份项目合同即将到期";
+                String msgBody="有"+total+"份项目合同即将到期";
                 sendJson.put("msgType","DX001");
                 sendJson.put("MsgBody",msgBody);
                 sendJson.put("transDate",DateUtils.dateTimeNow());
@@ -106,6 +108,8 @@ public class RyTask
                 log.info("调用接口结果"+result);
                 System.out.println(result);
             }
+        }else{
+            System.out.println("即将过期项目0条，无发送短信提醒");
         }
 
     }

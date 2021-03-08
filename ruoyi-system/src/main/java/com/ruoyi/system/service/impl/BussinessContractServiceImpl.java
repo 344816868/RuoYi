@@ -178,6 +178,8 @@ public class BussinessContractServiceImpl implements IBussinessContractService
                     commissionService.insertCommission(commission1);
                 }
             }
+        }else{
+            bussinessContract.setStatus("0");
         }
 
         return bussinessContractMapper.updateBussinessContract(bussinessContract);
