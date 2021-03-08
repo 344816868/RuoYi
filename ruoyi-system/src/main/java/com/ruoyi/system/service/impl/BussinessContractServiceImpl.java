@@ -161,23 +161,25 @@ public class BussinessContractServiceImpl implements IBussinessContractService
 
         //当前时间和合同截止时间比较
         Long now=new Date().getTime();
-        Long endDateLong =bussinessContract.getEndTime().getTime();;
+        Long endDateLong;
         if(StringUtils.isNotNull(bussinessContract.getEndTime())){
+            endDateLong =bussinessContract.getEndTime().getTime();
             //修改合同过期状态
             if(now>endDateLong){
                 bussinessContract.setStatus("1");
             }
-        }
-        //判断是否续约，续约就会增加一条手续费信息
-        if(StringUtils.isNotNull(bussinessContract1.getEndTime())){
-            Long oldEndDateLong=bussinessContract1.getEndTime().getTime();
-            if(endDateLong>oldEndDateLong){
-                Commission commission1=new Commission();
-                commission1.setContractCode(bussinessContract.getContractCode());
-                commission1.setContractName(bussinessContract.getContractName());
-                commissionService.insertCommission(commission1);
+            //判断是否续约，续约就会增加一条手续费信息
+            if(StringUtils.isNotNull(bussinessContract1.getEndTime())){
+                Long oldEndDateLong=bussinessContract1.getEndTime().getTime();
+                if(endDateLong>oldEndDateLong){
+                    Commission commission1=new Commission();
+                    commission1.setContractCode(bussinessContract.getContractCode());
+                    commission1.setContractName(bussinessContract.getContractName());
+                    commissionService.insertCommission(commission1);
+                }
             }
         }
+
         return bussinessContractMapper.updateBussinessContract(bussinessContract);
     }
 
@@ -250,7 +252,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、合同名称 " + bussinessContract.getContractName() + " 导入失败：";
+                String msg = "<br/>" + failureNum + "项目编号"+bussinessContract.getContractCode()+"、合同名称 " + bussinessContract.getContractName() + " 导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }

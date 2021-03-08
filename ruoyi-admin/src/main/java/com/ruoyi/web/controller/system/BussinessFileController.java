@@ -12,7 +12,9 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.domain.BussinessFile;
+import com.ruoyi.system.service.IBussinessContractService;
 import com.ruoyi.system.service.IBussinessFileService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,8 @@ public class BussinessFileController extends BaseController
     private IBussinessFileService bussinessFileService;
     @Autowired
     private ServerConfig serverConfig;
+    @Autowired
+    private IBussinessContractService bussinessContractService;
 
     @RequiresPermissions("system:bussinessFile:view")
     @GetMapping()
@@ -91,9 +95,11 @@ public class BussinessFileController extends BaseController
     /**
      * 新增合同文件管理
      */
-    @GetMapping("/add")
-    public String add()
+    @GetMapping("/add/{contractCode}")
+    public String add(@PathVariable("contractCode") String contractCode,ModelMap mmap)
     {
+        BussinessContract bussinessContract=bussinessContractService.selectBussinessContractByCode(contractCode);
+        mmap.put("bussinessContract",bussinessContract);
         return prefix + "/add";
     }
 
