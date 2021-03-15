@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path, receivable, funds_received,receivable - funds_received funds_surplus,start_time,end_time,bank_num,text1,text2 from commission
     </sql>
 
-
+   <!--关联-->
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         SELECT
         a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,

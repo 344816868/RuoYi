@@ -52,6 +52,7 @@ public class RyTask
     /**
      * 定时判断合同的到期状态
      */
+    @Log(title = "定时任务", businessType = BusinessType.OTHER)
     public void checkContractStatus()
     {
         System.out.println("检查合同状态");
