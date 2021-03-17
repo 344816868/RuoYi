@@ -32,10 +32,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         SELECT
         a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
-        a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus,start_time,end_time,bank_num,text1,text2
+        a.bill_remark,a.file_path,b.receivable,b.funds_received,start_time,end_time,bank_num,text1,text2
         FROM
         commission a
-        LEFT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c,BUSSINESS_RECEIVABLE d
+        RIGHT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c,BUSSINESS_RECEIVABLE d
         WHERE c.CONTRACT_CODE = d.CONTRACT_CODE
         GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
         AND a.create_time =b.create_time
@@ -62,27 +62,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectCommissionInfoList" parameterType="Commission" resultMap="CommissionResult">
-        <include refid="selectCommissionVo"/>
+        SELECT
+        a.commission_id,
+        a.contract_code,
+        a.contract_name,
+        a.isbill,
+        a.commission_time,
+        a.commission_remark,
+        a.bill_time,
+        a.bill_remark,
+        a.file_path,
+        b.RECEIVABLE ,
+        a.funds_received,
+        b.RECEIVABLE - funds_received funds_surplus,
+        a.start_time,
+        a.end_time,
+        a.bank_num,
+        a.text1,
+        a.text2
+        FROM
+        commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
         <where>
-            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
-            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
-            <if test="isbill != null  and isbill != ''"> and isbill like concat(concat('%', #{isbill}), '%')</if>
-            <if test="commissionTime != null "> and commission_time like concat(concat('%', #{commissionTime}), '%')</if>
-            <if test="billTime != null "> and bill_time like concat(concat('%', #{billTime}), '%')</if>
+            <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
+            <if test="contractName != null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
+            <if test="isbill != null  and isbill != ''"> and a.isbill like concat(concat('%', #{isbill}), '%')</if>
+            <if test="commissionTime != null "> and a.commission_time like concat(concat('%', #{commissionTime}), '%')</if>
+            <if test="billTime != null "> and a.bill_time like concat(concat('%', #{billTime}), '%')</if>
             <if test="params.beginCommissionTime != null and params.beginCommissionTime != ''">
-                AND commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+                AND a.commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endCommissionTime != null and params.endCommissionTime != ''">
-                AND commission_time &lt;= to_date(#{params.endCommissionTime},'yyyy-MM-dd HH24:mi:ss')
+                AND a.commission_time &lt;= to_date(#{params.endCommissionTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.beginBillTime != null and params.beginBillTime != ''">
-                AND bill_time &gt;= to_date(#{params.beginBillTime},'yyyy-MM-dd HH24:mi:ss')
+                AND a.bill_time &gt;= to_date(#{params.beginBillTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
             <if test="params.endBillTime != null and params.endBillTime != ''">
-                AND bill_time &lt;= to_date(#{params.endBillTime},'yyyy-MM-dd HH24:mi:ss')
+                AND a.bill_time &lt;= to_date(#{params.endBillTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
         </where>
-        order by create_time desc
+        order by a.create_time desc
     </select>
     
     <select id="selectCommissionById" parameterType="Long" resultMap="CommissionResult">

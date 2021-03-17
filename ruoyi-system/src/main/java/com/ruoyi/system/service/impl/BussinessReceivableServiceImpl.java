@@ -117,31 +117,7 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
         {
             try
             {
-                ConstantValue constantValue=constantValueMapper.selectNewValueByCode(bussinessReceivable.getContractCode());
-                BussinessReceivable bussinessReceivable1=bussinessReceivableMapper.selectBussinessReceivableByCode(bussinessReceivable.getContractCode());
-                Double totalValue;
-                if(StringUtils.isNull(bussinessReceivable1)){
-                    if(StringUtils.isNotNull(constantValue)){
-                        if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(bussinessReceivable.getReceivable())){
-                            totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(bussinessReceivable.getReceivable());
-                            bussinessReceivable.setReceivable(""+totalValue);
-                        }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(bussinessReceivable.getReceivable())){
-                            bussinessReceivable.setReceivable(constantValue.getConstantValue());
-                        }
-                    }
-                    this.insertBussinessReceivable(bussinessReceivable);
-                }else{
-                    if(StringUtils.isNotNull(constantValue)){
-                        if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(bussinessReceivable.getReceivable())){
-                            totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(bussinessReceivable.getReceivable());
-                            bussinessReceivable.setReceivable(""+totalValue);
-                        }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(bussinessReceivable.getReceivable())){
-                            bussinessReceivable.setReceivable(constantValue.getConstantValue());
-                        }
-                    }
-                    bussinessReceivable.setId(bussinessReceivable1.getId());
-                    this.updateBussinessReceivable(bussinessReceivable);
-                }
+                this.insertBussinessReceivable(bussinessReceivable);
                 successNum++;
                 //    successMsg.append("<br/>" + successNum + "、合同名称 " + bussinessContract.getContractName() + " 导入成功");
             }

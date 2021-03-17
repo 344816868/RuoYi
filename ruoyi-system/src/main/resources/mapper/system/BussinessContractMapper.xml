@@ -75,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         b.receivable,b.funds_received,b.receivable - b.funds_received FUNDS_SURPLUS
         FROM
         BUSSINESS_CONTRACT a
-        JOIN ( SELECT CONTRACT_CODE, SUM( RECEIVABLE ) RECEIVABLE, sum( FUNDS_RECEIVED ) FUNDS_RECEIVED  FROM COMMISSION GROUP BY CONTRACT_CODE ) b ON a.CONTRACT_CODE = b.CONTRACT_CODE
+        LEFT JOIN ( SELECT CONTRACT_CODE, SUM( RECEIVABLE ) RECEIVABLE, sum( FUNDS_RECEIVED ) FUNDS_RECEIVED  FROM COMMISSION GROUP BY CONTRACT_CODE ) b ON a.CONTRACT_CODE = b.CONTRACT_CODE
         <where>
             <if test="contractCode != null  and contractCode != ''"> and a.contract_code = #{contractCode}</if>
             <if test="contractStatus != null "> and a.contract_status = #{contractStatus}</if>

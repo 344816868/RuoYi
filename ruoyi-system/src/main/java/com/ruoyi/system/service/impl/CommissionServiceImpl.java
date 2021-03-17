@@ -5,6 +5,10 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.BussinessContract;
+import com.ruoyi.system.domain.BussinessReceivable;
+import com.ruoyi.system.domain.ConstantValue;
+import com.ruoyi.system.mapper.BussinessContractMapper;
+import com.ruoyi.system.mapper.ConstantValueMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,10 @@ public class CommissionServiceImpl implements ICommissionService
 {
     @Autowired
     private CommissionMapper commissionMapper;
+    @Autowired
+    private ConstantValueMapper constantValueMapper;
+    @Autowired
+    private BussinessContractMapper bussinessContractMapper; //
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     /**
@@ -48,7 +56,39 @@ public class CommissionServiceImpl implements ICommissionService
     @Override
     public List<Commission> selectCommissionList(Commission commission)
     {
-        return commissionMapper.selectCommissionList(commission);
+
+        List<Commission> commissionList=commissionMapper.selectCommissionList(commission);
+        for(Commission commission1:commissionList){
+            ConstantValue constantValue=constantValueMapper.selectNewValueByCode(commission1.getContractCode());
+            BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(commission1.getContractCode());
+            Double totalValue=0.0;
+            Double fundsSurplusVal;
+            if(StringUtils.isNotNull(constantValue)){
+                if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(commission1.getReceivable())){
+                    totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(commission1.getReceivable());
+                    commission1.setReceivable(""+totalValue);
+                    fundsSurplusVal=totalValue-Double.valueOf(commission1.getFundsReceived());
+                    commission1.setFundsSurplus(""+fundsSurplusVal);
+
+                }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(commission1.getReceivable())){
+                    totalValue=Double.valueOf(constantValue.getConstantValue());
+                    commission1.setReceivable(""+totalValue);
+                    fundsSurplusVal=Double.valueOf(constantValue.getConstantValue()) - Double.valueOf(commission1.getFundsReceived());
+                    commission1.setFundsSurplus(""+fundsSurplusVal);
+                }
+            }else{
+                totalValue=Double.valueOf(commission1.getReceivable());
+                fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
+                commission1.setFundsSurplus(""+fundsSurplusVal);
+            }
+            if(!"2".equals(bussinessContract.getFundWay())){
+                commission1.setFundsSurplus("0");
+                commission1.setFundsReceived(""+totalValue);
+            }
+
+
+        }
+        return commissionList;
     }
 
     @Override
