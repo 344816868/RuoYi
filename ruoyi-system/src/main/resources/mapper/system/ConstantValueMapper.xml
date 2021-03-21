@@ -87,4 +87,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and CONTRACT_CODE = #{contractCode}
     </select>
 
+    <select id="selectConstantSum" resultType="java.util.Map">
+        select sum(CONSTANT_VALUE) CONSTRAINTSUM from CONSTANT_VALUE
+        where to_char(VALUE_TIME ,'yyyy') = (select extract(year from sysdate)-1 from dual)
+    </select>
+
 </mapper>

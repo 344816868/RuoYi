@@ -1,11 +1,11 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.BussinessContract;
-import com.ruoyi.system.domain.BussinessReceivable;
 import com.ruoyi.system.domain.ConstantValue;
 import com.ruoyi.system.mapper.BussinessContractMapper;
 import com.ruoyi.system.mapper.ConstantValueMapper;
@@ -77,9 +77,12 @@ public class CommissionServiceImpl implements ICommissionService
                     commission1.setFundsSurplus(""+fundsSurplusVal);
                 }
             }else{
-                totalValue=Double.valueOf(commission1.getReceivable());
-                fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
-                commission1.setFundsSurplus(""+fundsSurplusVal);
+                if(StringUtils.isNotNull(commission1.getReceivable())){
+                    totalValue=Double.valueOf(commission1.getReceivable());
+                    fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
+                    commission1.setFundsSurplus(""+fundsSurplusVal);
+                }
+
             }
             if(!"2".equals(bussinessContract.getFundWay())){
                 commission1.setFundsSurplus("0");
@@ -92,8 +95,43 @@ public class CommissionServiceImpl implements ICommissionService
     }
 
     @Override
+    public Map<String, Object> selectSum() {
+        Map<String, Object> map=commissionMapper.selectSum();
+        String str=map.get("RECEIVABLE").toString();
+        Integer receivable=Integer.valueOf(str);
+        Map<String, Object> map1=constantValueMapper.selectConstantSum();
+        String str2=map1.get("CONSTRAINTSUM").toString();
+        Integer contantSum=Integer.valueOf(str2);
+        Integer total=receivable+contantSum;
+        map.put("RECEIABLESUM",""+total);
+        return map;
+    }
+
+    @Override
     public List<Commission> selectCommissionInfoList(Commission commission) {
-        return commissionMapper.selectCommissionInfoList(commission);
+        List<Commission> commissionList=commissionMapper.selectCommissionInfoList(commission);
+        for(Commission commission1:commissionList){
+            ConstantValue constantValue=constantValueMapper.selectNewValueByCode(commission1.getContractCode());
+            Double d1=0.00;
+            Double d2=0.00;
+            Double d3=0.00;
+            if(constantValue!=null){
+                if(StringUtils.isNotNull(constantValue.getConstantValue())&&StringUtils.isNotNull(commission1.getReceivable())){
+                    d1=Double.valueOf(constantValue.getConstantValue());
+                    d2=Double.valueOf(commission1.getReceivable());
+                    d3=d1+d2;
+                }
+                if(StringUtils.isNotNull(constantValue.getConstantValue())&&StringUtils.isNull(commission1.getReceivable())){
+                    d3=Double.valueOf(constantValue.getConstantValue());
+                }
+            }
+            if(commission1.getReceivable()!=null){
+                d3=Double.valueOf(commission1.getReceivable());
+            }
+            commission1.setReceivable(""+d3);
+        }
+
+        return commissionList;
     }
 
     /**
@@ -196,6 +234,43 @@ public class CommissionServiceImpl implements ICommissionService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条");
         }
         return successMsg.toString();
+    }
+
+    //计算每个项目的手续费总金额、实收金额、待收金额
+    @Override
+    public Commission commissionSum(String contractCode) {
+        Commission commission=commissionMapper.selectCommissionSum(contractCode);
+        ConstantValue constantValue=constantValueMapper.selectNewValueByCode(contractCode);
+        String str=commission.getReceivable();//应收金额
+        String str1="0.00";//固化值
+        if(constantValue!=null){
+            str1= constantValue.getConstantValue();
+        }
+        //总金额
+        Double total=0.00;
+        if(StringUtils.isNotNull(str) && StringUtils.isNotNull(str1)){
+            total=Double.valueOf(str)+Double.valueOf(str1);
+        }else if(StringUtils.isNotNull(str) && StringUtils.isNull(str1)){
+            total=Double.valueOf(str);
+        }else if(StringUtils.isNull(str) && StringUtils.isNotNull(str1)){
+            total=Double.valueOf(str1);
+        }
+        //总待收金额
+        Double fundsSurplus=0.00;
+        if(StringUtils.isNotNull(commission.getFundsReceived())){
+            fundsSurplus=total-Double.valueOf(commission.getFundsReceived());
+        }else{
+            fundsSurplus=total;
+        }
+        commission.setFundsSurplus(""+fundsSurplus);
+        commission.setReceivable(""+total);
+        //非全额清算时的总金额和实收金额 待收金额为0.00
+        BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(contractCode);
+        if(!"2".equals(bussinessContract.getFundWay())){
+            commission.setFundsReceived(""+total);
+            commission.setFundsSurplus("0.00");
+        }
+        return commission;
     }
 
 }

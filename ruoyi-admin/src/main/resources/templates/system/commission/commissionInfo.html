@@ -39,10 +39,10 @@
 <!--                </form>-->
 <!--            </div>-->
 
-<!--            <div class="btn-group-sm" id="toolbar" role="group">-->
-<!--&lt;!&ndash;                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <i class="fa fa-plus"></i> 添加&ndash;&gt;-->
-<!--&lt;!&ndash;                </a>&ndash;&gt;-->
+            <div class="btn-group-sm" id="toolbar" role="group">
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:commission:add">-->
+<!--                    <i class="fa fa-plus"></i> 添加-->
+<!--                </a>-->
 <!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:commission:edit">-->
 <!--                    <i class="fa fa-edit"></i> 修改-->
 <!--                </a>-->
@@ -52,7 +52,10 @@
 <!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:commission:export">-->
 <!--                    <i class="fa fa-download"></i> 导出-->
 <!--                </a>-->
-<!--            </div>-->
+                <font style="font-size: 18px;">总金额(合计) <span th:text="${sumInfo.receivable}"></span></font> &nbsp;
+                <font style="font-size: 18px;">实收金额(合计) <span th:text="${sumInfo.fundsReceived}"></span></font> &nbsp;
+                <font style="font-size: 18px;">待收金额(合计) <span th:text="${sumInfo.fundsSurplus}"></span></font>
+            </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
             </div>
@@ -94,7 +97,7 @@
                 },
                 {
                     field: 'receivable',
-                    title: '应收金额',
+                    title: '总金额',
                     align: 'center'
                 },
                 {
@@ -102,11 +105,11 @@
                     title: '实收金额',
                     align: 'center'
                 },
-                {
-                    field: 'fundsSurplus',
-                    title: '待收金额',
-                    align: 'center'
-                },
+                // {
+                //     field: 'fundsSurplus',
+                //     title: '待收金额',
+                //     align: 'center'
+                // },
                 {
                     field: 'isbill',
                     title: '是否有发票',

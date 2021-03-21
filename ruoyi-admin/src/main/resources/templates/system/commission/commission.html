@@ -57,14 +57,13 @@
 <!--                </a>-->
                 <a class="btn btn-info" onclick="importReceivable()" shiro:hasPermission="business:contract:import">
                     <i class="fa fa-upload"></i> 应收金额
-                </a>
+                </a> &nbsp;
+                <font style="font-size: 18px;">总金额(合计) <span th:text="${sum.RECEIABLESUM}"></span></font> &nbsp;
+                <font style="font-size: 18px;">实收金额(合计) <span th:text="${sum.FUNDSRECEIVED}"></span></font> &nbsp;
+                <font style="font-size: 18px;">待收金额(合计) <span th:text="${sum.FUNDSSURPLUS}"></span></font>
             </div>
             <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table">
-                    <tr>
-                        <td></td>
-                    </tr>
-                </table>
+                <table id="bootstrap-table"></table>
             </div>
             <div id="handout_wrap_inner"></div>
         </div>
@@ -167,7 +166,7 @@
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.commissionId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getCommissionInfo(\'' + row.contractCode + '\')"><i class="fa fa-book"></i>发票详情</a>');
+                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getCommissionInfo(\'' + row.contractCode + '\')"><i class="fa fa-book"></i>详情</a>');
                         // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.commissionId + '\')"><i class="fa fa-remove"></i>删除</a>');
                         // var more = [];
                         //  more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionPDF(" + row.commissionId + ")' ><i class='fa fa-file-pdf-o'></i>预览</a> ");

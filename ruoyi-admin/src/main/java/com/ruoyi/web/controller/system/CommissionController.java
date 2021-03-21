@@ -55,8 +55,10 @@ public class CommissionController extends BaseController
 
     @RequiresPermissions("system:commission:view")
     @GetMapping()
-    public String commission()
+    public String commission(ModelMap mmap)
     {
+        Map<String,Object> map=commissionService.selectSum();
+        mmap.put("sum",map);
         return prefix + "/commission";
     }
 
@@ -64,7 +66,10 @@ public class CommissionController extends BaseController
     @GetMapping("/info/{contractCode}")
     public String commissionInfo(@PathVariable("contractCode") String contractCode, ModelMap mmap)
     {
+        Commission commission=commissionService.commissionSum(contractCode);
         mmap.put("contractCode", contractCode);
+        mmap.put("sumInfo", commission);
+
         return prefix + "/commissionInfo";
     }
 

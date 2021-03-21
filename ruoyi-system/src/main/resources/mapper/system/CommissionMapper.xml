@@ -28,15 +28,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select commission_id, contract_code, contract_name, isbill, commission_time, commission_remark, bill_time, bill_remark, file_path, receivable, funds_received,receivable - funds_received funds_surplus,start_time,end_time,bank_num,text1,text2 from commission
     </sql>
 
-   <!--关联-->
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         SELECT
         a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
         a.bill_remark,a.file_path,b.receivable,b.funds_received,start_time,end_time,bank_num,text1,text2
         FROM
         commission a
-        RIGHT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c,BUSSINESS_RECEIVABLE d
-        WHERE c.CONTRACT_CODE = d.CONTRACT_CODE
+        RIGHT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c left join BUSSINESS_RECEIVABLE d
+        on c.CONTRACT_CODE = d.CONTRACT_CODE
         GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
         AND a.create_time =b.create_time
         <where>
@@ -102,6 +101,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         </where>
         order by a.create_time desc
+    </select>
+
+    <select id="selectSum" resultType="java.util.Map">
+        select sum(e.receivable) receivable,sum(e.funds_received) fundsReceived,sum(e.funds_surplus) fundsSurplus from(
+            SELECT a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
+            a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus,start_time,end_time,bank_num,text1,text2
+            FROM commission a
+            right JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c left join BUSSINESS_RECEIVABLE d
+             on c.CONTRACT_CODE = d.CONTRACT_CODE
+                GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
+            AND a.create_time =b.create_time) e
     </select>
     
     <select id="selectCommissionById" parameterType="Long" resultMap="CommissionResult">
@@ -198,5 +208,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{commissionId}
         </foreach>
     </delete>
+
+    <select id="selectCommissionSum" parameterType="String" resultMap="CommissionResult">
+        SELECT
+        b.CONTRACT_CODE,
+		b.RECEIVABLE,
+        sum(a.funds_received) funds_received
+        FROM
+        commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
+		where a.CONTRACT_CODE =#{contractCode} group by b.RECEIVABLE, b.CONTRACT_CODE
+    </select>
 
 </mapper>

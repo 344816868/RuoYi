@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.domain.Commission;
@@ -28,6 +29,8 @@ public interface ICommissionService
      * @return 手续费管理集合
      */
     public List<Commission> selectCommissionList(Commission commission);
+
+    public Map<String,Object> selectSum();
 
     /**
      * 查询手续费管理列表
@@ -80,4 +83,6 @@ public interface ICommissionService
     public int deleteCommissionByCode(String contractCode);
 
     public String importContract(List<Commission> List);
+
+    public Commission commissionSum(String contractCode);
 }

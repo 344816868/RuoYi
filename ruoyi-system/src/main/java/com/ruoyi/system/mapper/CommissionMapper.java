@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.Commission;
 
 /**
@@ -42,6 +44,8 @@ public interface CommissionMapper
      */
     public List<Commission> selectCommissionInfoList(Commission commission);
 
+    public Map<String,Object> selectSum();
+
     /**
      * 新增手续费管理
      * 
@@ -75,4 +79,6 @@ public interface CommissionMapper
     public int deleteCommissionByIds(String[] commissionIds);
 
     public int deleteCommissionByCode(String contractCode);
+
+    public Commission selectCommissionSum(String contractCode);
 }
