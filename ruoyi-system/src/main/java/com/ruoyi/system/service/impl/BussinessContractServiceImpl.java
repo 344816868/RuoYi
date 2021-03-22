@@ -154,9 +154,12 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         if(!bussinessContract.getContractCode().equals(bussinessContract1.getContractCode()) || !bussinessContract.getContractName().equals(bussinessContract1.getContractName())){
             //根据旧的项目编号查询发票信息
             Commission commission=commissionService.selectCommissionByCode(bussinessContract1.getContractCode());
-            commission.setContractCode(bussinessContract.getContractCode());
-            commission.setContractName(bussinessContract.getContractName());
-            commissionService.updateCommission(commission);
+            if(commission!=null){
+                commission.setContractCode(bussinessContract.getContractCode());
+                commission.setContractName(bussinessContract.getContractName());
+                commissionService.updateCommission(commission);
+            }
+
         }
 
         //当前时间和合同截止时间比较

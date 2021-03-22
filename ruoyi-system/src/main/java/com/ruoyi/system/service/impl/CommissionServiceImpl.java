@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,14 +97,22 @@ public class CommissionServiceImpl implements ICommissionService
 
     @Override
     public Map<String, Object> selectSum() {
-        Map<String, Object> map=commissionMapper.selectSum();
-        String str=map.get("RECEIVABLE").toString();
-        Integer receivable=Integer.valueOf(str);
-        Map<String, Object> map1=constantValueMapper.selectConstantSum();
-        String str2=map1.get("CONSTRAINTSUM").toString();
-        Integer contantSum=Integer.valueOf(str2);
-        Integer total=receivable+contantSum;
-        map.put("RECEIABLESUM",""+total);
+        Map<String, Object> map=new HashMap<>();
+        if(commissionMapper.selectSum()!=null){
+            map=commissionMapper.selectSum();
+            String str=map.get("RECEIVABLE").toString();
+            Integer receivable=Integer.valueOf(str);
+            Map<String, Object> map1=constantValueMapper.selectConstantSum();
+            String str2=map1.get("CONSTRAINTSUM").toString();
+            Integer contantSum=Integer.valueOf(str2);
+            Integer total=receivable+contantSum;
+            map.put("RECEIABLESUM",""+total);
+        }else{
+            map.put("RECEIABLESUM","0.00");
+            map.put("FUNDSRECEIVED","0.00");
+            map.put("FUNDSSURPLUS","0.00");
+        }
+
         return map;
     }
 
@@ -155,7 +164,16 @@ public class CommissionServiceImpl implements ICommissionService
     @Override
     public int updateCommission(Commission commission)
     {
-        return commissionMapper.updateCommission(commission);
+        //查询旧数据
+        Commission commission1=commissionMapper.selectCommissionById(commission.getCommissionId());
+        if(commission1!=null){
+            BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(commission1.getContractCode());
+            bussinessContract.setContractCode(commission.getContractCode());
+            bussinessContract.setContractName(commission.getContractName());
+            bussinessContractMapper.updateBussinessContract(bussinessContract);
+        }
+        int count=commissionMapper.updateCommission(commission);
+        return count;
     }
 
     /**
@@ -241,10 +259,15 @@ public class CommissionServiceImpl implements ICommissionService
     public Commission commissionSum(String contractCode) {
         Commission commission=commissionMapper.selectCommissionSum(contractCode);
         ConstantValue constantValue=constantValueMapper.selectNewValueByCode(contractCode);
-        String str=commission.getReceivable();//应收金额
+        String str="0.00";//应收金额
         String str1="0.00";//固化值
+        String str3="0.00";//待收金额
         if(constantValue!=null){
             str1= constantValue.getConstantValue();
+            str3= commission.getFundsReceived();
+        }
+        if(commission!=null){
+            str=commission.getReceivable();
         }
         //总金额
         Double total=0.00;
@@ -257,7 +280,7 @@ public class CommissionServiceImpl implements ICommissionService
         }
         //总待收金额
         Double fundsSurplus=0.00;
-        if(StringUtils.isNotNull(commission.getFundsReceived())){
+        if(!"0.00".equals(str3)){
             fundsSurplus=total-Double.valueOf(commission.getFundsReceived());
         }else{
             fundsSurplus=total;
