@@ -194,6 +194,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where COMMISSION_ID = #{commissionId}
     </update>
 
+    <update id="updateCommissionByCode" parameterType="Commission">
+        update commission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
+        </trim>
+        where CONTRACT_CODE = #{contractCode}
+    </update>
+
     <delete id="deleteCommissionById" parameterType="Long">
         delete from commission where COMMISSION_ID = #{commissionId}
     </delete>
@@ -211,12 +220,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCommissionSum" parameterType="String" resultMap="CommissionResult">
         SELECT
-        b.CONTRACT_CODE,
+        a.CONTRACT_CODE,
 		b.RECEIVABLE,
         sum(a.funds_received) funds_received
         FROM
         commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
-		where a.CONTRACT_CODE =#{contractCode} group by b.RECEIVABLE, b.CONTRACT_CODE
+		where a.CONTRACT_CODE =#{contractCode} group by b.RECEIVABLE, a.CONTRACT_CODE
     </select>
 
 </mapper>

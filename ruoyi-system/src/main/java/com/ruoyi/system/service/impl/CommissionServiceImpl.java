@@ -82,6 +82,8 @@ public class CommissionServiceImpl implements ICommissionService
                     totalValue=Double.valueOf(commission1.getReceivable());
                     fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
                     commission1.setFundsSurplus(""+fundsSurplusVal);
+                }else{
+                    commission1.setReceivable(""+totalValue);
                 }
 
             }
@@ -97,16 +99,29 @@ public class CommissionServiceImpl implements ICommissionService
 
     @Override
     public Map<String, Object> selectSum() {
+        //计算总金额，总实收金额，总待收金额
         Map<String, Object> map=new HashMap<>();
         if(commissionMapper.selectSum()!=null){
             map=commissionMapper.selectSum();
-            String str=map.get("RECEIVABLE").toString();
-            Integer receivable=Integer.valueOf(str);
+            String str="0.00";
+            if(map.get("RECEIVABLE")!=null){
+                str=map.get("RECEIVABLE").toString();
+            }
+            Double receivable=Double.valueOf(str);
             Map<String, Object> map1=constantValueMapper.selectConstantSum();
-            String str2=map1.get("CONSTRAINTSUM").toString();
-            Integer contantSum=Integer.valueOf(str2);
-            Integer total=receivable+contantSum;
+            String str2="0.00";
+            if(map1!=null){
+                str2=map1.get("CONSTRAINTSUM").toString();
+            }
+            Double contantSum=Double.valueOf(str2);
+            Double total=receivable+contantSum;
             map.put("RECEIABLESUM",""+total);
+            if(map.get("FUNDSSURPLUS")==null&&map.get("FUNDSRECEIVED")!=null){
+                Double fundssurplus=total-Double.valueOf(map.get("FUNDSRECEIVED").toString());
+                map.put("FUNDSSURPLUS",""+fundssurplus);
+            }else if(map.get("FUNDSSURPLUS")==null&&map.get("FUNDSRECEIVED")==null){
+                map.put("FUNDSSURPLUS",""+total);
+            }
         }else{
             map.put("RECEIABLESUM","0.00");
             map.put("FUNDSRECEIVED","0.00");
@@ -171,6 +186,9 @@ public class CommissionServiceImpl implements ICommissionService
             bussinessContract.setContractCode(commission.getContractCode());
             bussinessContract.setContractName(commission.getContractName());
             bussinessContractMapper.updateBussinessContract(bussinessContract);
+        }
+        if("1".equals(commission.getUpdateType())){
+            commissionMapper.updateCommissionByCode(commission);
         }
         int count=commissionMapper.updateCommission(commission);
         return count;
@@ -264,18 +282,20 @@ public class CommissionServiceImpl implements ICommissionService
         String str3="0.00";//待收金额
         if(constantValue!=null){
             str1= constantValue.getConstantValue();
-            str3= commission.getFundsReceived();
         }
         if(commission!=null){
-            str=commission.getReceivable();
+            if(StringUtils.isNotNull(commission.getReceivable())){
+                str=commission.getReceivable();
+            }
+            str3= commission.getFundsReceived();
         }
         //总金额
         Double total=0.00;
-        if(StringUtils.isNotNull(str) && StringUtils.isNotNull(str1)){
+        if(!"0.00".equals(str) && !"0.00".equals(str1)){
             total=Double.valueOf(str)+Double.valueOf(str1);
-        }else if(StringUtils.isNotNull(str) && StringUtils.isNull(str1)){
+        }else if(!"0.00".equals(str) && "0.00".equals(str1)){
             total=Double.valueOf(str);
-        }else if(StringUtils.isNull(str) && StringUtils.isNotNull(str1)){
+        }else if("0.00".equals(str) && !"0.00".equals(str1)){
             total=Double.valueOf(str1);
         }
         //总待收金额

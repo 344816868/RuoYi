@@ -81,4 +81,6 @@ public interface CommissionMapper
     public int deleteCommissionByCode(String contractCode);
 
     public Commission selectCommissionSum(String contractCode);
+
+    public int updateCommissionByCode (Commission commission);
 }

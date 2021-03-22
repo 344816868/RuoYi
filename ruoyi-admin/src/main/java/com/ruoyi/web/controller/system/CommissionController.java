@@ -149,10 +149,11 @@ public class CommissionController extends BaseController
     /**
      * 修改手续费管理
      */
-    @GetMapping("/edit/{commissionId}")
-    public String edit(@PathVariable("commissionId") Long commissionId, ModelMap mmap)
+    @GetMapping("/edit/{commissionId}/{updateType}")
+    public String edit(@PathVariable("commissionId") Long commissionId,@PathVariable("updateType") String updateType, ModelMap mmap)
     {
         Commission commission = commissionService.selectCommissionById(commissionId);
+        commission.setUpdateType(updateType);
         mmap.put("commission", commission);
         return prefix + "/edit";
     }

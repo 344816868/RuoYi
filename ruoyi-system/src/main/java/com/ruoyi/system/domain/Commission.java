@@ -82,6 +82,16 @@ public class Commission extends BaseEntity
 
     private String text2; //
 
+    private String updateType ; //
+
+    public String getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(String updateType) {
+        this.updateType = updateType;
+    }
+
     public String getText1() {
         return text1;
     }
