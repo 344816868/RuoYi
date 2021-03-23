@@ -6,18 +6,15 @@ import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.BussinessContract;
-import com.ruoyi.system.domain.ConstantValue;
-import com.ruoyi.system.mapper.BussinessContractMapper;
-import com.ruoyi.system.mapper.ConstantValueMapper;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.CommissionMapper;
-import com.ruoyi.system.domain.Commission;
 import com.ruoyi.system.service.ICommissionService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 手续费管理Service业务层处理
@@ -34,6 +31,11 @@ public class CommissionServiceImpl implements ICommissionService
     private ConstantValueMapper constantValueMapper;
     @Autowired
     private BussinessContractMapper bussinessContractMapper; //
+    @Autowired
+    private BussinessReceivableMapper bussinessReceivableMapper;
+    @Autowired
+    private BussinessFileMapper bussinessFileMapper;
+
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     /**
@@ -64,23 +66,37 @@ public class CommissionServiceImpl implements ICommissionService
             BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(commission1.getContractCode());
             Double totalValue=0.0;
             Double fundsSurplusVal;
-            if(StringUtils.isNotNull(constantValue)){
+            if(constantValue!=null){
                 if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isNotEmpty(commission1.getReceivable())){
                     totalValue=Double.valueOf(constantValue.getConstantValue()) + Double.valueOf(commission1.getReceivable());
                     commission1.setReceivable(""+totalValue);
-                    fundsSurplusVal=totalValue-Double.valueOf(commission1.getFundsReceived());
+                    if(commission1.getFundsReceived()!=null){
+                        fundsSurplusVal=totalValue-Double.valueOf(commission1.getFundsReceived());
+                    }else{
+                        fundsSurplusVal=totalValue;
+                    }
+
                     commission1.setFundsSurplus(""+fundsSurplusVal);
 
                 }else if(StringUtils.isNotEmpty(constantValue.getConstantValue()) && StringUtils.isEmpty(commission1.getReceivable())){
                     totalValue=Double.valueOf(constantValue.getConstantValue());
                     commission1.setReceivable(""+totalValue);
-                    fundsSurplusVal=Double.valueOf(constantValue.getConstantValue()) - Double.valueOf(commission1.getFundsReceived());
+                    if(commission1.getFundsReceived()!=null){
+                        fundsSurplusVal=Double.valueOf(constantValue.getConstantValue()) - Double.valueOf(commission1.getFundsReceived());
+                    }else{
+                        fundsSurplusVal=Double.valueOf(constantValue.getConstantValue());
+                    }
+
                     commission1.setFundsSurplus(""+fundsSurplusVal);
                 }
             }else{
                 if(StringUtils.isNotNull(commission1.getReceivable())){
                     totalValue=Double.valueOf(commission1.getReceivable());
-                    fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
+                    if(commission1.getFundsReceived()!=null){
+                        fundsSurplusVal=Double.valueOf(commission1.getReceivable()) - Double.valueOf(commission1.getFundsReceived());
+                    }else{
+                        fundsSurplusVal=Double.valueOf(commission1.getReceivable());
+                    }
                     commission1.setFundsSurplus(""+fundsSurplusVal);
                 }else{
                     commission1.setReceivable(""+totalValue);
@@ -101,28 +117,36 @@ public class CommissionServiceImpl implements ICommissionService
     public Map<String, Object> selectSum() {
         //计算总金额，总实收金额，总待收金额
         Map<String, Object> map=new HashMap<>();
-        if(commissionMapper.selectSum()!=null){
-            map=commissionMapper.selectSum();
+        Map<String, Object> commissionMap=commissionMapper.selectSum();
+        Map<String, Object> constantValueMap=constantValueMapper.selectConstantSum();
+        if(commissionMap!=null && constantValueMap!=null){
             String str="0.00";
-            if(map.get("RECEIVABLE")!=null){
-                str=map.get("RECEIVABLE").toString();
+            if(commissionMap.get("RECEIVABLE")!=null){
+                str=commissionMap.get("RECEIVABLE").toString();
             }
             Double receivable=Double.valueOf(str);
-            Map<String, Object> map1=constantValueMapper.selectConstantSum();
             String str2="0.00";
-            if(map1!=null){
-                str2=map1.get("CONSTRAINTSUM").toString();
+            if(constantValueMap.get("CONSTRAINTSUM")!=null){
+                str2=constantValueMap.get("CONSTRAINTSUM").toString();
             }
             Double contantSum=Double.valueOf(str2);
             Double total=receivable+contantSum;
             map.put("RECEIABLESUM",""+total);
-            if(map.get("FUNDSSURPLUS")==null&&map.get("FUNDSRECEIVED")!=null){
-                Double fundssurplus=total-Double.valueOf(map.get("FUNDSRECEIVED").toString());
+            if(commissionMap.get("FUNDSSURPLUS")==null&&commissionMap.get("FUNDSRECEIVED")!=null){
+                Double fundssurplus=total-Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
                 map.put("FUNDSSURPLUS",""+fundssurplus);
-            }else if(map.get("FUNDSSURPLUS")==null&&map.get("FUNDSRECEIVED")==null){
+            }else if(commissionMap.get("FUNDSSURPLUS")==null&&commissionMap.get("FUNDSRECEIVED")==null){
                 map.put("FUNDSSURPLUS",""+total);
+                map.put("FUNDSRECEIVED","0.00");
             }
-        }else{
+        } else if(commissionMap==null&&constantValueMap!=null){
+            String sum=constantValueMap.get("CONSTRAINTSUM").toString();
+            map.put("RECEIABLESUM",sum);
+            map.put("FUNDSRECEIVED","0.00");
+            map.put("FUNDSSURPLUS",sum);
+        } else if(commissionMap!=null&&constantValueMap==null){
+            map=commissionMap;
+        } else{
             map.put("RECEIABLESUM","0.00");
             map.put("FUNDSRECEIVED","0.00");
             map.put("FUNDSSURPLUS","0.00");
@@ -182,13 +206,34 @@ public class CommissionServiceImpl implements ICommissionService
         //查询旧数据
         Commission commission1=commissionMapper.selectCommissionById(commission.getCommissionId());
         if(commission1!=null){
+            //修改项目信息
             BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(commission1.getContractCode());
             bussinessContract.setContractCode(commission.getContractCode());
             bussinessContract.setContractName(commission.getContractName());
             bussinessContractMapper.updateBussinessContract(bussinessContract);
-        }
-        if("1".equals(commission.getUpdateType())){
-            commissionMapper.updateCommissionByCode(commission);
+            //修改应收金额信息
+            BussinessReceivable bussinessReceivable = new BussinessReceivable();
+            bussinessReceivable.setContractCode(commission.getContractCode());
+            bussinessReceivable.setUpdateContractCode(commission1.getContractCode());
+            bussinessReceivableMapper.updateBussinessReceivableByCode(bussinessReceivable);
+            //修改合同文件信息
+            BussinessFile bussinessFile = new BussinessFile();
+            bussinessFile.setContractCode(commission.getContractCode());
+            bussinessFile.setContractName(commission.getContractName());
+            bussinessFile.setUpdateContractCode(commission1.getContractCode());
+            bussinessFileMapper.updateBussinessFileByCode(bussinessFile);
+            //修改固化值信息
+            ConstantValue constantValue = new ConstantValue();
+            constantValue.setContractCode(commission.getContractCode());
+            constantValue.setContractName(commission.getContractName());
+            constantValue.setUpdateContractCode(commission1.getContractCode());
+            constantValueMapper.updateConstantValueByCode(constantValue);
+
+
+            if("1".equals(commission.getUpdateType())){
+                commission.setUpdateContractCode(commission1.getContractCode());
+                commissionMapper.updateCommissionByCode(commission);
+            }
         }
         int count=commissionMapper.updateCommission(commission);
         return count;
@@ -279,7 +324,7 @@ public class CommissionServiceImpl implements ICommissionService
         ConstantValue constantValue=constantValueMapper.selectNewValueByCode(contractCode);
         String str="0.00";//应收金额
         String str1="0.00";//固化值
-        String str3="0.00";//待收金额
+        String str3="0.00";//实收金额
         if(constantValue!=null){
             str1= constantValue.getConstantValue();
         }
@@ -287,7 +332,12 @@ public class CommissionServiceImpl implements ICommissionService
             if(StringUtils.isNotNull(commission.getReceivable())){
                 str=commission.getReceivable();
             }
-            str3= commission.getFundsReceived();
+            if(StringUtils.isNotNull(commission.getFundsReceived())){
+                str3= commission.getFundsReceived();
+            }else{
+                commission.setFundsReceived(str3);
+            }
+
         }
         //总金额
         Double total=0.00;
@@ -301,7 +351,7 @@ public class CommissionServiceImpl implements ICommissionService
         //总待收金额
         Double fundsSurplus=0.00;
         if(!"0.00".equals(str3)){
-            fundsSurplus=total-Double.valueOf(commission.getFundsReceived());
+            fundsSurplus=total-Double.valueOf(str3);
         }else{
             fundsSurplus=total;
         }

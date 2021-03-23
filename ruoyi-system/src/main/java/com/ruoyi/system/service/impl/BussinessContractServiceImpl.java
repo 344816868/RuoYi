@@ -8,17 +8,15 @@ import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.BussinessFile;
-import com.ruoyi.system.domain.Commission;
-import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IBussinessFileService;
+import com.ruoyi.system.service.ICommissionService;
 import com.ruoyi.system.service.ISysDictDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.BussinessContractMapper;
-import com.ruoyi.system.domain.BussinessContract;
 import com.ruoyi.system.service.IBussinessContractService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -34,11 +32,19 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Autowired
     private BussinessContractMapper bussinessContractMapper;
     @Autowired
-    private CommissionServiceImpl commissionService;
+    private ICommissionService commissionService;
     @Autowired
     private ISysDictDataService sysDictDataService;
     @Autowired
     private IBussinessFileService bussinessFileService;
+    @Autowired
+    private CommissionMapper commissionMapper;
+    @Autowired
+    private BussinessReceivableMapper bussinessReceivableMapper;
+    @Autowired
+    private ConstantValueMapper constantValueMapper;
+    @Autowired
+    private BussinessFileMapper bussinessFileMapper;
 
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
@@ -73,7 +79,17 @@ public class BussinessContractServiceImpl implements IBussinessContractService
 
     @Override
     public List<BussinessContract> selectExportBussinessContractList(BussinessContract bussinessContract) {
-        return bussinessContractMapper.selectExportBussinessContractList(bussinessContract);
+        List<BussinessContract> bussinessContractList=bussinessContractMapper.selectExportBussinessContractList(bussinessContract);
+        for(BussinessContract bussinessContract1:bussinessContractList){
+            Commission commission = new Commission();
+            commission.setContractCode(bussinessContract.getContractCode());
+            List<Commission> commissionList=commissionService.selectCommissionList(commission);
+            bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
+            bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
+            bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+        }
+
+        return bussinessContractList;
     }
 
     /**
@@ -152,14 +168,29 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         //查询数据库中的旧数据
         BussinessContract bussinessContract1=bussinessContractMapper.selectBussinessContractById(bussinessContract.getContractId());
         if(!bussinessContract.getContractCode().equals(bussinessContract1.getContractCode()) || !bussinessContract.getContractName().equals(bussinessContract1.getContractName())){
-            //根据旧的项目编号查询发票信息
-            Commission commission=commissionService.selectCommissionByCode(bussinessContract1.getContractCode());
-            if(commission!=null){
-                commission.setContractCode(bussinessContract.getContractCode());
-                commission.setContractName(bussinessContract.getContractName());
-                commissionService.updateCommission(commission);
-            }
-
+            //修改手续费信息
+            Commission commission=new Commission();
+            commission.setContractCode(bussinessContract.getContractCode());
+            commission.setContractName(bussinessContract.getContractName());
+            commission.setUpdateContractCode(bussinessContract1.getContractCode());
+            commissionMapper.updateCommissionByCode(commission);
+            //修改应收金额项目编号
+            BussinessReceivable bussinessReceivable = new BussinessReceivable();
+            bussinessReceivable.setContractCode(bussinessContract.getContractCode());
+            bussinessReceivable.setUpdateContractCode(bussinessContract1.getContractCode());
+            bussinessReceivableMapper.updateBussinessReceivableByCode(bussinessReceivable);
+            //修改固化值项目编号信息
+            ConstantValue constantValue = new ConstantValue();
+            constantValue.setContractCode(bussinessContract.getContractCode());
+            constantValue.setContractName(bussinessContract.getContractName());
+            constantValue.setUpdateContractCode(bussinessContract1.getContractCode());
+            constantValueMapper.updateConstantValueByCode(constantValue);
+            //修改合同文件的项目信息
+            BussinessFile bussinessFile = new BussinessFile();
+            bussinessFile.setContractCode(bussinessContract.getContractCode());
+            bussinessFile.setContractName(bussinessContract.getContractName());
+            bussinessFile.setUpdateContractCode(bussinessContract1.getContractCode());
+            bussinessFileMapper.updateBussinessFileByCode(bussinessFile);
         }
 
         //当前时间和合同截止时间比较
@@ -294,6 +325,14 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         bussinessContract.setParams(params);
         bussinessContract.setStatus("0");
         List<BussinessContract> list = this.selectExportBussinessContractList(bussinessContract);
+        for(BussinessContract bussinessContract1:list){
+            Commission commission = new Commission();
+            commission.setContractCode(bussinessContract.getContractCode());
+            List<Commission> commissionList=commissionService.selectCommissionList(commission);
+            bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
+            bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
+            bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+        }
         return list;
     }
 }

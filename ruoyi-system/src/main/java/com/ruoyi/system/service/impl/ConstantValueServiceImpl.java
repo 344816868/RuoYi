@@ -6,15 +6,14 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.Commission;
+import com.ruoyi.system.domain.*;
+import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IBussinessContractService;
 import com.ruoyi.system.service.ICommissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.ConstantValueMapper;
-import com.ruoyi.system.domain.ConstantValue;
 import com.ruoyi.system.service.IConstantValueService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -31,6 +30,14 @@ public class ConstantValueServiceImpl implements IConstantValueService
     private ConstantValueMapper constantValueMapper;
     @Autowired
     private ICommissionService commissionService;
+    @Autowired
+    private BussinessContractMapper bussinessContractMapper;
+    @Autowired
+    private CommissionMapper commissionMapper;
+    @Autowired
+    private BussinessReceivableMapper bussinessReceivableMapper;
+    @Autowired
+    private BussinessFileMapper bussinessFileMapper;
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
 
@@ -79,6 +86,34 @@ public class ConstantValueServiceImpl implements IConstantValueService
     @Override
     public int updateConstantValue(ConstantValue constantValue)
     {
+        ConstantValue constantValue1=constantValueMapper.selectConstantValueById(constantValue.getValueId());
+        if(constantValue1!=null){
+            if(!constantValue1.getContractCode().equals(constantValue.getContractCode()) || constantValue1.getContractName().equals(constantValue.getContractName())){
+                //修改项目信息
+                BussinessContract bussinessContract = new BussinessContract();
+                bussinessContract.setContractCode(constantValue.getContractCode());
+                bussinessContract.setContractName(constantValue.getContractName());
+                bussinessContract.setUpdateContractCode(constantValue1.getContractCode());
+                bussinessContractMapper.updateBussinessContractByCode(bussinessContract);
+                //修改应收金额信息
+                BussinessReceivable bussinessReceivable = new BussinessReceivable();
+                bussinessReceivable.setContractCode(constantValue.getContractCode());
+                bussinessReceivable.setUpdateContractCode(constantValue1.getContractCode());
+                bussinessReceivableMapper.updateBussinessReceivableByCode(bussinessReceivable);
+                //修改手续费信息
+                Commission commission = new Commission();
+                commission.setContractCode(constantValue.getContractCode());
+                commission.setContractName(constantValue.getContractName());
+                commission.setUpdateContractCode(constantValue1.getContractCode());
+                commissionMapper.updateCommissionByCode(commission);
+                //修合同文件信息
+                BussinessFile bussinessFile = new BussinessFile();
+                bussinessFile.setContractCode(constantValue.getContractCode());
+                bussinessFile.setContractName(constantValue.getContractName());
+                bussinessFile.setUpdateContractCode(constantValue1.getContractCode());
+                bussinessFileMapper.updateBussinessFileByCode(bussinessFile);
+            }
+        }
         return constantValueMapper.updateConstantValue(constantValue);
     }
 
@@ -111,17 +146,22 @@ public class ConstantValueServiceImpl implements IConstantValueService
         Commission commission = new Commission();
         List<Commission> list=commissionService.selectCommissionList(commission);
         int successNum = 0;
-        for(Commission commission1:list){
-            ConstantValue constantValue = new ConstantValue();
-            constantValue.setContractCode(commission1.getContractCode());
-            constantValue.setContractName(commission1.getContractName());
-            constantValue.setConstantValue(commission1.getFundsSurplus());
-            Date valueTime=DateUtils.dateTime(DateUtils.YYYY_MM_DD,DateUtils.getDate());
-            constantValue.setValueTime(valueTime);
-            this.insertConstantValue(constantValue);
-            successNum++;
+        if(list!=null){
+            for(Commission commission1:list){
+                ConstantValue constantValue = new ConstantValue();
+                constantValue.setContractCode(commission1.getContractCode());
+                constantValue.setContractName(commission1.getContractName());
+                if(commission1.getFundsSurplus()!=null){
+                    constantValue.setConstantValue(commission1.getFundsSurplus());
+                }else {
+                    constantValue.setConstantValue("0.00");
+                }
+                Date valueTime=DateUtils.dateTime(DateUtils.YYYY_MM_DD,DateUtils.getDate());
+                constantValue.setValueTime(valueTime);
+                this.insertConstantValue(constantValue);
+                successNum++;
+            }
         }
-
         return successNum;
     }
 

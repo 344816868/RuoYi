@@ -35,7 +35,17 @@ public class ConstantValue extends BaseEntity
     @Excel(name = "固化时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date valueTime;
 
-    public void setValueId(Long valueId) 
+    private String updateContractCode ; //
+
+    public String getUpdateContractCode() {
+        return updateContractCode;
+    }
+
+    public void setUpdateContractCode(String updateContractCode) {
+        this.updateContractCode = updateContractCode;
+    }
+
+    public void setValueId(Long valueId)
     {
         this.valueId = valueId;
     }

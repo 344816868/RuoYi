@@ -92,4 +92,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where to_char(VALUE_TIME ,'yyyy') = (select extract(year from sysdate)-1 from dual)
     </select>
 
+    <update id="updateConstantValueByCode" parameterType="ConstantValue">
+        update CONSTANT_VALUE
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
+        </trim>
+        where CONTRACT_CODE = #{updateContractCode}
+    </update>
+
 </mapper>

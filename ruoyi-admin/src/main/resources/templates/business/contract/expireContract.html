@@ -299,14 +299,14 @@
             var contractCode=value;
             var url = prefixfp + '/info/' + contractCode;
             //   $.modal.open("发票详情", url);
-            $.modal.openTab("发票详情", url);
+            $.modal.openTab(contractCode+"发票详情", url);
         }
         /* 查看合同信息 */
         function getFileInfo(value) {
             var contractCode=value;
             var url = prefixFile + '/bussinessFile/' + contractCode;
             console.log(url);
-            $.modal.openTab("合同文件详情", url);
+            $.modal.openTab(contractCode+"合同文件详情", url);
         }
     </script>
 </body>

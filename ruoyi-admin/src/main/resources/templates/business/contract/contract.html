@@ -319,7 +319,7 @@
             var contractCode=value;
             var url = prefixfp + '/info/' + contractCode;
          //   $.modal.open("发票详情", url);
-            $.modal.openTab("发票详情", url);
+            $.modal.openTab(contractCode+"发票详情", url);
         }
         /* 查看合同信息 */
         function getFileInfo(value) {

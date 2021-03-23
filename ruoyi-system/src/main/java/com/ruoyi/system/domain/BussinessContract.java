@@ -131,7 +131,7 @@ public class BussinessContract extends BaseEntity
     private String filePath;
 
     /** 手续费应收金额 */
-    @Excel(name = "应收金额")
+    @Excel(name = "总金额")
     private String receivable;
 
     /** 手续费实收金额 */
@@ -150,6 +150,15 @@ public class BussinessContract extends BaseEntity
     @Excel(name = "联系方式")
     private String phone;
 
+    private String updateContractCode ; //
+
+    public String getUpdateContractCode() {
+        return updateContractCode;
+    }
+
+    public void setUpdateContractCode(String updateContractCode) {
+        this.updateContractCode = updateContractCode;
+    }
 
     public String getReceivable() {
         return receivable;

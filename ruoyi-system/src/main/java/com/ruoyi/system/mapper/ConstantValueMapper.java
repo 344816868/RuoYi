@@ -50,6 +50,8 @@ public interface ConstantValueMapper
      */
     public int updateConstantValue(ConstantValue constantValue);
 
+    public int updateConstantValueByCode(ConstantValue constantValue);
+
     /**
      * 删除固化值管理
      * 

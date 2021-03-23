@@ -43,6 +43,8 @@ public interface BussinessFileMapper
      */
     public int updateBussinessFile(BussinessFile bussinessFile);
 
+    public int updateBussinessFileByCode(BussinessFile bussinessFile);
+
     /**
      * 删除合同文件管理
      * 

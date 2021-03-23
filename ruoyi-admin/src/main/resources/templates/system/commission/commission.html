@@ -80,7 +80,7 @@
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}/{1}",
+                updateUrl: prefix + "/edit/{id}/1",
             //    removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
@@ -195,7 +195,7 @@
             var contractCode=value;
             var url = prefix + '/info/' + contractCode;
             //   $.modal.open("发票详情", url);
-            $.modal.openTab("发票详情", url);
+            $.modal.openTab(contractCode+"发票详情", url);
         }
 
         function importReceivable(){

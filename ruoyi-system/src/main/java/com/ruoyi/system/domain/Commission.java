@@ -84,6 +84,16 @@ public class Commission extends BaseEntity
 
     private String updateType ; //
 
+    private String updateContractCode;//
+
+    public String getUpdateContractCode() {
+        return updateContractCode;
+    }
+
+    public void setUpdateContractCode(String updateContractCode) {
+        this.updateContractCode = updateContractCode;
+    }
+
     public String getUpdateType() {
         return updateType;
     }

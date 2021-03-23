@@ -69,4 +69,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <update id="updateBussinessReceivableByCode" parameterType="BussinessReceivable">
+        update bussiness_receivable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+        </trim>
+        where CONTRACT_CODE = #{updateContractCode}
+    </update>
+
 </mapper>

@@ -241,4 +241,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <update id="updateBussinessContractByCode" parameterType="BussinessContract">
+        update bussiness_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
+        </trim>
+        where CONTRACT_CODE = #{updateContractCode}
+    </update>
+
 </mapper>

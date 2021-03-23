@@ -39,7 +39,17 @@ public class BussinessFile extends BaseEntity
     @Excel(name = "备注")
     private String fileRemark;
 
-    public void setFileId(Long fileId) 
+    private String updateContractCode ; //
+
+    public String getUpdateContractCode() {
+        return updateContractCode;
+    }
+
+    public void setUpdateContractCode(String updateContractCode) {
+        this.updateContractCode = updateContractCode;
+    }
+
+    public void setFileId(Long fileId)
     {
         this.fileId = fileId;
     }

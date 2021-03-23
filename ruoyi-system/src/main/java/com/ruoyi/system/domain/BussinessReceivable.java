@@ -26,7 +26,17 @@ public class BussinessReceivable extends BaseEntity
     @Excel(name = "应收金额")
     private String receivable;
 
-    public void setId(Long id) 
+    private String updateContractCode;
+
+    public String getUpdateContractCode() {
+        return updateContractCode;
+    }
+
+    public void setUpdateContractCode(String updateContractCode) {
+        this.updateContractCode = updateContractCode;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

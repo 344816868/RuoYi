@@ -64,6 +64,8 @@ public interface BussinessContractMapper
      */
     public int updateBussinessContract(BussinessContract bussinessContract);
 
+    public int updateBussinessContractByCode(BussinessContract bussinessContract);
+
     /**
      * 删除合同管理
      * 

@@ -45,6 +45,8 @@ public interface BussinessReceivableMapper
      */
     public int updateBussinessReceivable(BussinessReceivable bussinessReceivable);
 
+    public int updateBussinessReceivableByCode(BussinessReceivable bussinessReceivable);
+
     /**
      * 删除应收金额
      * 

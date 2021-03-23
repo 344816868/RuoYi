@@ -86,4 +86,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from bussiness_file where CONTRACT_CODE = #{contractCode}
     </delete>
 
+    <update id="updateBussinessFileByCode" parameterType="BussinessFile">
+        update bussiness_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
+        </trim>
+        where CONTRACT_CODE = #{updateContractCode}
+    </update>
+
 </mapper>

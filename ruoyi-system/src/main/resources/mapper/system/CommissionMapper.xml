@@ -200,7 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
             <if test="contractName != null">CONTRACT_NAME = #{contractName},</if>
         </trim>
-        where CONTRACT_CODE = #{contractCode}
+        where CONTRACT_CODE = #{updateContractCode}
     </update>
 
     <delete id="deleteCommissionById" parameterType="Long">
