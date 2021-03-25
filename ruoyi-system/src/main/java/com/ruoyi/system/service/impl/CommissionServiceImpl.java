@@ -138,6 +138,10 @@ public class CommissionServiceImpl implements ICommissionService
             }else if(commissionMap.get("FUNDSSURPLUS")==null&&commissionMap.get("FUNDSRECEIVED")==null){
                 map.put("FUNDSSURPLUS",""+total);
                 map.put("FUNDSRECEIVED","0.00");
+            }else{
+                Double fundssurplus=total-Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
+                map.put("FUNDSSURPLUS",""+fundssurplus);
+                map.put("FUNDSRECEIVED",commissionMap.get("FUNDSRECEIVED").toString());
             }
         } else if(commissionMap==null&&constantValueMap!=null){
             String sum=constantValueMap.get("CONSTRAINTSUM").toString();
@@ -145,7 +149,9 @@ public class CommissionServiceImpl implements ICommissionService
             map.put("FUNDSRECEIVED","0.00");
             map.put("FUNDSSURPLUS",sum);
         } else if(commissionMap!=null&&constantValueMap==null){
-            map=commissionMap;
+            map.put("RECEIABLESUM",commissionMap.get("RECEIVABLE").toString());
+            map.put("FUNDSRECEIVED",commissionMap.get("FUNDSRECEIVED").toString());
+            map.put("FUNDSSURPLUS",commissionMap.get("FUNDSSURPLUS").toString());
         } else{
             map.put("RECEIABLESUM","0.00");
             map.put("FUNDSRECEIVED","0.00");
