@@ -100,6 +100,12 @@ public class CommissionServiceImpl implements ICommissionService
                     commission1.setFundsSurplus(""+fundsSurplusVal);
                 }else{
                     commission1.setReceivable(""+totalValue);
+                    if(commission1.getFundsReceived()!=null){
+                        fundsSurplusVal=0 - Double.valueOf(commission1.getFundsReceived());
+                    }else{
+                        fundsSurplusVal=Double.valueOf(commission1.getReceivable());
+                    }
+                    commission1.setFundsSurplus(""+fundsSurplusVal);
                 }
 
             }
@@ -119,6 +125,9 @@ public class CommissionServiceImpl implements ICommissionService
         Map<String, Object> map=new HashMap<>();
         Map<String, Object> commissionMap=commissionMapper.selectSum();
         Map<String, Object> constantValueMap=constantValueMapper.selectConstantSum();
+        Double total=0.00;
+        Double fReceivanle=0.00;
+        Double fplus=0.00;
         if(commissionMap!=null && constantValueMap!=null){
             String str="0.00";
             if(commissionMap.get("RECEIVABLE")!=null){
@@ -130,11 +139,12 @@ public class CommissionServiceImpl implements ICommissionService
                 str2=constantValueMap.get("CONSTRAINTSUM").toString();
             }
             Double contantSum=Double.valueOf(str2);
-            Double total=receivable+contantSum;
+            total=receivable+contantSum;
             map.put("RECEIABLESUM",""+total);
             if(commissionMap.get("FUNDSSURPLUS")==null&&commissionMap.get("FUNDSRECEIVED")!=null){
                 Double fundssurplus=total-Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
                 map.put("FUNDSSURPLUS",""+fundssurplus);
+                map.put("FUNDSRECEIVED",commissionMap.get("FUNDSRECEIVED").toString());
             }else if(commissionMap.get("FUNDSSURPLUS")==null&&commissionMap.get("FUNDSRECEIVED")==null){
                 map.put("FUNDSSURPLUS",""+total);
                 map.put("FUNDSRECEIVED","0.00");
@@ -149,9 +159,22 @@ public class CommissionServiceImpl implements ICommissionService
             map.put("FUNDSRECEIVED","0.00");
             map.put("FUNDSSURPLUS",sum);
         } else if(commissionMap!=null&&constantValueMap==null){
-            map.put("RECEIABLESUM",commissionMap.get("RECEIVABLE").toString());
-            map.put("FUNDSRECEIVED",commissionMap.get("FUNDSRECEIVED").toString());
-            map.put("FUNDSSURPLUS",commissionMap.get("FUNDSSURPLUS").toString());
+            if(commissionMap.get("RECEIVABLE")!=null){
+                total=Double.valueOf(commissionMap.get("RECEIVABLE").toString());
+            }
+            if(commissionMap.get("FUNDSRECEIVED")!=null){
+                fReceivanle=Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
+            }
+            if(commissionMap.get("RECEIVABLE")!=null && commissionMap.get("FUNDSRECEIVED")!=null){
+                fplus=Double.valueOf(commissionMap.get("RECEIVABLE").toString())-Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
+            }else if(commissionMap.get("RECEIVABLE")!=null && commissionMap.get("FUNDSRECEIVED")==null){
+                fplus=Double.valueOf(commissionMap.get("RECEIVABLE").toString());
+            }else if(commissionMap.get("RECEIVABLE")==null && commissionMap.get("FUNDSRECEIVED")!=null){
+                fplus=0-Double.valueOf(commissionMap.get("FUNDSRECEIVED").toString());
+            }
+            map.put("RECEIABLESUM",total);
+            map.put("FUNDSRECEIVED",fReceivanle);
+            map.put("FUNDSSURPLUS",fplus);
         } else{
             map.put("RECEIABLESUM","0.00");
             map.put("FUNDSRECEIVED","0.00");

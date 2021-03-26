@@ -128,7 +128,7 @@ public class BussinessReceivableController extends BaseController
         return toAjax(bussinessReceivableService.deleteBussinessReceivableByIds(ids));
     }
 
-    @RequiresPermissions("system:receivable:import")
+   // @RequiresPermissions("system:receivable:import")
     @PostMapping("/importReceivable")
     @ResponseBody
     public AjaxResult importData(MultipartFile file) throws Exception

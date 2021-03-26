@@ -115,9 +115,14 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
         StringBuilder failureMsg = new StringBuilder();
         for (BussinessReceivable bussinessReceivable : List)
         {
-            try
-            {
-                this.insertBussinessReceivable(bussinessReceivable);
+            BussinessReceivable bussinessReceivable1=bussinessReceivableMapper.selectBussinessReceivableByCode(bussinessReceivable.getContractCode());
+            try{
+                if(bussinessReceivable1!=null){
+                    bussinessReceivable1.setReceivable(bussinessReceivable.getReceivable());
+                    this.updateBussinessReceivable(bussinessReceivable1);
+                }else{
+                    this.insertBussinessReceivable(bussinessReceivable);
+                }
                 successNum++;
                 //    successMsg.append("<br/>" + successNum + "、合同名称 " + bussinessContract.getContractName() + " 导入成功");
             }

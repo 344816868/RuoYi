@@ -84,9 +84,12 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             Commission commission = new Commission();
             commission.setContractCode(bussinessContract.getContractCode());
             List<Commission> commissionList=commissionService.selectCommissionList(commission);
-            bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
-            bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
-            bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+            if(commissionList.size()>0){
+                bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
+                bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
+                bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+            }
+
         }
 
         return bussinessContractList;
@@ -329,9 +332,11 @@ public class BussinessContractServiceImpl implements IBussinessContractService
             Commission commission = new Commission();
             commission.setContractCode(bussinessContract.getContractCode());
             List<Commission> commissionList=commissionService.selectCommissionList(commission);
-            bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
-            bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
-            bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+            if(commissionList.size()>0){
+                bussinessContract1.setReceivable(commissionList.get(0).getReceivable());
+                bussinessContract1.setFundsReceived(commissionList.get(0).getFundsReceived());
+                bussinessContract1.setFundsSurplus(commissionList.get(0).getFundsSurplus());
+            }
         }
         return list;
     }
