@@ -236,7 +236,7 @@
                             if (result.code == web_status.SUCCESS) {
                                 $.modal.closeAll();
                                 $.modal.alertSuccess(result.msg);
-                                $.table.refresh();
+                                $.modal.reload();
                             } else if (result.code == web_status.WARNING) {
                                 layer.close(index);
                                 $.modal.enable();

@@ -9,7 +9,7 @@
 
     <name>ruoyi</name>
     <url>http://www.ruoyi.vip</url>
-    <description>光大银行合同管理系统</description>
+    <description>云缴费管理系统</description>
     
     <properties>
         <ruoyi.version>4.5.0</ruoyi.version>

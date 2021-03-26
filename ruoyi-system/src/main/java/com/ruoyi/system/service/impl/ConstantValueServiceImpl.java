@@ -146,7 +146,7 @@ public class ConstantValueServiceImpl implements IConstantValueService
         Commission commission = new Commission();
         List<Commission> list=commissionService.selectCommissionList(commission);
         int successNum = 0;
-        if(list!=null){
+        if(list!=null||list.size()>0){
             for(Commission commission1:list){
                 ConstantValue constantValue = new ConstantValue();
                 constantValue.setContractCode(commission1.getContractCode());
