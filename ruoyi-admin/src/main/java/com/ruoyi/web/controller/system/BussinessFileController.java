@@ -57,7 +57,7 @@ public class BussinessFileController extends BaseController
         return prefix + "/bussinessFile";
     }
 
-    @RequiresPermissions("system:bussinessFile:view")
+   // @RequiresPermissions("system:bussinessFile:view")
     @GetMapping("/bussinessFile/{contractCode}")
     public String bussinessFile(@PathVariable("contractCode") String contractCode,ModelMap mmap)
     {
@@ -68,7 +68,7 @@ public class BussinessFileController extends BaseController
     /**
      * 查询合同文件管理列表
      */
-    @RequiresPermissions("system:bussinessFile:list")
+   // @RequiresPermissions("system:bussinessFile:list")
     @PostMapping("/list/{contractCode}")
     @ResponseBody
     public TableDataInfo list(BussinessFile bussinessFile)
@@ -81,7 +81,7 @@ public class BussinessFileController extends BaseController
     /**
      * 导出合同文件管理列表
      */
-    @RequiresPermissions("system:bussinessFile:export")
+ //   @RequiresPermissions("system:bussinessFile:export")
     @Log(title = "合同文件管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
@@ -106,7 +106,7 @@ public class BussinessFileController extends BaseController
     /**
      * 新增保存合同文件管理
      */
-    @RequiresPermissions("system:bussinessFile:add")
+  //  @RequiresPermissions("system:bussinessFile:add")
     @Log(title = "合同文件管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -129,7 +129,7 @@ public class BussinessFileController extends BaseController
     /**
      * 修改保存合同文件管理
      */
-    @RequiresPermissions("system:bussinessFile:edit")
+  //  @RequiresPermissions("system:bussinessFile:edit")
     @Log(title = "合同文件管理", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
@@ -141,7 +141,7 @@ public class BussinessFileController extends BaseController
     /**
      * 删除合同文件管理
      */
-    @RequiresPermissions("system:bussinessFile:remove")
+ //   @RequiresPermissions("system:bussinessFile:remove")
     @Log(title = "合同文件管理", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
