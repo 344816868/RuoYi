@@ -367,6 +367,13 @@ public class CommissionServiceImpl implements ICommissionService
                 commission.setFundsReceived(str3);
             }
 
+        }else{
+            commission=new Commission();
+            BussinessReceivable bussinessReceivable=bussinessReceivableMapper.selectBussinessReceivableByCode(contractCode);
+            if(bussinessReceivable!=null){
+                str=bussinessReceivable.getReceivable();
+            }
+            commission.setFundsReceived(str3);
         }
         //总金额
         Double total=0.00;
