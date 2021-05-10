@@ -6,6 +6,7 @@ import java.util.*;
 import com.ruoyi.common.config.Global;
 import com.ruoyi.common.config.ServerConfig;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
@@ -350,6 +351,10 @@ public class BussinessContractController extends BaseController
             if(StringUtils.isNotEmpty(bussinessContract.getContractType())){
                 String dictValue=sysDictDataService.selectDictValue("contract_type",bussinessContract.getContractType());
                 bussinessContract.setContractType(dictValue);
+            }
+            if(bussinessContract.getEndTime()==null){
+                Date endTime=DateUtils.dateTime("yyyy-MM-dd","2099-12-31");
+                bussinessContract.setEndTime(endTime);
             }
         }
         String message = bussinessContractService.importContract(list);

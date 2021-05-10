@@ -32,6 +32,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBussinessFileVo"/>
         where file_id = #{fileId}
     </select>
+
+    <select id="selectBussinessFileNumBycontractCode" parameterType="String" resultType="java.lang.Integer">
+        select count(*) from bussiness_file where contract_code = #{contractCode} and FILE_PATH is not null
+    </select>
         
     <insert id="insertBussinessFile" parameterType="BussinessFile" useGeneratedKeys="true" keyProperty="fileId">
         <selectKey keyProperty="fileId" order="BEFORE" resultType="Long">

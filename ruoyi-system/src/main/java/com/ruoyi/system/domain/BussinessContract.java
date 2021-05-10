@@ -152,6 +152,16 @@ public class BussinessContract extends BaseEntity
 
     private String updateContractCode ; //
 
+    private int fileNum ; //合同数量
+
+    public int getFileNum() {
+        return fileNum;
+    }
+
+    public void setFileNum(int fileNum) {
+        this.fileNum = fileNum;
+    }
+
     public String getUpdateContractCode() {
         return updateContractCode;
     }

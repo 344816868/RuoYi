@@ -62,4 +62,6 @@ public interface BussinessFileMapper
     public int deleteBussinessFileByIds(String[] fileIds);
 
     public int deleteBussinessFileByCode(String contractCode);
+
+    public int selectBussinessFileNumBycontractCode(String contractCode);
 }

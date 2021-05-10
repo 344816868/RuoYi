@@ -75,6 +75,13 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     public List<BussinessContract> selectBussinessContractList(BussinessContract bussinessContract)
     {
         List<BussinessContract> list=bussinessContractMapper.selectBussinessContractList(bussinessContract);
+        if(list!=null){
+            for (int i=0;i<list.size();i++){
+                BussinessContract bussinessContract1=list.get(i);
+                int fileNum=bussinessFileMapper.selectBussinessFileNumBycontractCode(bussinessContract1.getContractCode());
+                bussinessContract1.setFileNum(fileNum);
+            }
+        }
         return list;
     }
 

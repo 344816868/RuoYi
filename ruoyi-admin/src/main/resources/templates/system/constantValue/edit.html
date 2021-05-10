@@ -23,7 +23,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">固化值：</label>
                 <div class="col-sm-8">
-                    <input name="constantValue" th:field="*{constantValue}" class="form-control" type="text">
+                    <input name="constantValue" th:field="*{constantValue}" class="form-control" id="num" type="text">
                 </div>
             </div>
             <div class="form-group">    
@@ -38,7 +38,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <textarea name="billRemark" class="form-control">[[*{remark}]]</textarea>
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
                 </div>
             </div>
         </form>
@@ -61,6 +61,17 @@
             format: "yyyy-mm-dd",
             minView: "month",
             autoclose: true
+        });
+        $("#num").blur(function () {
+            var str = $(this).val();
+            if (str != "" && str != null) {
+                if(isNaN(str)){
+                    alert("请输入数字");
+                }
+            }else{
+                alert("请输入数字");
+            }
+
         });
     </script>
 </body>
