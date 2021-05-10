@@ -122,6 +122,19 @@
 
                 },
                 {
+                    field: 'fileNum',
+                    title: '合同状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '未上传';
+                        }else{
+                            return '已上传';
+                        }
+                    }
+
+                },
+                {
                     field: 'agentCode',
                     title: '代理行前置码',
                     visible: false

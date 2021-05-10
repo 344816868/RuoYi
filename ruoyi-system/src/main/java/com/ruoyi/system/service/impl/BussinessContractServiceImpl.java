@@ -319,6 +319,13 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     @Override
     public List<BussinessContract> selectExpireBussinessContract(BussinessContract bussinessContract) {
         List<BussinessContract> list=this.selectBussinessContractList(bussinessContract);
+        if(list!=null){
+            for (int i=0;i<list.size();i++){
+                BussinessContract bussinessContract1=list.get(i);
+                int fileNum=bussinessFileMapper.selectBussinessFileNumBycontractCode(bussinessContract1.getContractCode());
+                bussinessContract1.setFileNum(fileNum);
+            }
+        }
  //       List<BussinessContract> list = this.selectExportBussinessContractList(bussinessContract);
 //        for(BussinessContract bussinessContract1:list){
 //            Commission commission = new Commission();
