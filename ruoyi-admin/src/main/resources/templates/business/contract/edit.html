@@ -289,6 +289,30 @@
                 var form = data.form, files = data.files, extra = data.extra,
                     response = data.response, reader = data.reader;
             });
+
+        });
+        $("#num").blur(function () {
+            var str = $(this).val();
+            if (str != "" && str != null) {
+                if(isNaN(str)){
+                    alert("请输入数字");
+                }
+            }else{
+                alert("请输入数字");
+            }
+
+        });
+
+        $("#commissionNorm").blur(function () {
+            var str = $(this).val();
+            if (str != "" && str != null) {
+                if(isNaN(str)){
+                    alert("请输入数字");
+                }
+            }else{
+                alert("请输入数字");
+            }
+
         });
     </script>
 </body>

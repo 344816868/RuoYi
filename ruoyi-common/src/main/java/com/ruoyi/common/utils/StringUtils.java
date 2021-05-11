@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils;
 
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Map;
 import com.ruoyi.common.core.text.StrFormatter;
@@ -404,5 +405,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static <T> T cast(Object obj)
     {
         return (T) obj;
+    }
+
+    public static String doubleToString (Double num,int n){
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        // 保留两位小数
+        nf.setMaximumFractionDigits(n);
+        return nf.format(num);
     }
 }

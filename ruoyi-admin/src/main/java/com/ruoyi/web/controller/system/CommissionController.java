@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,14 @@ public class CommissionController extends BaseController
     public String commission(ModelMap mmap)
     {
         Map<String,Object> map=commissionService.selectSum();
-        mmap.put("sum",map);
+        String str1=StringUtils.doubleToString(Double.valueOf(map.get("RECEIABLESUM").toString()),2);
+        String str2=StringUtils.doubleToString(Double.valueOf(map.get("FUNDSRECEIVED").toString()),2);
+        String str3=StringUtils.doubleToString(Double.valueOf(map.get("FUNDSSURPLUS").toString()),2);
+        Map<String,Object> map1=new HashMap<>();
+        map1.put("RECEIABLESUM",str1);
+        map1.put("FUNDSRECEIVED",str2);
+        map1.put("FUNDSSURPLUS",str3);
+        mmap.put("sum",map1);
         return prefix + "/commission";
     }
 
