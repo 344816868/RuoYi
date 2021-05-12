@@ -74,6 +74,9 @@
             autoclose: true
         });
         $(document).ready(function () {
+         //   var now=new Date();
+            var nowdate = new Date().toLocaleDateString().replace(/\//g, '-');
+            $("input[name='uploadTime']").val(nowdate);
             $("#fileinput-demo-1").fileinput({
                 'theme': 'explorer-fas',
                 uploadUrl: prefix+'/filesUpload',
