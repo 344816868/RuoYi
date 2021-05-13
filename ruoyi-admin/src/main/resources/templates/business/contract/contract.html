@@ -63,6 +63,9 @@
                 <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="business:contract:import">
                     <i class="fa fa-upload"></i> 导入
                 </a>
+<!--                <a class="btn btn-info" onclick="uploadFile()" >-->
+<!--                    <i class="fa fa-upload"></i> 合同上传-->
+<!--                </a>-->
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -301,14 +304,14 @@
                     width:185,
                     formatter: function(value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.contractId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.contractId + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        var more = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getCommissionInfo(\'' + row.contractCode + '\')"><i class="fa fa-book"></i>发票详情</a> ');
+                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="getFileInfo(\'' + row.contractCode + '\')"><i class="fa fa-book"></i>合同详情</a>');
+                      //  var more = [];
                        // more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getContractPDF(" + row.contractId + ")' ><i class='fa fa-file-pdf-o'></i>预览</a> ");
                     //    more.push("<a class='btn btn-default btn-xs ' href='javascript:void(0)' onclick='downloadFile(" + row.contractId + ")'><i class='fa fa-download'></i>下载</a>");
-                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionInfo(" + row.contractCode + ")'><i class='fa fa-book'></i>发票详情</a>");
-                        more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getFileInfo(" + row.contractCode + ")'><i class='fa fa-book'></i>合同详情</a>");
-                        actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>更多操作</a>');
+                    //    more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getCommissionInfo('" + row.contractCode + "')'><i class='fa fa-book'></i>发票详情</a>");
+                  //      more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='getFileInfo('" + row.contractCode + "')'><i class='fa fa-book'></i>合同详情</a>");
+                   //     actions.push('<a tabindex="0" class="btn btn-info btn-xs" role="button" data-container="body" data-placement="left" data-toggle="popover" data-html="true" data-trigger="hover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>更多操作</a>');
                         return actions.join('');
                     }
                 }]
@@ -338,9 +341,12 @@
         function getFileInfo(value) {
             var contractCode=value;
             var url = prefixFile + '/bussinessFile/' + contractCode;
-            console.log(url);
             $.modal.openTab(contractCode+"合同文件详情", url);
         }
+        // function uploadFile(){
+        //     var url = prefix+"/uploadFile";
+        //     $.modal.open("上传合同", url);
+        // }
     </script>
 </body>
 <!-- 导入区域 -->

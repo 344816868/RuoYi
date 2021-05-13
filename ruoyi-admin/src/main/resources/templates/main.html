@@ -89,7 +89,6 @@
 				processData: false,
 				contentType: false,
 				success: function(result) {
-				    console.log(result);
 					var content="<span style='color: #2f2f2f;font-size: 15px;'>近期有<span style='color: #b94a48'><!--3-->"+result.total+"</span>份合同即将到期</span><br> "+
                         "<a style='font-size: 17px;' onclick='detailsInfo()' href='javascript:void(0)'>查看详情</a>"
 					pop("消息提示",content,10000);

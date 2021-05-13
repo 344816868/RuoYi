@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.*;
@@ -150,6 +151,7 @@ public class BussinessContractServiceImpl implements IBussinessContractService
         BussinessFile bussinessFile = new BussinessFile();
         bussinessFile.setContractCode(bussinessContract.getContractCode());
         bussinessFile.setContractName(bussinessContract.getContractName());
+        bussinessFile.setUploadTime(DateUtils.getNowDate());
         bussinessFileService.insertBussinessFile(bussinessFile);
 
         bussinessContract.setStatus("0");//默认合同状态是正常的未过期的

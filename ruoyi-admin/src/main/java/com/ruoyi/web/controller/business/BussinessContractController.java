@@ -360,4 +360,27 @@ public class BussinessContractController extends BaseController
         String message = bussinessContractService.importContract(list);
         return AjaxResult.success(message);
     }
+
+    /**
+     * 公用合同上传
+     *
+     * @param mmap
+     * @return
+     */
+    @GetMapping("/uploadFile")
+    public String contractPDF(ModelMap mmap)
+    {
+        BussinessContract bussinessContract = new BussinessContract();
+        List<BussinessContract> list = bussinessContractService.selectBussinessContractList(bussinessContract);
+        mmap.put("contractList", list);
+        return prefix + "/contractFile";
+    }
+
+//    @PostMapping("/saveFile")
+//    @ResponseBody
+//    public AjaxResult saveFile()
+//    {
+//        return toAjax(bussinessContractService.updateBussinessContract(bussinessContract));
+//    }
+
 }
