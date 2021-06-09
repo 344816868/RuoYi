@@ -12,16 +12,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="valueTime"    column="value_time"    />
         <result property="remark"    column="remark"    />
         <result property="createTime"    column="create_time"    />
+        <result property="constantDaishou"    column="constant_daishou"    />
     </resultMap>
 
     <sql id="selectConstantValueVo">
-        select value_id, contract_code, contract_name, constant_value, value_time, remark from constant_value
+        select value_id, contract_code, contract_name, constant_value, value_time, remark,constant_daishou from constant_value
     </sql>
 
     <select id="selectConstantValueList" parameterType="ConstantValue" resultMap="ConstantValueResult">
         <include refid="selectConstantValueVo"/>
         <where>  
-            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="valueTime != null "> and value_time = #{valueTime}</if>
         </where>
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="constantValue != null">constant_value,</if>
             <if test="valueTime != null">value_time,</if>
             <if test="remark != null">remark,</if>
+            <if test="constantDaishou != null">constant_daishou,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -54,6 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="constantValue != null">#{constantValue},</if>
             <if test="valueTime != null">#{valueTime},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="constantDaishou != null">#{constantDaishou},</if>
             sysdate
          </trim>
     </insert>
@@ -66,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="constantValue != null">constant_value = #{constantValue},</if>
             <if test="valueTime != null">value_time = #{valueTime},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="constantDaishou != null">constant_daishou = #{constantDaishou},</if>
         </trim>
         where value_id = #{valueId}
     </update>
@@ -101,4 +105,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where CONTRACT_CODE = #{updateContractCode}
     </update>
 
+    <select id="selectSum" resultType="java.util.Map" parameterType="string">
+        select sum(CONSTANT_VALUE) CONSTRAINTSUM,sum(CONSTANT_DAISHOU) DAISHOUSUM from CONSTANT_VALUE
+        <where>
+            <if test="contractCode != null  and contractCode != ''"> contract_code = #{contractCode}</if>
+        </where>
+    </select>
 </mapper>

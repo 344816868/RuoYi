@@ -138,4 +138,17 @@ public class BussinessReceivableController extends BaseController
         String message = bussinessReceivableService.importContract(list);
         return AjaxResult.success(message);
     }
+
+    /**
+     * 导出excel模板
+     * @return
+     */
+    @RequiresPermissions("business:contract:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<BussinessReceivable> util = new ExcelUtil<BussinessReceivable>(BussinessReceivable.class);
+        return util.importTemplateExcel("应收金额信息");
+    }
 }

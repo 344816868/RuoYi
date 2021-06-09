@@ -5,11 +5,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * 应收金额对象 bussiness_receivable
  * 
  * @author ruoyi
- * @date 2021-03-02
+ * @date 2021-05-30
  */
 public class BussinessReceivable extends BaseEntity
 {
@@ -22,13 +24,53 @@ public class BussinessReceivable extends BaseEntity
     @Excel(name = "项目编号")
     private String contractCode;
 
-    /** 应收金额 */
-    @Excel(name = "应收金额")
+    /** 项目名称 */
+    @Excel(name = "项目名称")
+    private String contractName;
+
+    /**每年的应收金额*/
+    @Excel(name = "应收金额/年")
+    private String receivableSum;
+
+    /** 应收金额 （实时的）*/
+    @Excel(name = "应收金额/月")
     private String receivable;
+    /** 时间 */
+    @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date receivableTime;
+
+    /** 备注 */
+    @Excel(name = "备注")
+    private String receivableRemark;
+
+
+    public Date getReceivableTime() {
+        return receivableTime;
+    }
+
+    public void setReceivableTime(Date receivableTime) {
+        this.receivableTime = receivableTime;
+    }
+
+    public String getReceivableRemark() {
+        return receivableRemark;
+    }
+
+    public void setReceivableRemark(String receivableRemark) {
+        this.receivableRemark = receivableRemark;
+    }
 
     private String updateContractCode;
 
-    public String getUpdateContractCode() {
+    public String getReceivableSum() {
+        return receivableSum;
+    }
+
+    public void setReceivableSum(String receivableSum) {
+        this.receivableSum = receivableSum;
+    }
+	
+	public String getUpdateContractCode() {
         return updateContractCode;
     }
 
@@ -36,7 +78,7 @@ public class BussinessReceivable extends BaseEntity
         this.updateContractCode = updateContractCode;
     }
 
-    public void setId(Long id)
+    public void setId(Long id) 
     {
         this.id = id;
     }
@@ -63,6 +105,15 @@ public class BussinessReceivable extends BaseEntity
     {
         return receivable;
     }
+    public void setContractName(String contractName) 
+    {
+        this.contractName = contractName;
+    }
+
+    public String getContractName() 
+    {
+        return contractName;
+    }
 
     @Override
     public String toString() {
@@ -70,6 +121,9 @@ public class BussinessReceivable extends BaseEntity
             .append("id", getId())
             .append("contractCode", getContractCode())
             .append("receivable", getReceivable())
+            .append("updateTime", getUpdateTime())
+            .append("createTime", getCreateTime())
+            .append("contractName", getContractName())
             .toString();
     }
 }

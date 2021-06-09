@@ -3,23 +3,30 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.BussinessReceivableMapper">
-    
+
     <resultMap type="BussinessReceivable" id="BussinessReceivableResult">
         <result property="id"    column="id"    />
         <result property="contractCode"    column="contract_code"    />
         <result property="receivable"    column="receivable"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="receivableTime"    column="receivable_time"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="receivableRemark"    column="receivable_remark"    />
     </resultMap>
 
     <sql id="selectBussinessReceivableVo">
-        select id, contract_code, receivable from bussiness_receivable
+        select id, contract_code, receivable, update_time, receivable_time, contract_name, receivable_remark from bussiness_receivable
     </sql>
 
     <select id="selectBussinessReceivableList" parameterType="BussinessReceivable" resultMap="BussinessReceivableResult">
-        <include refid="selectBussinessReceivableVo"/>
+        <include refid="selectBussinessReceivableVo"/> t
         <where>  
-            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="receivable != null  and receivable != ''"> and receivable = #{receivable}</if>
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
+            AND RECEIVABLE_TIME = (select max(RECEIVABLE_TIME) from BUSSINESS_RECEIVABLE where CONTRACT_CODE = t.CONTRACT_CODE)
         </where>
+        order by RECEIVABLE_TIME desc
     </select>
     
     <select id="selectBussinessReceivableById" parameterType="Long" resultMap="BussinessReceivableResult">
@@ -31,7 +38,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBussinessReceivableVo"/>
         where contract_code = #{contractCode}
     </select>
-        
+
+    <select id="selectBussinessReceivable" parameterType="String" resultMap="BussinessReceivableResult">
+        <include refid="selectBussinessReceivableVo"/>
+        where to_char(RECEIVABLE_TIME ,'yyyy')=#{time} and
+        contract_code = #{contractCode}
+    </select>
+
     <insert id="insertBussinessReceivable" parameterType="BussinessReceivable" useGeneratedKeys="true" keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
             select seq_bussiness_receivable.nextval as id from DUAL
@@ -41,11 +54,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">id,</if>
             <if test="contractCode != null">contract_code,</if>
             <if test="receivable != null">receivable,</if>
+            <if test="contractName != null">contract_name,</if>
+            update_time,
+            <if test="receivableTime != null">receivable_time,</if>
+            <if test="receivableRemark != null">receivable_remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="contractCode != null">#{contractCode},</if>
             <if test="receivable != null">#{receivable},</if>
+            <if test="contractName != null">#{contractName},</if>
+            sysdate,
+            <if test="receivableTime != null">#{receivableTime},</if>
+            <if test="receivableRemark != null">#{receivableRemark},</if>
          </trim>
     </insert>
 
@@ -54,6 +75,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="contractCode != null">contract_code = #{contractCode},</if>
             <if test="receivable != null">receivable = #{receivable},</if>
+            <if test="contractName != null">contract_name = #{contractName},</if>
+            update_time = sysdate,
+            <if test="receivableTime != null">receivable_time = #{receivableTime},</if>
+            <if test="receivableRemark != null">receivable_remark = #{receivableRemark}</if>
         </trim>
         where id = #{id}
     </update>
@@ -73,8 +98,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update bussiness_receivable
         <trim prefix="SET" suffixOverrides=",">
             <if test="contractCode != null">CONTRACT_CODE = #{contractCode},</if>
+            update_time = sysdate
         </trim>
         where CONTRACT_CODE = #{updateContractCode}
     </update>
+
+    <select id="getReceivableSum" parameterType="String" resultType="double">
+        select sum(RECEIVABLE) RECEIVABLESUM  from BUSSINESS_RECEIVABLE
+        <where>
+            <if test="contractCode != null  and contractCode != ''"> contract_code =#{contractCode}</if>
+        </where>
+    </select>
 
 </mapper>

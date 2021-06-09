@@ -28,7 +28,7 @@ public class ConstantValue extends BaseEntity
     private String contractName;
 
     /** 固化值 */
-    @Excel(name = "固化值")
+    @Excel(name = "固化实收金额")
     private String constantValue;
 
     /** 时间 */
@@ -36,6 +36,18 @@ public class ConstantValue extends BaseEntity
     private Date valueTime;
 
     private String updateContractCode ; //
+
+    /** 固化值 */
+    @Excel(name = "固化待收金额")
+    private String constantDaishou;
+
+    public String getConstantDaishou() {
+        return constantDaishou;
+    }
+
+    public void setConstantDaishou(String constantDaishou) {
+        this.constantDaishou = constantDaishou;
+    }
 
     public String getUpdateContractCode() {
         return updateContractCode;

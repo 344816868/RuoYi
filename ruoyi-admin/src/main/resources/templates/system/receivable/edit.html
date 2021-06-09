@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改固化值管理')" />
+    <th:block th:include="include :: header('修改应收金额')" />
     <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-constantValue-edit" th:object="${constantValue}">
-            <input name="valueId" th:field="*{valueId}" type="hidden">
+        <form class="form-horizontal m" id="form-receivable-edit" th:object="${bussinessReceivable}">
+            <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">项目编号：</label>
+                <label class="col-sm-3 control-label">项目编号：</label>
                 <div class="col-sm-8">
                     <input name="contractCode" th:field="*{contractCode}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label">项目名称：</label>
                 <div class="col-sm-8">
                     <input name="contractName" th:field="*{contractName}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">固化实收金额：</label>
+                <label class="col-sm-3 control-label">应收金额：</label>
                 <div class="col-sm-8">
-                    <input name="constantValue" th:field="*{constantValue}" class="form-control" id="num" type="text">
+                    <input name="receivable" th:field="*{receivable}" class="form-control" id= "num" type="text">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">固化待收金额：</label>
-                <div class="col-sm-8">
-                    <input name="constantDaishou" th:field="*{constantDaishou}" class="form-control" id="num1" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
                 <label class="col-sm-3 control-label">时间：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="valueTime" th:value="${#dates.format(constantValue.valueTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="receivableTime" th:value="${#dates.format(bussinessReceivable.receivableTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                    <textarea name="receivableRemark" class="form-control">[[*{receivableRemark}]]</textarea>
                 </div>
             </div>
         </form>
@@ -52,22 +46,22 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
-        var prefix = ctx + "system/constantValue";
-        $("#form-constantValue-edit").validate({
+        var prefix = ctx + "system/receivable";
+        $("#form-receivable-edit").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-constantValue-edit').serialize());
+                $.operate.save(prefix + "/edit", $('#form-receivable-edit').serialize());
             }
         }
-
-        $("input[name='valueTime']").datetimepicker({
+        $("input[name='receivableTime']").datetimepicker({
             format: "yyyy-mm-dd",
             minView: "month",
             autoclose: true
         });
+
         $("#num").blur(function () {
             var str = $(this).val();
             if (str != "" && str != null) {
@@ -77,16 +71,7 @@
             }else{
                 alert("请输入数字");
             }
-        });
-        $("#num1").blur(function () {
-            var str = $(this).val();
-            if (str != "" && str != null) {
-                if(isNaN(str)){
-                    alert("请输入数字");
-                }
-            }else{
-                alert("请输入数字");
-            }
+
         });
     </script>
 </body>

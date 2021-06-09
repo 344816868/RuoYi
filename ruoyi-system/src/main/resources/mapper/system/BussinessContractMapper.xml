@@ -49,9 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectBussinessContractList" parameterType="BussinessContract" resultMap="BussinessContractResult">
         <include refid="selectBussinessContractVo"/>
         <where>
-            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractStatus != null "> and contract_status = #{contractStatus}</if>
-            <if test="contractName!= null  and contractName != ''"> and contract_name = #{contractName}</if>
+            <if test="contractName!= null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="params.beginSignTime != null and params.beginSignTime != ''">
                 AND sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
@@ -77,9 +77,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         BUSSINESS_CONTRACT a
         LEFT JOIN ( SELECT CONTRACT_CODE, SUM( RECEIVABLE ) RECEIVABLE, sum( FUNDS_RECEIVED ) FUNDS_RECEIVED  FROM COMMISSION GROUP BY CONTRACT_CODE ) b ON a.CONTRACT_CODE = b.CONTRACT_CODE
         <where>
-            <if test="contractCode != null  and contractCode != ''"> and a.contract_code = #{contractCode}</if>
+            <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractStatus != null "> and a.contract_status = #{contractStatus}</if>
-            <if test="contractName!= null  and contractName != ''"> and a.contract_name = #{contractName}</if>
+            <if test="contractName!= null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="params.beginSignTime != null and params.beginSignTime != ''">
                 AND a.sign_time &gt;= to_date(#{params.beginSignTime},'yyyy-MM-dd HH24:mi:ss')
             </if>

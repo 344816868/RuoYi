@@ -67,4 +67,7 @@ public interface ConstantValueMapper
      * @return 结果
      */
     public int deleteConstantValueByIds(String[] valueIds);
+
+    //查询每个项目的 总固话实收和待收
+    public Map<String,Object> selectSum(String contractCode);
 }

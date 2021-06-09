@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.BussinessReceivable;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 应收金额Mapper接口
@@ -62,4 +63,8 @@ public interface BussinessReceivableMapper
      * @return 结果
      */
     public int deleteBussinessReceivableByIds(String[] ids);
+
+    public double getReceivableSum (String contractCode);
+
+    public BussinessReceivable selectBussinessReceivable(@Param("time") String time, @Param("contractCode") String contractCode);
 }

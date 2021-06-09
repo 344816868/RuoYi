@@ -3,10 +3,8 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.Commission;
-import com.ruoyi.system.domain.ConstantValue;
-import com.ruoyi.system.mapper.ConstantValueMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +25,8 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
 {
     @Autowired
     private BussinessReceivableMapper bussinessReceivableMapper;
-    @Autowired
-    private ConstantValueMapper constantValueMapper; //
+//    @Autowired
+//    private ConstantValueMapper constantValueMapper; //
 
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
     /**
@@ -52,7 +50,12 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
     @Override
     public List<BussinessReceivable> selectBussinessReceivableList(BussinessReceivable bussinessReceivable)
     {
-        return bussinessReceivableMapper.selectBussinessReceivableList(bussinessReceivable);
+        List<BussinessReceivable> list=bussinessReceivableMapper.selectBussinessReceivableList(bussinessReceivable);
+        for(BussinessReceivable receivable:list){
+            double sum=bussinessReceivableMapper.getReceivableSum(receivable.getContractCode());
+            receivable.setReceivableSum(String.valueOf(sum));
+        }
+        return list;
     }
 
     /**
@@ -115,10 +118,14 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
         StringBuilder failureMsg = new StringBuilder();
         for (BussinessReceivable bussinessReceivable : List)
         {
-            BussinessReceivable bussinessReceivable1=bussinessReceivableMapper.selectBussinessReceivableByCode(bussinessReceivable.getContractCode());
+            String time= DateUtils.parseDateToStr("YYYY",bussinessReceivable.getReceivableTime());
+            String code=bussinessReceivable.getContractCode();
+            BussinessReceivable bussinessReceivable1=bussinessReceivableMapper.selectBussinessReceivable(time,code);
             try{
                 if(bussinessReceivable1!=null){
                     bussinessReceivable1.setReceivable(bussinessReceivable.getReceivable());
+                    bussinessReceivable1.setContractName(bussinessReceivable.getContractName());
+                    bussinessReceivable1.setReceivableTime(bussinessReceivable.getReceivableTime());
                     this.updateBussinessReceivable(bussinessReceivable1);
                 }else{
                     this.insertBussinessReceivable(bussinessReceivable);

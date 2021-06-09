@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectBussinessFileList" parameterType="BussinessFile" resultMap="BussinessFileResult">
         <include refid="selectBussinessFileVo"/>
         <where>  
-            <if test="contractCode != null  and contractCode != ''"> and contract_code = #{contractCode}</if>
+            <if test="contractCode != null  and contractCode != ''"> and contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and contract_name like concat(concat('%', #{contractName}), '%')</if>
             <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
             <if test="fileRemark != null  and fileRemark != ''"> and file_remark = #{fileRemark}</if>

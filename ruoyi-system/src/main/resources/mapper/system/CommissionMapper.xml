@@ -31,19 +31,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCommissionList" parameterType="Commission" resultMap="CommissionResult">
         SELECT
         a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
-        a.bill_remark,a.file_path,b.receivable,b.funds_received,start_time,end_time,bank_num,text1,text2
+        a.bill_remark,a.file_path,b.funds_received,start_time,end_time,bank_num,text1,text2
         FROM
         commission a
-        RIGHT JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c left join BUSSINESS_RECEIVABLE d
-        on c.CONTRACT_CODE = d.CONTRACT_CODE
-        GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
+        RIGHT JOIN ( SELECT c.contract_code, sum( c.funds_received ) funds_received, max( c.create_time ) create_time FROM commission c
+        GROUP BY c.contract_code) b ON a.contract_code = b.contract_code
         AND a.create_time =b.create_time
         <where>
             <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
-            <if test="isbill != null  and isbill != ''"> and a.isbill like concat(concat('%', #{isbill}), '%')</if>
-            <if test="commissionTime != null "> and a.commission_time like concat(concat('%', #{commissionTime}), '%')</if>
-            <if test="billTime != null "> and a.bill_time like concat(concat('%', #{billTime}), '%')</if>
             <if test="params.beginCommissionTime != null and params.beginCommissionTime != ''">
                 AND a.commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
@@ -84,9 +80,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
-            <if test="isbill != null  and isbill != ''"> and a.isbill like concat(concat('%', #{isbill}), '%')</if>
-            <if test="commissionTime != null "> and a.commission_time like concat(concat('%', #{commissionTime}), '%')</if>
-            <if test="billTime != null "> and a.bill_time like concat(concat('%', #{billTime}), '%')</if>
             <if test="params.beginCommissionTime != null and params.beginCommissionTime != ''">
                 AND a.commission_time &gt;= to_date(#{params.beginCommissionTime},'yyyy-MM-dd HH24:mi:ss')
             </if>
@@ -108,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             SELECT a.commission_id,a.contract_code,a.contract_name,a.isbill,a.commission_time,a.commission_remark,a.bill_time,
             a.bill_remark,a.file_path,b.receivable,b.funds_received,b.receivable - b.funds_received funds_surplus,start_time,end_time,bank_num,text1,text2
             FROM commission a
-            right JOIN ( SELECT c.contract_code, d.receivable receivable, sum( funds_received ) funds_received, max( create_time ) create_time FROM commission c left join BUSSINESS_RECEIVABLE d
+            right JOIN ( SELECT c.contract_code, d.receivable receivable, sum( c.funds_received ) funds_received, max( c.create_time ) create_time FROM commission c left join BUSSINESS_RECEIVABLE d
              on c.CONTRACT_CODE = d.CONTRACT_CODE
                 GROUP BY c.contract_code,d.receivable) b ON a.contract_code = b.contract_code
             AND a.create_time =b.create_time) e
@@ -226,6 +219,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM
         commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
 		where a.CONTRACT_CODE =#{contractCode} group by b.RECEIVABLE, a.CONTRACT_CODE
+    </select>
+
+    <select id="getCommissionSum"  resultType="double">
+        SELECT
+        sum(a.funds_received) receivedSum
+        FROM commission a
     </select>
 
 </mapper>
