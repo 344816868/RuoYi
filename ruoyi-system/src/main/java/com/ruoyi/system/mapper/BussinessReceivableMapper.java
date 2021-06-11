@@ -64,7 +64,7 @@ public interface BussinessReceivableMapper
      */
     public int deleteBussinessReceivableByIds(String[] ids);
 
-    public double getReceivableSum (String contractCode);
+    public String getReceivableSum (String contractCode);
 
     public BussinessReceivable selectBussinessReceivable(@Param("time") String time, @Param("contractCode") String contractCode);
 }

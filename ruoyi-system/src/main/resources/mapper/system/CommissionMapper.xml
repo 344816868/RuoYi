@@ -67,16 +67,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         a.bill_time,
         a.bill_remark,
         a.file_path,
-        b.RECEIVABLE ,
         a.funds_received,
-        b.RECEIVABLE - funds_received funds_surplus,
         a.start_time,
         a.end_time,
         a.bank_num,
         a.text1,
         a.text2
         FROM
-        commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
+        commission a
         <where>
             <if test="contractCode != null  and contractCode != ''"> and a.contract_code like concat(concat('%', #{contractCode}), '%')</if>
             <if test="contractName != null  and contractName != ''"> and a.contract_name like concat(concat('%', #{contractName}), '%')</if>
@@ -213,15 +211,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCommissionSum" parameterType="String" resultMap="CommissionResult">
         SELECT
-        a.CONTRACT_CODE,
-		b.RECEIVABLE,
-        sum(a.funds_received) funds_received
+        sum(funds_received) funds_received
         FROM
-        commission a  left join BUSSINESS_RECEIVABLE b on a.CONTRACT_CODE=b.CONTRACT_CODE
-		where a.CONTRACT_CODE =#{contractCode} group by b.RECEIVABLE, a.CONTRACT_CODE
+        commission
+       where CONTRACT_CODE = #{contractCode}
     </select>
 
-    <select id="getCommissionSum"  resultType="double">
+    <select id="getCommissionSum"  resultType="String">
         SELECT
         sum(a.funds_received) receivedSum
         FROM commission a

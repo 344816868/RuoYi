@@ -11,8 +11,10 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.BussinessFile;
 import com.ruoyi.system.domain.SysDictData;
 import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.service.IBussinessFileService;
 import com.ruoyi.system.service.ISysDictDataService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,9 @@ public class BussinessContractController extends BaseController
 
     @Autowired
     private ISysDictDataService sysDictDataService;
+
+    @Autowired
+    private IBussinessFileService bussinessFileService;
 
     @RequiresPermissions("business:contract:view")
     @GetMapping()
@@ -158,7 +163,7 @@ public class BussinessContractController extends BaseController
     /**
      * 导出合同管理列表
      */
-   @RequiresPermissions("business:contract:export")
+    @RequiresPermissions("business:contract:export")
     @Log(title = "合同管理", businessType = BusinessType.EXPORT)
     @PostMapping("/exportExpire")
     @ResponseBody
@@ -376,11 +381,11 @@ public class BussinessContractController extends BaseController
         return prefix + "/contractFile";
     }
 
-//    @PostMapping("/saveFile")
-//    @ResponseBody
-//    public AjaxResult saveFile()
-//    {
-//        return toAjax(bussinessContractService.updateBussinessContract(bussinessContract));
-//    }
+    @PostMapping("/saveFile")
+    @ResponseBody
+    public AjaxResult saveFile(BussinessFile bussinessFile)
+    {
+        return toAjax(bussinessFileService.insertBussinessFile(bussinessFile));
+    }
 
 }

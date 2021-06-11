@@ -63,9 +63,9 @@
                 <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="business:contract:import">
                     <i class="fa fa-upload"></i> 导入
                 </a>
-<!--                <a class="btn btn-info" onclick="uploadFile()" >-->
-<!--                    <i class="fa fa-upload"></i> 合同上传-->
-<!--                </a>-->
+                <a class="btn btn-info" onclick="uploadFile()" >
+                    <i class="fa fa-upload"></i> 合同上传
+                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -343,10 +343,10 @@
             var url = prefixFile + '/bussinessFile/' + contractCode;
             $.modal.openTab(contractCode+"合同文件详情", url);
         }
-        // function uploadFile(){
-        //     var url = prefix+"/uploadFile";
-        //     $.modal.open("上传合同", url);
-        // }
+        function uploadFile(){
+            var url = prefix+"/uploadFile";
+            $.modal.open("上传合同", url);
+        }
     </script>
 </body>
 <!-- 导入区域 -->

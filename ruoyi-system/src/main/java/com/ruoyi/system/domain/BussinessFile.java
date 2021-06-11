@@ -41,6 +41,16 @@ public class BussinessFile extends BaseEntity
 
     private String updateContractCode ; //
 
+    private String [] postIds;
+
+    public String[] getPostIds() {
+        return postIds;
+    }
+
+    public void setPostIds(String[] postIds) {
+        this.postIds = postIds;
+    }
+
     public String getUpdateContractCode() {
         return updateContractCode;
     }

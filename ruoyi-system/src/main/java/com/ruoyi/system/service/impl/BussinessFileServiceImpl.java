@@ -2,6 +2,9 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.BussinessContract;
+import com.ruoyi.system.mapper.BussinessContractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.BussinessFileMapper;
@@ -20,6 +23,8 @@ public class BussinessFileServiceImpl implements IBussinessFileService
 {
     @Autowired
     private BussinessFileMapper bussinessFileMapper;
+    @Autowired
+    private BussinessContractMapper bussinessContractMapper;
 
     /**
      * 查询合同文件管理
@@ -51,11 +56,35 @@ public class BussinessFileServiceImpl implements IBussinessFileService
      * @param bussinessFile 合同文件管理
      * @return 结果
      */
+    /**
+     * 新增合同文件管理
+     *
+     * @param bussinessFile 合同文件管理
+     * @return 结果
+     */
     @Override
     public int insertBussinessFile(BussinessFile bussinessFile)
     {
-        bussinessFile.setCreateTime(DateUtils.getNowDate());
-        return bussinessFileMapper.insertBussinessFile(bussinessFile);
+        int result = 0;
+        //判断postsId是否为空，如果为空则是单个添加，如果不为空则为循环判断添加
+        String[] posts = bussinessFile.getPostIds();
+        if (StringUtils.isNotNull(posts)) {
+            for (String postId : posts) {
+                BussinessFile bf = new BussinessFile();
+                BussinessContract bussinessContract=bussinessContractMapper.selectBussinessContractByCode(postId);
+                bf.setCreateTime(DateUtils.getNowDate());
+                bf.setContractCode(String.valueOf(postId));
+                bf.setFilePath(bussinessFile.getFilePath());
+                bf.setFileRemark(bussinessFile.getFileRemark());
+                bf.setUploadTime(bussinessFile.getUploadTime());
+                bf.setContractName(bussinessContract.getContractName());
+                result += bussinessFileMapper.insertBussinessFile(bf);
+            }
+        }else{
+            bussinessFile.setCreateTime(DateUtils.getNowDate());
+            result = bussinessFileMapper.insertBussinessFile(bussinessFile);
+        }
+        return result;
     }
 
     /**

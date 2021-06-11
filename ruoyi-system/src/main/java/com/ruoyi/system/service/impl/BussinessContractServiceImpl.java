@@ -148,11 +148,11 @@ public class BussinessContractServiceImpl implements IBussinessContractService
     public int importInsertBussinessContract( BussinessContract bussinessContract)
     {
         //添加合同文件基本信息
-        BussinessFile bussinessFile = new BussinessFile();
-        bussinessFile.setContractCode(bussinessContract.getContractCode());
-        bussinessFile.setContractName(bussinessContract.getContractName());
-        bussinessFile.setUploadTime(DateUtils.getNowDate());
-        bussinessFileService.insertBussinessFile(bussinessFile);
+//        BussinessFile bussinessFile = new BussinessFile();
+//        bussinessFile.setContractCode(bussinessContract.getContractCode());
+//        bussinessFile.setContractName(bussinessContract.getContractName());
+//        bussinessFile.setUploadTime(DateUtils.getNowDate());
+//        bussinessFileService.insertBussinessFile(bussinessFile);
 
         bussinessContract.setStatus("0");//默认合同状态是正常的未过期的
         //当前时间和合同截止时间比较

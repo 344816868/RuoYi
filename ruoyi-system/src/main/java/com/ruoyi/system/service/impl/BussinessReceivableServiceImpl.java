@@ -52,8 +52,8 @@ public class BussinessReceivableServiceImpl implements IBussinessReceivableServi
     {
         List<BussinessReceivable> list=bussinessReceivableMapper.selectBussinessReceivableList(bussinessReceivable);
         for(BussinessReceivable receivable:list){
-            double sum=bussinessReceivableMapper.getReceivableSum(receivable.getContractCode());
-            receivable.setReceivableSum(String.valueOf(sum));
+            String sum=bussinessReceivableMapper.getReceivableSum(receivable.getContractCode());
+            receivable.setReceivableSum(sum);
         }
         return list;
     }

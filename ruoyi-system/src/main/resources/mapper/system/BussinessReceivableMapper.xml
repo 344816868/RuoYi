@@ -103,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where CONTRACT_CODE = #{updateContractCode}
     </update>
 
-    <select id="getReceivableSum" parameterType="String" resultType="double">
+    <select id="getReceivableSum" parameterType="String" resultType="String">
         select sum(RECEIVABLE) RECEIVABLESUM  from BUSSINESS_RECEIVABLE
         <where>
             <if test="contractCode != null  and contractCode != ''"> contract_code =#{contractCode}</if>
